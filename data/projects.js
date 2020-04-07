@@ -36,5 +36,19 @@ module.exports = {
         const newId = insertInfo.insertedId;
 
         return await this.getProject(newId);
-    }
+    },
+    async getAllProjects() {
+        const projectsCollection = await projects();
+        return await projectsCollection.find({}).toArray();
+    },
+    async getProject(id) {
+        if (!id) throw 'You must provide a project id to search for';
+
+        const objId = ObjectId(id);
+        const projectsCollection = await projects();
+        const project = await projectsCollection.findOne({ _id: objId });
+        if (project === null) throw 'No project with this id';
+
+        return project;
+    },
 };
