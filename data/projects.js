@@ -64,7 +64,6 @@ module.exports = {
 
         const objId = ObjectId(projectId);
         const projectsCollection = await projects();
-        const projectToUpdate = await this.getProject(projectId);
         const updatedProject = {
             title: projectTitle,
             category: projectCategory,
@@ -83,4 +82,31 @@ module.exports = {
 
         return await this.getProject(projectId);
     },
+    async removeProject(id) {
+        if (!id) throw 'You must provide a project id to search for';
+        const objId = ObjectId(id);
+        const projectsCollection = await projects();
+        const usersCollection = await users();
+        let projectToDelete = await this.getProject(id);
+
+        const backersList = projectToDelete.backers;
+        for (let userId of backersList) {  // Remove the project from the list of users who donated to that project
+            const updateUserProjects = await usersCollection.updateOne({ _id: ObjectId(userId) }, { $pull: { donated: objId } });
+            if (updateUserProjects.modifiedCount === 0)
+                throw 'Could not remove project from backer\'s list successfully';
+
+        }
+        // Dissociate the project from the user who created it
+        const updateCreator = await usersCollection.updateOne({ _id: ObjectId(projectToDelete.creator) },
+            { $pull: { projects: objId } });
+        if (updateCreator.modifiedCount === 0)
+            throw 'Could not remove project from creator\'s list';
+
+        const deletionInfo = await projectsCollection.deleteOne({ _id: objId });
+
+        if (deletionInfo.deletedCount === 0) {
+            throw `Could not delete project with id of ${id}`;
+        }
+        return projectToDelete;
+    }
 };
