@@ -52,3 +52,43 @@ module.exports = {
 
         return user;
     },
+
+    async updateUser(id , updatedUser) {
+        const usersCollection = await users();
+    
+        const updatedUserData = {};
+    
+        if (updatedUser.firstName) {
+          updatedUserData.firstName = updatedUser.firstName;
+        }
+    
+        if (updatedUser.lastName) {
+          updatedUserData.lastName = updatedUser.lastName;
+        }
+    
+        if (updatedUser.email) {
+          updatedUserData.email = updatedUser.email;
+        }
+    
+        if (updatedUser.city){
+            updatedUserData.city = updatedUser.city;
+        }
+    
+        if (updatedUser.state){
+            updatedUserData.state = updatedUser.state;
+        }
+
+        if (updatedUser.passwordHash){
+            updatedUserData.passwordHash = updatedUser.passwordHash;
+        }
+    
+        let updateCommand = {
+          $set: updatedUserData
+        };
+        const query = {
+          _id: id
+        };
+        await usersCollection.updateOne(query, updateCommand);
+    
+        return await this.getUser(id);
+    }
