@@ -92,3 +92,29 @@ module.exports = {
     
         return await this.getUser(id);
     }
+
+    async removeUser(id){
+
+        if (!id) throw 'You must provide a valid  user id ';
+        const objId = ObjectId(id);
+        const usersCollection = await users();
+        const projectsCollection = await projects();
+        let userToDelete = await this.getUser(id);
+
+        const projectsList = userToDelete.projects;
+        for (let projectId of projectsList) {  // Remove the project from the list of users who donated to that project
+            const deleteProjects = await projectsCollection.deleteOne({ _id: ObjectId(projectId) })
+            if (deleteProjects.modifiedCount === 0){
+                throw 'Could not remove project from project collection';
+            }
+        }
+       
+        const deletionInfo = await usersCollection.deleteOne({ _id: objId });
+
+        if (deletionInfo.deletedCount === 0) {
+            throw `Could not delete user with id of ${id}`;
+        }
+       
+    }
+
+    }
