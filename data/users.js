@@ -35,4 +35,9 @@ module.exports = {
         const newId = insertInfo.insertedId;
         const user = await this.getBand(newId);
         return user;
-    }
+    },
+
+    async getAllUsers() {
+        const usersCollection = await users();
+        return await usersCollection.find({}).toArray();
+    },
