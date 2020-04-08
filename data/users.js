@@ -41,3 +41,14 @@ module.exports = {
         const usersCollection = await users();
         return await usersCollection.find({}).toArray();
     },
+
+    async getUser(id) {
+        if (!id) throw 'You must provide a project id to search for';
+
+        const objId = ObjectId(id);
+        const usersCollection = await users();
+        const user = await usersCollection.findOne({ _id: objId });
+        if (user === null) throw 'No user with this id';
+
+        return user;
+    },
