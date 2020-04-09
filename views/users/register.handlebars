@@ -1,0 +1,47 @@
+<p>Register</p>
+<div>
+    <form action="/users" method="POST">
+    <div>
+    <label for="firstname">First Name:
+    </label>
+    <input type="text" name="firstName" placeholder="First Name" value="{{user.firstName}}" class="full-width-input"/>
+    </div>
+    <div>
+    <label for="name">Last Name:
+    </label>
+    <input type="text" name="lastName" placeholder="Last Name" value="{{user.lastName}}" class="full-width-input"/>
+    </div>
+    <div>
+    <label for="email">Email:
+    </label>
+    <input type="text" name="email" placeholder="Email" value="{{user.email}}" class="full-width-input"/>
+    </div>
+    <div>
+    <label for="pass">Password:
+    </label>
+    <input type="text" name="passwordHash" placeholder="Password" value="{{user.passwordHash}}" class="full-width-input"/>
+    </div>
+    <div>
+    <label for="city">City:
+    </label>
+    <input type="text" name="city" placeholder="City" value="{{user.city}}" class="full-width-input"/>
+    </div>
+    <div>
+    <label for="state">State:
+    </label>
+    <input type="text" name="state" placeholder="State" value="{{user.state}}" class="full-width-input"/>
+    </div>
+    <div>
+        <button type="submit">Create An Account</button>
+    </div>
+    </form>
+    {{#if hasErrors}}
+    <ul class="error-list">
+        {{#each errors}}
+    <li>
+        {{this}}
+    </li>
+        {{/each}}
+    </ul>
+    {{/if}}
+</div>

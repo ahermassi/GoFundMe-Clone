@@ -1,0 +1,26 @@
+{
+  "name": "cs546-crowdfunding",
+  "version": "1.0.0",
+  "description": "Crowdfunding application for CS-546 Web Programming class at Stevens Tech",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ahermassi/CS546-Crowdfunding.git"
+  },
+  "author": "CS546_A_Group 3",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ahermassi/CS546-Crowdfunding/issues"
+  },
+  "homepage": "https://github.com/ahermassi/CS546-Crowdfunding#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-handlebars": "^3.1.0",
+    "handlebars": "^4.1.2",
+    "mongodb": "^3.3.0-beta2"
+  }
+}
