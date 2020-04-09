@@ -1,0 +1,13 @@
+<p>SignIn Page</p>
+<div>
+    <form action="/users" method="GET">
+    <label for="email">Email:
+    </label>
+    <input type="text" name="email" placeholder="Email" value="{{user.email}}" class="full-width-input"/>
+    <label for="pass">Password:
+    </label>
+    <input type="text" name="pass" placeholder="Password" value="{{user.passwordHash}}" class="full-width-input"/>
+    <button type="submit">SignIn</button>
+    </form>
+</div>
+<a href="/users/register">register</a>

@@ -33,7 +33,7 @@ module.exports = {
         const insertInfo = await usersCollection.insertOne(newUser);
         if (insertInfo.insertedCount === 0) throw 'Could not add user';
         const newId = insertInfo.insertedId;
-        const user = await this.getBand(newId);
+        const user = await this.getUser(newId);
         return user;
     },
 
@@ -91,7 +91,7 @@ module.exports = {
         await usersCollection.updateOne(query, updateCommand);
     
         return await this.getUser(id);
-    }
+    },
 
     async removeUser(id){
 

@@ -1,0 +1,27 @@
+<article class="new-project">
+  <h1>Make my project</h1>
+  <form action="/projects" method="POST" class="new-project-form">
+    <label>
+      Project Title:
+      <input type="text" name="title" placeholder="Project Title" value="{{project.title}}" class="full-width-input"/>
+    </label>
+    <label>
+      Category:
+      <input type="text" name="category" placeholder="Category" class="full-width-input"/>
+    </label>
+    <label>
+        Creator:
+         <input type="text" name="creator" placeholder="Creator" class="full-width-input"/>
+    </label>
+    <label>
+        Goal:
+         <input type="number" name="goal" placeholder="Goal" class="full-width-input"/>
+    </label>
+    <label for="project-description">
+      Description:
+    </label>
+    <textarea id="project-description" name="description" rows="4" placeholder="Description" class="full-width-input">{{project.description}}</textarea>
+    <button type="submit">Create New Post</button>
+    <button type="reset">Clear Form</button>
+  </form>
+</article>
