@@ -8,12 +8,18 @@ async function main(){
 
 	await db.dropDatabase();
 
-    const a = await users.addUser('A', 'B','123@gmail.com','Hudson','NJ','pass',[],[]);
-    const id = a._id;
-    
-    const p1 = await projects.addProject('ProT','Game','A','Jan1',1000,0,[],"this is description of ProT");
-    const p2 = await projects.addProject('COL','Movie','A','Jan1',1000,0,[],"this is description of COL");
-    const p3 = await projects.addProject('JAJA','Novel','A','Jan1',1000,0,[],"this is description of JAJA");
+    let john = await users.addUser('John', 'Doe','john@gmail.com','Hudson','NJ',
+        'pass1');
+
+    let jane = await users.addUser('Jane', 'Doe','jane@gmail.com','NYC','NY',
+        'pass2');
+
+    await projects.addProject('ProT','Game',john._id,'Jan1',
+        1000,"this is description of ProT");
+    await projects.addProject('COL','Movie',john._id,'Jan1',
+        1000,"this is description of COL");
+    await projects.addProject('JAJA','Novel',jane._id,'Jan1',1000,
+        "this is description of JAJA");
     console.log('Done seeding database');
 	await db.serverConfig.close();
 }
