@@ -7,8 +7,8 @@ const userData = data.users;
 const { ObjectId } = require('mongodb');
 
 module.exports = {
-    async addProject(projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal,
-                     projectCollected=0, projectBackers=[], projectDescription, active=true) {
+    async addProject(projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal, projectDescription,
+                     projectCollected=0, projectBackers=[], active=true) {
 
         if (!projectTitle) throw 'You must provide a title for your project';
         if (!projectCategory) throw 'You must provide a category for your project';
@@ -53,7 +53,7 @@ module.exports = {
         return project;
     },
     async updateProject(projectId, projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal,
-                        projectCollected, projectBackers, projectDescription) {
+                        projectDescription, projectCollected, projectBackers, active) {
 
         if (!projectId) throw 'You must provide a project id to update';
         if (!projectTitle) throw 'You must provide a title for your project';
