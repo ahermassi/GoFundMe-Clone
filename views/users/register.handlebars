@@ -1,39 +1,21 @@
 <p>Register</p>
 <div>
     <form action="/users" method="POST">
-    <div>
-    <label for="firstname">First Name:
-    </label>
-    <input type="text" name="firstName" placeholder="First Name" value="{{user.firstName}}" class="full-width-input"/>
-    </div>
-    <div>
-    <label for="name">Last Name:
-    </label>
-    <input type="text" name="lastName" placeholder="Last Name" value="{{user.lastName}}" class="full-width-input"/>
-    </div>
-    <div>
-    <label for="email">Email:
-    </label>
-    <input type="text" name="email" placeholder="Email" value="{{user.email}}" class="full-width-input"/>
-    </div>
-    <div>
-    <label for="pass">Password:
-    </label>
-    <input type="text" name="passwordHash" placeholder="Password" value="{{user.passwordHash}}" class="full-width-input"/>
-    </div>
-    <div>
-    <label for="city">City:
-    </label>
-    <input type="text" name="city" placeholder="City" value="{{user.city}}" class="full-width-input"/>
-    </div>
-    <div>
-    <label for="state">State:
-    </label>
-    <input type="text" name="state" placeholder="State" value="{{user.state}}" class="full-width-input"/>
-    </div>
-    <div>
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id = "first_name" value="{{user.first_name}}" class="full-width-input"/><br/>
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name" value="{{user.last_name}}" class="full-width-input"/><br/>
+        <label for="email">Email:</label>
+        <input type="text" name="email" id="email" value="{{user.email}}" class="full-width-input"/><br/>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" value="{{user.password}}" class="full-width-input"/><br/>
+        <label for="password_confirm">Confirm Password:</label>
+        <input type="password" name="password_confirm" id="password_confirm" value="{{user.password_confirm}}" class="full-width-input"/><br/>
+        <label for="city">City:</label>
+        <input type="text" name="city" id="city" value="{{user.city}}" class="full-width-input"/><br/>
+        <label for="state">State:</label>
+        <input type="text" name="state" id="state" value="{{user.state}}" class="full-width-input"/><br/>
         <button type="submit">Create An Account</button>
-    </div>
     </form>
     {{#if hasErrors}}
     <ul class="error-list">

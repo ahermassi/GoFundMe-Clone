@@ -8,11 +8,11 @@ async function main(){
 
 	await db.dropDatabase();
 
-    let john = await users.addUser('John', 'Doe','john@gmail.com','Hudson','NJ',
-        'pass1');
+    let john = await users.addUser('John', 'Doe','john@gmail.com', 'pass1',
+        'Hudson','NJ');
 
-    let jane = await users.addUser('Jane', 'Doe','jane@gmail.com','NYC','NY',
-        'pass2');
+    let jane = await users.addUser('Jane', 'Doe','jane@gmail.com', 'pass2',
+        'NYC','NY');
 
     await projects.addProject('ProT','Game',john._id,'Jan1',
         1000,"this is description of ProT");

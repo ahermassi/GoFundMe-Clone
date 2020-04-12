@@ -1,16 +1,13 @@
 <section>
-  <h1>Projects</h1>
-  {{#each projects}}  
+    <h1>Projects</h1>
+    {{#each projects}}
     <article class="projects">
-      <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
-      <p>Author: {{creator}}</p>
-      <p>Date: {{date}}</p>
+        <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
+        <p>Author: {{creator}}</p>
+        <p>Date: {{date}}</p>
     </article>
   {{/each}}
-  <div>
-  <a href="/projects/new">Add a Project</a>
-  </div>
-  <div>
-  <a href="/users/signin">SignIn</a>
-  </div>
+    <a href="/projects/new">Add a Project</a><br/>
+    <a href="/users/signin">Sign In</a><br/>
+    <a href="/users/register">Register</a>
 </section>

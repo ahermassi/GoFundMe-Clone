@@ -4,23 +4,23 @@ const users = mongoCollections.users;
 const { ObjectId } = require('mongodb');
 
 module.exports = {
-    async addUser(firstName, lastName, email, city, state, passwordHash, projects=[], donated=[],
+    async addUser(firstName, lastName, email, passwordHash, city, state, projects=[], donated=[],
                   active=true) {
         if(!firstName || typeof firstName!= 'string') throw 'you must provide a valid first name';
         if(!lastName || typeof lastName!= 'string') throw 'you must provide a valid last name';
         if(!email || typeof email!= 'string') throw 'you must provide a valid email';
+        if(!passwordHash || typeof passwordHash!= 'string') throw 'you must provide a valid password hash';
         if(!city || typeof city!= 'string') throw 'you must provide a valid city';
         if(!state || typeof state!='string') throw 'you must provide a valid state';
-        if(!passwordHash || typeof passwordHash!= 'string') throw 'you must provide a valid password hash';
 
         const usersCollection = await users();
         let newUser = {
             firstName: firstName,
             lastName: lastName,
             email: email,
+            passwordHash: passwordHash,
             city: city,
             state: state,
-            passwordHash: passwordHash,
             projects: projects,
             donated: donated,
             active: active
@@ -63,6 +63,10 @@ module.exports = {
         if (updatedUser.email) {
           updatedUserData.email = updatedUser.email;
         }
+
+        if (updatedUser.passwordHash){
+            updatedUserData.passwordHash = updatedUser.passwordHash;
+        }
     
         if (updatedUser.city){
             updatedUserData.city = updatedUser.city;
@@ -70,10 +74,6 @@ module.exports = {
     
         if (updatedUser.state){
             updatedUserData.state = updatedUser.state;
-        }
-
-        if (updatedUser.passwordHash){
-            updatedUserData.passwordHash = updatedUser.passwordHash;
         }
     
         let updateCommand = {
