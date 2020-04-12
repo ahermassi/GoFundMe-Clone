@@ -1,9 +1,5 @@
 const mongoCollections = require('../config/mongoCollections');
-const data = require('../data');
 const projects = mongoCollections.projects;
-const users = mongoCollections.users;
-const userData = data.users;
-
 const { ObjectId } = require('mongodb');
 
 module.exports = {

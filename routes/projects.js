@@ -6,12 +6,18 @@ const userData = data.users;
 
 router.get('/',async(req,res)=>{
     const projectList = await projectData.getAllProjects();
-	res.render('projects/index',{title: 'Projects', projects:projectList});
+    for (let project of projectList) {  // Replace the creator ID with the creator name
+		const user = await userData.getUser(project.creator);
+		project.creator = user.firstName;
+	}
+	res.render('projects/index',{title: 'Projects', projects: projectList});
 });
 
 router.get('/:id', async (req, res) => {
 	try {
 		const project = await projectData.getProject(req.params.id);
+		const user = await userData.getUser(project.creator);
+		project.creator = user.firstName;  // Replace the creator ID with the creator name
 		res.render('projects/single', { project: project });
 	} catch (e) {
 		res.status(500).json({ error: e });
