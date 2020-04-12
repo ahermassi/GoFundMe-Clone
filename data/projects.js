@@ -8,7 +8,7 @@ const { ObjectId } = require('mongodb');
 
 module.exports = {
     async addProject(projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal,
-                     projectCollected=0, projectBackers=[], projectDescription) {
+                     projectCollected=0, projectBackers=[], projectDescription, active=true) {
 
         if (!projectTitle) throw 'You must provide a title for your project';
         if (!projectCategory) throw 'You must provide a category for your project';
@@ -27,7 +27,8 @@ module.exports = {
             pledgeGoal: projectPledgeGoal,
             collected: projectCollected,
             backers: projectBackers,
-            description: projectDescription
+            description: projectDescription,
+            active: active
         };
 
         const insertInfo = await projectsCollection.insertOne(newProject);
@@ -86,23 +87,9 @@ module.exports = {
         if (!id) throw 'You must provide a project id to search for';
         const objId = ObjectId(id);
         const projectsCollection = await projects();
-        const usersCollection = await users();
         let projectToDelete = await this.getProject(id);
 
-        const backersList = projectToDelete.backers;
-        for (let userId of backersList) {  // Remove the project from the list of users who donated to that project
-            const updateUserProjects = await usersCollection.updateOne({ _id: ObjectId(userId) }, { $pull: { donated: objId } });
-            if (updateUserProjects.modifiedCount === 0)
-                throw 'Could not remove project from backer\'s list successfully';
-
-        }
-        // Dissociate the project from the user who created it
-        const updateCreator = await usersCollection.updateOne({ _id: ObjectId(projectToDelete.creator) },
-            { $pull: { projects: objId } });
-        if (updateCreator.modifiedCount === 0)
-            throw 'Could not remove project from creator\'s list';
-
-        const deletionInfo = await projectsCollection.deleteOne({ _id: objId });
+        const deletionInfo = projectsCollection.updateOne({ _id: ObjectId(objId) }, {$set: {active: false}});
 
         if (deletionInfo.deletedCount === 0) {
             throw `Could not delete project with id of ${id}`;
