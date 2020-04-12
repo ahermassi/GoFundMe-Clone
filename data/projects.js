@@ -87,13 +87,13 @@ module.exports = {
         if (!id) throw 'You must provide a project id to search for';
         const objId = ObjectId(id);
         const projectsCollection = await projects();
-        let projectToDelete = await this.getProject(id);
 
+        // Deactivate the project
         const deletionInfo = projectsCollection.updateOne({ _id: ObjectId(objId) }, {$set: {active: false}});
 
         if (deletionInfo.deletedCount === 0) {
             throw `Could not delete project with id of ${id}`;
         }
-        return projectToDelete;
+        return deletionInfo.deletedCount;
     }
 };

@@ -1,49 +1,43 @@
 const mongoCollections = require('../config/mongoCollections');
-const data = require('../data');
 const projects = mongoCollections.projects;
 const users = mongoCollections.users;
 const { ObjectId } = require('mongodb');
 
 module.exports = {
-    async addUser(firstName, lastName, email, city, state, passwordHash, projects, donated) {
-        if(!firstName || typeof firstName!= 'string') throw 'you must provide a valid firstname'
-        if(!lastName || typeof lastName!= 'string') throw 'you must provide a valid lastname'
-        if(!email || typeof email!= 'string') throw 'you must provide a valid email'
-        if(!city || typeof city!= 'string') throw 'you must provide a valid city'
-        if(!state || typeof state!='string') throw 'you must provide a valid state'
-        if(!passwordHash || typeof passwordHash!= 'string') throw 'you must provide a valid passwordhash'
-        if (!Array.isArray(projects)) {
-            projects = [];
-          }
-        
-        if (!Array.isArray(donated)) {
-            donated = [];
-          }
+    async addUser(firstName, lastName, email, city, state, passwordHash, projects=[], donated=[],
+                  active=true) {
+        if(!firstName || typeof firstName!= 'string') throw 'you must provide a valid first name';
+        if(!lastName || typeof lastName!= 'string') throw 'you must provide a valid last name';
+        if(!email || typeof email!= 'string') throw 'you must provide a valid email';
+        if(!city || typeof city!= 'string') throw 'you must provide a valid city';
+        if(!state || typeof state!='string') throw 'you must provide a valid state';
+        if(!passwordHash || typeof passwordHash!= 'string') throw 'you must provide a valid password hash';
+
         const usersCollection = await users();
         let newUser = {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            city:  city,
-            state:  state,
+            city: city,
+            state: state,
             passwordHash: passwordHash,
             projects: projects,
-            donated: donated
+            donated: donated,
+            active: active
             };
         const insertInfo = await usersCollection.insertOne(newUser);
         if (insertInfo.insertedCount === 0) throw 'Could not add user';
         const newId = insertInfo.insertedId;
-        const user = await this.getUser(newId);
-        return user;
+        return await this.getUser(newId);
     },
 
     async getAllUsers() {
         const usersCollection = await users();
-        return await usersCollection.find({}).toArray();
+        return usersCollection.find({}).toArray();
     },
 
     async getUser(id) {
-        if (!id) throw 'You must provide a project id to search for';
+        if (!id) throw 'You must provide a user id to search for';
 
         const objId = ObjectId(id);
         const usersCollection = await users();
@@ -95,21 +89,22 @@ module.exports = {
 
     async removeUser(id){
 
-        if (!id) throw 'You must provide a valid  user id ';
+        if (!id) throw 'You must provide a valid user id ';
         const objId = ObjectId(id);
         const usersCollection = await users();
-        const projectsCollection = await projects();
+        const projectsAPI = require("./projects");
         let userToDelete = await this.getUser(id);
 
         const projectsList = userToDelete.projects;
-        for (let projectId of projectsList) {  // Remove the project from the list of users who donated to that project
-            const deleteProjects = await projectsCollection.deleteOne({ _id: ObjectId(projectId) })
-            if (deleteProjects.modifiedCount === 0){
-                throw 'Could not remove project from project collection';
+        for (let projectId of projectsList) {  // Deactivate all the projects of the user
+            const deleteProjects = await projectsAPI.removeProject(projectId);
+            if (deleteProjects === 0){
+                throw 'Could not remove project';
             }
         }
        
-        const deletionInfo = await usersCollection.deleteOne({ _id: objId });
+        // Deactivate the user
+        const deletionInfo = await usersCollection.updateOne({ _id: ObjectId(objId) }, {$set: {active: false}});
 
         if (deletionInfo.deletedCount === 0) {
             throw `Could not delete user with id of ${id}`;
@@ -117,4 +112,4 @@ module.exports = {
        
     }
 
-    }
+};
