@@ -1,4 +1,3 @@
-
 const express = require('express');
 const router = express.Router();
 const data = require('../data');
@@ -7,8 +6,8 @@ const userData = data.users;
 
 router.get('/',async(req,res)=>{
     const projectList = await projectData.getAllProjects();
-    res.render('projects/index',{projects:projectList});
-})
+	res.render('projects/index',{title: 'Projects', projects:projectList});
+});
 
 router.get('/:id', async (req, res) => {
 	try {
@@ -22,7 +21,7 @@ router.get('/:id', async (req, res) => {
 router.get('/new',async(req,res)=>{
 	const users = await userData.getAllUsers();
 	res.render('projects/new',{});
-})
+});
 
 
 // router.post('/', async (req, res) => {
