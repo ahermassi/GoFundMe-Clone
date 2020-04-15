@@ -2,16 +2,21 @@ const dbConnection = require('../config/mongoConnection');
 const data = require('../data/');
 const users = data.users;
 const projects = data.projects;
+const passwordHash = require('password-hash');
 
 async function main(){
     const db = await dbConnection();
 
-	await db.dropDatabase();
+    await db.dropDatabase();
+    
+    let pass1 = passwordHash.generate('pass1');
 
-    let john = await users.addUser('John', 'Doe','john@gmail.com', 'pass1',
+    let pass2 = passwordHash.generate('pass2');
+
+    let john = await users.addUser('John', 'Doe','john@gmail.com', pass1,
         'Hudson','NJ');
 
-    let jane = await users.addUser('Jane', 'Doe','jane@gmail.com', 'pass2',
+    let jane = await users.addUser('Jane', 'Doe','jane@gmail.com', pass2,
         'NYC','NY');
 
     await projects.addProject('ProT','Game',john._id,'Jan1',
