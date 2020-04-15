@@ -105,6 +105,7 @@ router.post('/', async(req,res)=> {
     try {
 //        const hashedPassword = passwordHash.generate(newUser.password);
 								const  hashedPassword = await bcrypt.hash(newUser.passwordHash,saltRounds);
+								
         await userData.addUser(newUser.first_name, newUser.last_name, newUser.email, hashedPassword, newUser.city,
             newUser.state);
         res.redirect('/users/all');
