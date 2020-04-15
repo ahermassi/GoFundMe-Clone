@@ -1,3 +1,14 @@
+ {{#if hasLogin}}
+ <div>
+   <p>User:{{user.firstName}}</p>
+   <p id = 'user-id'>{{user._id}}</p>
+ </div>
+ {{else}}
+    <div id = 'login-container'>
+    <a href="/users/signin">Sign In</a><br/>
+    <a href="/users/register">Register</a>
+    </div>
+ {{/if}}
 <section>
     <h1>Projects</h1>
     {{#each projects}}
@@ -8,6 +19,4 @@
     </article>
   {{/each}}
     <a href="/projects/new">Add a Project</a><br/>
-    <a href="/users/signin">Sign In</a><br/>
-    <a href="/users/register">Register</a>
 </section>

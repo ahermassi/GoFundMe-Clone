@@ -10,7 +10,7 @@ router.get('/',async(req,res)=>{
 		const user = await userData.getUser(project.creator);
 		project.creator = user.firstName;
 	}
-	res.render('projects/index',{title: 'Projects', projects: projectList});
+	res.render('projects/index',{title: 'Projects', projects: projectList,hasLogin:false});
 });
 
 router.get('/:id', async (req, res) => {

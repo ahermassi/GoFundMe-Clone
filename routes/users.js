@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const data = require('../data');
 const userData = data.users;
+const projectData = data.projects;
 const path = require('path');
 const bcrypt = require("bcrypt");
 const saltRounds = 16;
@@ -36,6 +37,13 @@ router.post('/signin/login',async(req,res)=>{
   if(!signinUser.pass){
     errors.push('Need password');
 		}
+		if (errors.length > 0) {
+			res.render('users/signin', {
+				errors: errors,
+				hasErrors: true,
+			});
+			return;
+			}
 		let theUser;
   try{
 				theUser = await userData.getUserByEmail(signinUser.email);
@@ -44,7 +52,12 @@ router.post('/signin/login',async(req,res)=>{
 		}
 		const compareHashedPass =  await bcrypt.compare(signinUser.pass,theUser.passwordHash);
 		if (compareHashedPass){
-					res.json(theUser);
+			const projectList = await projectData.getAllProjects();
+			for (let project of projectList) {
+				const user = await userData.getUser(project.creator);
+				project.creator = user.firstName;
+			}
+			res.render('projects/index',{title: 'Projects', projects: projectList,hasLogin:true,user:theUser});
 		}else{
 			res.render('users/signin',{hasErrors:true, errors:['invalid email or password']});
 		}
