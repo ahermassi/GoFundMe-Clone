@@ -1,9 +1,12 @@
 const express = require('express');
-const passwordHash = require('password-hash');
+//const passwordHash = require('password-hash');
 const router = express.Router();
 const data = require('../data');
 const userData = data.users;
 const path = require('path');
+const bcrypt = require("bcrypt");
+const saltRounds = 16;
+
 
 router.get('/all', async (req, res) => {
     try {
@@ -22,6 +25,29 @@ router.get('/signin',async (req,res) => {
 
 router.get('/register',async (req,res) => {
     res.render('users/register', {title: 'Register'});
+});
+
+router.post('/signin/login',async(req,res)=>{
+  let signinUser = req.body;
+  let errors = [];
+  if (!signinUser.email){
+    errors.push('Need email');
+  }
+  if(!signinUser.pass){
+    errors.push('Need password');
+		}
+		let theUser;
+  try{
+				theUser = await userData.getUserByEmail(signinUser.email);
+  }catch(e){
+			res.render('users/signin',{hasErrors:true, errors:errors.push(e)});
+		}
+		const compareHashedPass =  await bcrypt.compare(signinUser.pass,theUser.passwordHash);
+		if (compareHashedPass){
+					res.json(theUser);
+		}else{
+			res.render('users/signin',{hasErrors:true, errors:['invalid email or password']});
+		}
 });
 
 router.post('/', async(req,res)=> {
@@ -62,10 +88,10 @@ router.post('/', async(req,res)=> {
 			user: newUser,
 		});
 		return;
-	}
-
+  }
     try {
-        const hashedPassword = passwordHash.generate(newUser.password);
+//        const hashedPassword = passwordHash.generate(newUser.password);
+								const  hashedPassword = await bcrypt.hash(newUser.passwordHash,saltRounds);
         await userData.addUser(newUser.first_name, newUser.last_name, newUser.email, hashedPassword, newUser.city,
             newUser.state);
         res.redirect('/users/all');
@@ -73,6 +99,8 @@ router.post('/', async(req,res)=> {
         res.status(500).json({error:e})
   }
 });
+
+
 
 
 

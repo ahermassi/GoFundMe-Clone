@@ -1,13 +1,20 @@
 <p>Sign In</p>
 <div>
-    <form action="/users" method="GET">
-    <label for="email">Email:
-    </label>
-    <input type="text" name="email" placeholder="Email" value="{{user.email}}" class="full-width-input"/>
-    <label for="pass">Password:
-    </label>
-    <input type="text" name="pass" placeholder="Password" value="{{user.passwordHash}}" class="full-width-input"/>
+    <form action="/users/signin/login" method="POST">
+    <label for="email">Email:</label>
+    <input type="text" name="email" id = "email" placeholder="Email" class="full-width-input"/>
+    <label for="pass">Password:</label>
+    <input type="password" name="pass" id="pass" placeholder="Password" class="full-width-input"/>
     <button type="submit">SignIn</button>
     </form>
+    {{#if hasErrors}}
+    <ul class="error-list">
+    {{#each errors}}
+    <li>
+    {{this}}
+    </li>
+    {{/each}}
+    </ul>
+    {{/if}}
 </div>
 <a href="/users/register">register</a>
