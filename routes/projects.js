@@ -4,6 +4,7 @@ const router = express.Router();
 const data = require('../data');
 const projectData = data.projects;
 const userData = data.users;
+const path = require('path');
 
 router.get('/',async(req,res)=>{
     const projectList = await projectData.getAllProjects();
@@ -23,6 +24,7 @@ router.get('/new',async(req,res)=>{
 	const users = await userData.getAllUsers();
 	res.render('projects/new',{});
 })
+
 
 
 // router.post('/', async (req, res) => {
