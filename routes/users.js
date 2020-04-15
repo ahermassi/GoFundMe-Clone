@@ -48,7 +48,9 @@ router.post('/signin/login',async(req,res)=>{
   try{
 				theUser = await userData.getUserByEmail(signinUser.email);
   }catch(e){
-			res.render('users/signin',{hasErrors:true, errors:errors.push(e)});
+      errors.push(e);
+      res.render('users/signin',{hasErrors:true, errors:errors});
+      return;
 		}
 		const compareHashedPass =  await bcrypt.compare(signinUser.pass,theUser.passwordHash);
 		if (compareHashedPass){
@@ -92,8 +94,14 @@ router.post('/', async(req,res)=> {
 		errors.push('No state provided');
 
     if (!newUser.email)
-		errors.push('No email provided');
+    errors.push('No email provided');
 
+    try{
+      await userData.getUserByEmail(newUser.email);
+      errors.push('Email has been registered');
+    }catch(e){
+    }
+    
     if (errors.length > 0) {
 		res.render('users/register', {
 			errors: errors,
@@ -104,7 +112,7 @@ router.post('/', async(req,res)=> {
   }
     try {
 //        const hashedPassword = passwordHash.generate(newUser.password);
-								const  hashedPassword = await bcrypt.hash(newUser.passwordHash,saltRounds);
+				const  hashedPassword = await bcrypt.hash(newUser.password,saltRounds);
 								
         await userData.addUser(newUser.first_name, newUser.last_name, newUser.email, hashedPassword, newUser.city,
             newUser.state);
