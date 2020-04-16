@@ -40,24 +40,24 @@ router.post('/signin',async (req,res) => {
         return;
     }
     let user;
-  try{
-				theUser = await userData.getUserByEmail(signinUser.email);
-  }catch(e){
-      errors.push(e);
-      res.render('users/signin',{hasErrors:true, errors:errors});
-      return;
-		}
-		const compareHashedPass =  await bcrypt.compare(signinUser.pass,theUser.passwordHash);
-		if (compareHashedPass){
-			const projectList = await projectData.getAllProjects();
-			for (let project of projectList) {
-				const user = await userData.getUser(project.creator);
-				project.creator = user.firstName;
-			}
-			res.render('projects/index',{title: 'Projects', projects: projectList,hasLogin:true,user:theUser});
-		}else{
-			res.render('users/signin',{hasErrors:true, errors:['invalid email or password']});
-		}
+    try{
+        user = await userData.getUserByEmail(loginInfo.email);
+    } catch(e) {
+        errors.push(e);
+        res.render('users/signin',{hasErrors: true, errors: errors});
+        return;
+    }
+    const compareHashedPassword =  passwordHash.verify(loginInfo.password, user.passwordHash);
+    if (compareHashedPassword){
+        const projectList = await projectData.getAllProjects();
+        for (let project of projectList) {
+            const user = await userData.getUser(project.creator);
+            project.creator = user.firstName;
+        }
+        res.render('projects/index',{title: 'Projects', projects: projectList, hasLogin: true,user: user});
+    }
+    else
+        res.render('users/signin',{hasErrors:true, errors:['invalid email or password']});
 });
 
 router.post('/', async(req,res)=> {
@@ -114,11 +114,5 @@ router.post('/', async(req,res)=> {
         res.status(500).json({error:e})
   }
 });
-
-
-
-
-
-
 
 module.exports = router;
