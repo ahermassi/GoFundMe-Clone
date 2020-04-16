@@ -1,11 +1,11 @@
 <p>Sign In</p>
 <div>
-    <form action="/users/signin/login" method="POST">
+    <form action="/users/signin" method="POST">
     <label for="email">Email:</label>
-    <input type="text" name="email" id = "email" placeholder="Email" class="full-width-input"/>
-    <label for="pass">Password:</label>
-    <input type="password" name="pass" id="pass" placeholder="Password" class="full-width-input"/>
-    <button type="submit">SignIn</button>
+    <input type="text" name="email" id = "email" class="full-width-input"/>
+    <label for="password">Password:</label>
+    <input type="password" name="password" id="password" class="full-width-input"/>
+    <button type="submit">Sign In</button>
     </form>
     {{#if hasErrors}}
     <ul class="error-list">
@@ -17,4 +17,4 @@
     </ul>
     {{/if}}
 </div>
-<a href="/users/register">register</a>
+<a href="/users/register">Register</a>

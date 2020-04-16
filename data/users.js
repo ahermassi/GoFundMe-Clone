@@ -54,7 +54,7 @@ module.exports = {
         const usersCollection = await users();
         const user = await usersCollection.findOne({email:email});
         if(user === null){
-            throw "invalid email or password";
+            throw "Invalid email";
         }
         return user;
     },

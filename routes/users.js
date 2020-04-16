@@ -57,7 +57,7 @@ router.post('/signin',async (req,res) => {
         res.render('projects/index',{title: 'Projects', projects: projectList, hasLogin: true,user: user});
     }
     else
-        res.render('users/signin',{hasErrors:true, errors:['invalid email or password']});
+        res.render('users/signin',{hasErrors:true, errors:['Invalid email or password']});
 });
 
 router.post('/', async(req,res)=> {
