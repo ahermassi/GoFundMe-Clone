@@ -14,7 +14,7 @@ router.get('/all', async (req, res) => {
     }
   });
 
-router.get('/signin',async (req,res) => {
+router.get('/signin',async (req, res) => {
     res.render('users/signin',{title: 'Sign In'});
 });
 
@@ -22,7 +22,7 @@ router.get('/register',async (req,res) => {
     res.render('users/register', {title: 'Register'});
 });
 
-router.post('/signin',async (req,res) => {
+router.post('/signin',async (req, res) => {
     let loginInfo = req.body;
     let errors = [];
 
@@ -49,18 +49,14 @@ router.post('/signin',async (req,res) => {
     }
     const compareHashedPassword =  passwordHash.verify(loginInfo.password, user.passwordHash);
     if (compareHashedPassword){
-        const projectList = await projectData.getAllProjects();
-        for (let project of projectList) {
-            const user = await userData.getUser(project.creator);
-            project.creator = user.firstName;
-        }
-        res.render('projects/index',{title: 'Projects', projects: projectList, hasLogin: true,user: user});
+        req.session.user = { firstName: user.firstName, lastName: user.lastName, userId: user._id };
+        res.redirect('/projects');
     }
     else
-        res.render('users/signin',{hasErrors:true, errors:['Invalid email or password']});
+        res.render('users/signin',{hasErrors: true, errors: ['Invalid email or password']});
 });
 
-router.post('/', async(req,res)=> {
+router.post('/', async (req, res) => {
     let newUser = req.body;
     let errors = [];
 
@@ -113,6 +109,11 @@ router.post('/', async(req,res)=> {
     }catch(e){
         res.status(500).json({error:e})
   }
+});
+
+router.get('/logout', async (req, res) => {
+    req.session.destroy();
+    res.redirect('/projects');
 });
 
 module.exports = router;

@@ -1,10 +1,18 @@
 const express = require('express');
 const app = express();
 const static = express.static(__dirname + '/public');
-
 const configRoutes = require('./routes');
 const exphbs = require('express-handlebars');
+const session = require('express-session');
 
+app.use(
+	session({
+		name: 'CrowdFundingSession',
+		secret: "ssshhhhh",
+		saveUninitialized: true,
+		resave: false
+	})
+);
 app.use('/public', static);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

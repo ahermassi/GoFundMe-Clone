@@ -1,8 +1,8 @@
- {{#if hasLogin}}
+ {{#if user}}
  <div>
-   <p>User:{{user.firstName}}</p>
-   <p id = 'user-id'>{{user._id}}</p>
-   <a href="/projects">Log Out</a>
+   <p>User: {{user.firstName}} {{user.lastName}}</p>
+   <p id = 'user-id'>{{user.userId}}</p>
+   <a href="/users/logout">Log Out</a>
  </div>
  {{else}}
     <div id = 'login-container'>

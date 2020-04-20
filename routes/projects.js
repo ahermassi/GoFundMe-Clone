@@ -4,13 +4,13 @@ const data = require('../data');
 const projectData = data.projects;
 const userData = data.users;
 
-router.get('/',async(req,res)=>{
+router.get('/', async (req, res) => {
     const projectList = await projectData.getAllProjects();
     for (let project of projectList) {  // Replace the creator ID with the creator name
 		const user = await userData.getUser(project.creator);
 		project.creator = user.firstName;
 	}
-	res.render('projects/index',{title: 'Projects', projects: projectList,hasLogin:false});
+	res.render('projects/index',{title: 'Projects', projects: projectList, user: req.session.user});
 });
 
 router.get('/:id', async (req, res) => {
