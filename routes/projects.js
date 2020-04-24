@@ -28,6 +28,15 @@ router.get('/:id', async (req, res) => {
 	}
 });
 
+router.get('/user/:creator', async (req, res) => {
+	try {
+		const projects = await projectData.getProjectsByUser(req.params.creator);
+		res.render('projects/myprojects', { title: 'My Projects', hasProjects: projects.length !== 0, projects: projects });
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
 router.post('/', async (req, res) => {
 	let newProjectData = req.body;
 	let errors = [];

@@ -48,6 +48,16 @@ module.exports = {
 
         return project;
     },
+    async getProjectsByUser(userId) {
+        if (!userId) throw 'You must provide a user id to search for';
+
+        const objId = ObjectId(userId);
+        const projectsCollection = await projects();
+        const userProjects = await projectsCollection.find({ creator: objId }).toArray();
+        if (userProjects.length === 0) throw 'This user has no projects';
+
+        return userProjects;
+    },
     async updateProject(projectId, projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal,
                         projectDescription, projectCollected, projectBackers, active) {
 
