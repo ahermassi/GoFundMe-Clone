@@ -1,23 +1,23 @@
  {{#if user}}
- <div>
-   <p>User: {{user.firstName}} {{user.lastName}}</p>
-   <p id = 'user-id'>{{user.userId}}</p>
-   <a href="/users/logout">Log Out</a>
- </div>
+     <div>
+         <p>User: {{user.firstName}} {{user.lastName}}</p>
+         <p id = 'user-id'>{{user.userId}}</p>
+         <a href="/projects/new">Start a campaign</a><br/>
+         <a href="/users/logout">Log out</a>
+     </div>
  {{else}}
-    <div id = 'login-container'>
-    <a href="/users/signin">Sign In</a><br/>
-    <a href="/users/register">Register</a>
-    </div>
+     <div id = 'login-container'>
+         <a href="/users/signin">Sign In</a><br/>
+         <a href="/users/register">Register</a>
+     </div>
  {{/if}}
 <section>
-    <h1>Projects</h1>
+    <h1>Recent Projects</h1>
     {{#each projects}}
-    <article class="projects">
-        <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
-        <p>Author: {{creator}}</p>
-        <p>Date: {{date}}</p>
-    </article>
-  {{/each}}
-    <a href="/projects/new">Add a Project</a><br/>
+        <article class="projects">
+            <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
+            <p>Author: {{creator}}</p>
+            <p>Date: {{date}}</p>
+        </article>
+    {{/each}}
 </section>

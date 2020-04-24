@@ -3,7 +3,6 @@ const passwordHash = require('password-hash');
 const router = express.Router();
 const data = require('../data');
 const userData = data.users;
-const projectData = data.projects;
 
 router.get('/all', async (req, res) => {
     try {
@@ -107,7 +106,7 @@ router.post('/', async (req, res) => {
             newUser.state);
         res.redirect('/users/all');
     }catch(e){
-        res.status(500).json({error:e})
+        res.status(500).json({error: e.toString()})
   }
 });
 
