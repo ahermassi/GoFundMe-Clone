@@ -3,6 +3,8 @@ const router = express.Router();
 const data = require('../data');
 const projectData = data.projects;
 const userData = data.users;
+const { ObjectId } = require('mongodb');
+
 
 router.get('/', async (req, res) => {
     const projectList = await projectData.getAllProjects();
@@ -32,6 +34,15 @@ router.get('/user/:creator', async (req, res) => {
 	try {
 		const projects = await projectData.getProjectsByUser(req.params.creator);
 		res.render('projects/myprojects', { title: 'My Projects', hasProjects: projects.length !== 0, projects: projects });
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
+router.get('/edit/:id', async (req, res) => {
+	try {
+		const project = await projectData.getProject(req.params.id);
+		res.render('projects/edit', {title: 'Edit Project', project: project});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -68,9 +79,47 @@ router.post('/', async (req, res) => {
 
 	try {
 		const projectCreator = req.session.user.userId;
-        const newProject = await projectData.addProject(newProjectData.title, newProjectData.category, projectCreator,
+        const newProject = await projectData.addProject(newProjectData.title, newProjectData.category, ObjectId(projectCreator),
 			new Date(), newProjectData.goal, newProjectData.description);
 		res.redirect(`/projects/${newProject._id}`);
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
+router.post('/edit', async (req, res) => {
+	let updateProjectData = req.body;
+	let errors = [];
+
+	if (!updateProjectData.title) {
+		errors.push('No title provided');
+	}
+
+	if (!updateProjectData.category) {
+		errors.push('No category provided');
+	}
+
+	if(!updateProjectData.goal){
+		errors.push('No pledge goal provided')
+	}
+
+	if (updateProjectData.description.length === 0) {
+		errors.push('No description provided');
+	}
+
+	if (errors.length > 0) {
+		res.render('projects/edit', {
+			errors: errors,
+			hasErrors: true,
+			project: updateProjectData,
+		});
+		return;
+	}
+
+	try {
+		const updatedProject = await projectData.updateProject(updateProjectData.id, updateProjectData.title,
+			updateProjectData.category, ObjectId(req.session.user.userId), updateProjectData.date, updateProjectData.goal, updateProjectData.description);
+		res.redirect(`/projects/${updatedProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}

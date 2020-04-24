@@ -79,7 +79,8 @@ module.exports = {
             pledgeGoal: projectPledgeGoal,
             collected: projectCollected,
             backers: projectBackers,
-            description: projectDescription
+            description: projectDescription,
+            active: active
         };
 
         const updatedInfo = await projectsCollection.updateOne({ _id: objId }, { $set: updatedProject });

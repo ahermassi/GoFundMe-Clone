@@ -1,0 +1,34 @@
+<article class="new-project">
+    <h1>Make my project</h1>
+    <form action="/projects/edit" method="POST" class="new-project-form">
+        <label for="title">Project Title:</label>
+        <input type="text" name="title" id="title" value="{{project.title}}" class="full-width-input"/><br>
+        <label for="category">Category:</label>
+        <select id="category" name="category">
+            <option value="medical">Medical</option>
+            <option value="education">Education</option>
+            <option value="animals">Animals</option>
+            <option value="business">Business</option>
+            <option value="community">Community</option>
+            <option value="sports">Sports</option>
+            <option value="travel">Travel</option>
+            <option value="volunteer">Volunteer</option>
+        </select><br>
+        <label for="goal">Pledge Goal:</label>
+        <input type="number" name="goal" id="goal" value="{{project.pledgeGoal}}" class="full-width-input"/><br>
+        <label for="description">Description:</label>
+        <textarea name="description" id="description" rows="4" class="full-width-input">{{project.description}}</textarea><br>
+        <input type="hidden" name="id" value="{{project._id}}"/>
+        <input type="hidden" name="date" value="{{project.date}}"/>
+        <button type="submit">Save</button><br>
+    </form>
+    {{#if hasErrors}}
+        <ul class="error-list">
+            {{#each errors}}
+                <li>
+                    {{this}}
+                </li>
+            {{/each}}
+        </ul>
+    {{/if}}
+</article>
