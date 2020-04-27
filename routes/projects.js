@@ -24,7 +24,15 @@ router.get('/:id', async (req, res) => {
 		const project = await projectData.getProject(req.params.id);
 		const user = await userData.getUser(project.creator);
 		project.creator = user.firstName;  // Replace the creator ID with the creator name
-		res.render('projects/single', { project: project });
+		if(req.session.user){
+			if(ObjectId(req.session.user.userId).equals(user._id)){
+				res.render('projects/single',{project:project,auth_creator:true});
+			}else{
+				res.render('projects/single',{project:project,auth_user:true});
+			}
+		}else{
+			res.render('projects/single', { project: project });
+		}
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -124,5 +132,23 @@ router.post('/edit', async (req, res) => {
 		res.status(500).json({ error: e.toString() });
 	}
 });
+
+router.post('/donate',async(req,res)=>{
+	let updateProjectData = req.body;
+	if(!updateProjectData.donate){
+		res.redirect(`/projects/${updateProjectData.id}`);
+		return;
+	}
+	const targetProject = await projectData.getProject(updateProjectData.id);
+	Number(targetProject.collected)+=updateProjectData.donate;
+	targetProject.backers.add(ObjectId(req.session.user.userId));
+	try{
+		const updatedProject = await projectData.updateProject(targetProject.id,targetProject.title,targetProject.category,targetProject.creator,targetProject.date,targetProject.goal,
+			targetProject.description,targetProject.collected,targetProject.backers);
+			res.redirect(`/projects/${updatedProject._id}`);
+	}catch(e){
+		res.status(500).json({ error: e.toString() });
+	}
+})
 
 module.exports = router;

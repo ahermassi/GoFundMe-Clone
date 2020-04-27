@@ -11,5 +11,18 @@
     <p>{{project.collected}}</p>
     <p>Description:</p>
     <p>{{project.description}}</p>
+    {{#if auth_creator}}
+        <a href="/projects/edit/{{project._id}}">Edit Project</a><br>
+    {{/if}}
+    {{#if auth_user}}
+     <div id = 'donate-form'>
+         <form action = "/donate" method="POST" class="donate-form">
+            <label for="donate">The amount you want donate:</label>
+            <input type="number" name="donate" id="donate" class="full-width-input"/><br>
+            <input type="hidden" name="id" value="{{project._id}}"/>
+            <button type="submit">Donate</button><br>
+         </form>
+     </div>
+    {{/if}}
     <a href="/projects">Back to All Projects</a>
 </article>

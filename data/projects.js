@@ -1,5 +1,6 @@
 const mongoCollections = require('../config/mongoCollections');
 const projects = mongoCollections.projects;
+const users = require('./users');
 const { ObjectId } = require('mongodb');
 
 module.exports = {
@@ -102,5 +103,5 @@ module.exports = {
             throw `Could not delete project with id of ${id}`;
         }
         return deletionInfo.deletedCount;
-    }
+    },
 };
