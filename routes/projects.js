@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     const projectList = await projectData.getAllProjects();
     for (let project of projectList) {  // Replace the creator ID with the creator name
 		const user = await userData.getUser(project.creator);
-		project.creator = user.firstName;
+		project.creator = user.firstName+" "+user.lastName;
 	}
 	res.render('projects/index',{title: 'Projects', projects: projectList, user: req.session.user});
 });
@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 	try {
 		const project = await projectData.getProject(req.params.id);
 		const user = await userData.getUser(project.creator);
-		project.creator = user.firstName;  // Replace the creator ID with the creator name
+		project.creator = user.firstName+" "+user.lastName;  // Replace the creator ID with the creator name
 		if(req.session.user){
 			if(ObjectId(req.session.user.userId).equals(user._id)){
 				res.render('projects/single',{project:project,auth_creator:true});
@@ -41,7 +41,25 @@ router.get('/:id', async (req, res) => {
 router.get('/user/:creator', async (req, res) => {
 	try {
 		const projects = await projectData.getProjectsByUser(req.params.creator);
-		res.render('projects/myprojects', { title: 'My Projects', hasProjects: projects.length !== 0, projects: projects });
+		const targetUser = await userData.getUser(req.params.creator);
+		let donated = [];
+		for(Element of targetUser.donated){
+			let donatedProject = await projectData.getProject(Element);
+			donated.push(donatedProject);
+		}
+		let hasDonated = false;
+		if(donated.length !== 0){
+			hasDonated = true;
+		}
+		for (Element of projects){
+			let user = await userData.getUser(Element.creator);
+			Element.creator = user.firstName+" "+user.lastName;
+		}
+		for(Element of donated){
+			let user = await userData.getUser(Element.creator);
+			Element.creator = user.firstName+" "+user.lastName;
+		}
+		res.render('projects/myprojects', { title: 'My Projects', hasProjects: projects.length !== 0, projects: projects, hasDonated:hasDonated, donated:donated});
 	} catch (e) {
 		res.render('projects/myprojects', { title: 'My Projects', hasProjects: false });
 	}

@@ -44,7 +44,10 @@ module.exports = {
     async getProject(id) {
         if (!id) throw 'You must provide a project id to search for';
 
-        const objId = ObjectId(id);
+        if(typeof(id)=='string'){
+            id = ObjectId(id);
+        }
+        const objId = id;
         const projectsCollection = await projects();
         const project = await projectsCollection.findOne({ _id: objId });
         if (project === null) throw 'No project with this id';

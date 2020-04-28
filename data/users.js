@@ -135,7 +135,16 @@ module.exports = {
         const targetUser = await this.getUser(id);
         const usersCollection = await users();
         let newDonated = targetUser.donated;
-        newDonated.push(projectId);
+        let donateExist = false;
+        for (Element of newDonated){
+            if(Element == projectId){
+                donateExist = true;
+                break;
+            }
+        }
+        if(!donateExist){
+            newDonated.push(projectId);
+        }
         const updatedUser = {
             donated:newDonated
         }
