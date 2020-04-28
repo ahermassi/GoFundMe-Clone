@@ -38,27 +38,22 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/user/:creator', async (req, res) => {
+	// List the campaigns created by the user whose ID is 'creator' as well as the campaigns to which this user donated
 	try {
 		const projects = await projectData.getProjectsByUser(req.params.creator);
-		const targetUser = await userData.getUser(req.params.creator);
+		const user = await userData.getUser(req.params.creator);
 		let donated = [];
-		for(Element of targetUser.donated){
-			let donatedProject = await projectData.getProject(Element);
+		for(let projectId of user.donated){
+			let donatedProject = await projectData.getProject(projectId);
 			donated.push(donatedProject);
 		}
-		let hasDonated = false;
-		if(donated.length !== 0){
-			hasDonated = true;
+		let hasDonated = donated.length !== 0;
+		for(let project of donated){
+			let user = await userData.getUser(project.creator);
+			project.creator = user.firstName + " " + user.lastName;
 		}
-		for (Element of projects){
-			let user = await userData.getUser(Element.creator);
-			Element.creator = user.firstName+" "+user.lastName;
-		}
-		for(Element of donated){
-			let user = await userData.getUser(Element.creator);
-			Element.creator = user.firstName+" "+user.lastName;
-		}
-		res.render('projects/myprojects', { title: 'My Projects', hasProjects: projects.length !== 0, projects: projects, hasDonated:hasDonated, donated:donated});
+		res.render('projects/myprojects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
+			hasDonated: hasDonated, donated: donated});
 	} catch (e) {
 		res.render('projects/myprojects', { title: 'My Projects', hasProjects: false });
 	}
