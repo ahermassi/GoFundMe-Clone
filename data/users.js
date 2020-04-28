@@ -144,6 +144,28 @@ module.exports = {
             throw 'could not update user successfully';
         }
         return await this.getUser(id);
+    },
+    async addProjectToUser(id,projectId){
+        if(!id) throw 'You must provide a user id';
+        if(!projectId) throw 'You must provide a project Id';
+        if(typeof(id)=='string'){
+            id = ObjectId(id);
+        }
+        if(typeof(projectId)=='string'){
+            projectId = ObjectId(projectId);
+        }
+        const targetUser = await this.getUser(id);
+        const usersCollection = await users();
+        let newProjects = targetUser.projects;
+        newProjects.push(projectId);
+        const updatedUser = {
+            projects:newProjects
+        }
+        const updatedInfo = await usersCollection.updateOne({_id:id},{$set:updatedUser});
+        if (updatedInfo.modifiedCount === 0){
+            throw 'Could not update user successfully';
+        }
+        return true;
     }
 };
 
