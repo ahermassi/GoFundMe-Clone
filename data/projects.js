@@ -32,7 +32,8 @@ module.exports = {
         if (insertInfo.insertedCount === 0) throw 'Could not add project';
 
         const newId = insertInfo.insertedId;
-        const addProjectToUser = await users.addProjectToUser(projectCreator);
+        const addProjectToUser = await users.addProjectToUser(projectCreator,newId);
+        if(!addProjectToUser) throw "Can't add project to this user";
 
         return await this.getProject(newId);
     },
