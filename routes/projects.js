@@ -144,7 +144,7 @@ router.post('/donate',async(req,res)=>{
 	}
 	try{
 		const updatedProject = await projectData.donateProject(updateProjectData.id,updateProjectData.donate,req.session.user.userId);
-		res.redirect(`/projects/${updatedProject._id}`);
+		res.render('projects/result',{result:'Donate successfully',projectid:updateProjectData.id});
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}
