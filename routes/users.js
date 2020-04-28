@@ -104,7 +104,7 @@ router.post('/', async (req, res) => {
         const hashedPassword = passwordHash.generate(newUser.password);
         await userData.addUser(newUser.first_name, newUser.last_name, newUser.email, hashedPassword, newUser.city,
             newUser.state);
-        res.redirect('/users/all');
+        res.redirect('/users/signin');
     }catch(e){
         res.status(500).json({error: e.toString()})
   }
