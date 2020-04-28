@@ -85,7 +85,9 @@ router.post('/', async (req, res) => {
 
     if (!newUser.email)
         errors.push('No email provided');
-
+    
+    newUser.email = newUser.email.toLowerCase();
+    
     try{
         const existingEmail =  await userData.getUserByEmail(newUser.email);
         if (existingEmail)
