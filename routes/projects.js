@@ -55,7 +55,7 @@ router.get('/user/:creator', async (req, res) => {
 		res.render('projects/myprojects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
 			hasDonated: hasDonated, donated: donated});
 	} catch (e) {
-		res.render('projects/myprojects', { title: 'My Projects', hasProjects: false });
+		res.status(500).json({ error: e.toString() });
 	}
 });
 
@@ -138,7 +138,7 @@ router.post('/edit', async (req, res) => {
 
 	try {
 		const updatedProject = await projectData.updateProject(updateProjectData.id, updateProjectData.title,
-			updateProjectData.category, ObjectId(req.session.user.userId), updateProjectData.date, updateProjectData.goal, updateProjectData.description);
+			updateProjectData.category, updateProjectData.goal, updateProjectData.description);
 		res.redirect(`/projects/${updatedProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });

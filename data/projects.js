@@ -64,32 +64,18 @@ module.exports = {
 
         return userProjects;
     },
-    async updateProject(projectId, projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal,
-                        projectDescription, projectCollected, projectBackers, active) {
+    async updateProject(projectId, projectTitle, projectCategory, projectPledgeGoal, projectDescription,) {
 
         if (!projectId) throw 'You must provide a project id to update';
         if (!projectTitle) throw 'You must provide a title for your project';
         if (!projectCategory) throw 'You must provide a category for your project';
-        if (!projectCreator) throw 'You must provide a creator for your project';
-        if (!projectDate) throw 'You must provide a date for your project';
         if (!projectPledgeGoal) throw 'You must provide a pledge goal for your project';
         if (!projectDescription) throw 'You must provide a description for your project';
 
         const objId = ObjectId(projectId);
         const projectsCollection = await projects();
-        const updatedProject = {
-            title: projectTitle,
-            category: projectCategory,
-            creator: projectCreator,
-            date: projectDate,
-            pledgeGoal: projectPledgeGoal,
-            collected: projectCollected,
-            backers: projectBackers,
-            description: projectDescription,
-            active: active
-        };
-
-        const updatedInfo = await projectsCollection.updateOne({ _id: objId }, { $set: updatedProject });
+        const updatedInfo = await projectsCollection.updateOne({ _id: objId }, { $set: {title: projectTitle, category: projectCategory,
+            pledgeGoal: projectPledgeGoal, description: projectDescription}});
         if (updatedInfo.modifiedCount === 0) {
             throw 'Could not update project successfully';
         }
