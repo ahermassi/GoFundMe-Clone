@@ -1,6 +1,6 @@
 <p>Register</p>
 <div>
-    <form action="/users" method="POST">
+    <form action="/users" method="POST" id = "register-form">
         <label for="first_name">First Name:</label>
         <input type="text" name="first_name" id = "first_name" value="{{user.first_name}}" class="full-width-input"/><br/>
         <label for="last_name">Last Name:</label>
@@ -17,6 +17,7 @@
         <input type="text" name="state" id="state" value="{{user.state}}" class="full-width-input"/><br/>
         <button type="submit">Create An Account</button>
     </form>
+    <div id="errordiv" class="errordiv" hidden></div>
     {{#if hasErrors}}
     <ul class="error-list">
         {{#each errors}}
