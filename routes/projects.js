@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
 		const user = await userData.getUser(project.creator);
 		project.creator = user.firstName + " " + user.lastName;
 	}
-	res.render('projects/index',{title: 'Projects', projects: projectList, user: req.session.user});
+    const canComment = req.session.user !== null;
+	res.render('projects/index',{title: 'Projects', projects: projectList, canComment: canComment, user: req.session.user});
 });
 
 router.get('/new', async (req, res) => {
@@ -24,14 +25,20 @@ router.get('/:id', async (req, res) => {
 		const project = await projectData.getProject(req.params.id);
 		const user = await userData.getUser(project.creator);  // Get the user who created the campaign
 		project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+		for (let comment of project.comments) {  // Replace the commentator ID with the commentator name in each comment
+			const commentator = await userData.getUser(comment.poster);
+			comment.poster = commentator.firstName + " " + commentator.lastName;
+		}
+		const hasComments = project.comments.length !== 0;
 		if(req.session.user) {
 			if(ObjectId(req.session.user.userId).equals(user._id))  // If the currently logged in user is the one who created the campaign
-				res.render('projects/single',{project: project});
+				res.render('projects/single',{project: project, hasComments: hasComments, canComment: true, canEdit: true});
 			else
-				res.render('projects/single',{project:project, can_donate: true});  // I can only donate to other users' campaigns
+				// I can only donate to other users' campaigns
+				res.render('projects/single',{project:project, hasComments: hasComments, canComment: true, canDonate: true});
 		}
 		else
-			res.render('projects/single', {project: project});
+			res.render('projects/single', {project: project, hasComments: hasComments});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
