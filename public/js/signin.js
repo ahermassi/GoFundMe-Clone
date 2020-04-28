@@ -5,10 +5,10 @@ if(signinForm){
     const errorDiv = document.getElementById('error')
     signinForm.addEventListener("submit", event => {
         
-        if (emailElement.value & passwordElement.value){
+        if (emailElement.value && passwordElement.value){
             signinForm.submit()
         }
-        if(!emailElement.value || !passwordElement.value){
+        else{
             event.preventDefault();
             errorDiv.hidden = false;
             errorDiv.innerHTML = 'You Must Enter a valid email and password!';
