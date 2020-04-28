@@ -5,7 +5,7 @@ const { ObjectId } = require('mongodb');
 
 module.exports = {
     async addProject(projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal, projectDescription,
-                     projectCollected=0, projectBackers=[], active=true) {
+                     projectCollected=0, projectBackers=[], projectComments = [], active=true) {
 
         if (!projectTitle) throw 'You must provide a title for your project';
         if (!projectCategory) throw 'You must provide a category for your project';
@@ -25,6 +25,7 @@ module.exports = {
             collected: projectCollected,
             backers: projectBackers,
             description: projectDescription,
+            comments: projectComments,
             active: active
         };
 
@@ -95,29 +96,29 @@ module.exports = {
         }
         return deletionInfo.deletedCount;
     },
-    async donateProject(id,donateAmount,donater){
+    async donateProject(id, donateAmount, donator){
         if(!id) throw 'You must provide a project id to donate';
         if(!donateAmount) throw 'You must provide an amount to donate';
         if(donateAmount<0) throw 'Are you kidding me?';
-        if(!donater) throw 'You must provide a donater';
+        if(!donator) throw 'You must provide a donator';
         if(typeof(donateAmount) !== 'number') throw 'The donate amount need to be a number';
         if(typeof(id)=='string'){
             id = ObjectId(id);
         }
-        if(typeof(donater) == 'string'){
-            donater = ObjectId(donater);
+        if(typeof(donator) == 'string'){
+            donator = ObjectId(donator);
         }
         const projectsCollection = await projects();
         const targetProject = await this.getProject(id);
         let newCollected = parseInt(targetProject.collected)+donateAmount;
         let newbackers = targetProject.backers;
-        newbackers.push(donater);
+        newbackers.push(donator);
         const updatedProject = {
             collected:newCollected,
             backers:newbackers
         }
         const updatedInfo = await projectsCollection.updateOne({_id:id},{$set:updatedProject});
-        const updatedDonater = await users.addDonater(donater,id);
+        const updatedDonater = await users.addDonater(donator,id);
         if (updatedInfo.modifiedCount === 0) {
             throw 'Could not update project successfully';
         }
