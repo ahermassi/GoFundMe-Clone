@@ -14,7 +14,7 @@
     {{#if auth_creator}}
         <a href="/projects/edit/{{project._id}}">Edit Project</a><br>
     {{/if}}
-    {{#if auth_user}}
+    {{#if can_donate}}
      <div id = 'donate-form'>
          <form action = "/projects/donate" method="POST" class="donate-form">
             <label for="donate">The amount you want donate:</label>
