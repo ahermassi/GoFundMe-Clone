@@ -153,17 +153,17 @@ router.post('/edit', async (req, res) => {
 });
 
 router.post('/donate',async(req,res)=>{
-	let updateProjectData = req.body;
-	if(!updateProjectData.donate){
-		res.redirect(`/projects/${updateProjectData.id}`);
+	let donationData = req.body;
+	if(!donationData.donation){
+		res.redirect(`/projects/${donationData.project_id}`);
 		return;
 	}
-	if(typeof(updateProjectData.donate)!=='number'){
-		updateProjectData.donate = parseInt(updateProjectData.donate)
-	}
-	try{
-		const updatedProject = await projectData.donateProject(updateProjectData.id,updateProjectData.donate,req.session.user.userId);
-		res.render('projects/result',{result:'Donate successfully',projectid:updateProjectData.id});
+	if(typeof(donationData.donation) !== 'number')
+		donationData.donation = parseInt(donationData.donation);
+
+	try {
+		await projectData.donateToProject(donationData.project_id, donationData.donation, req.session.user.userId);
+		res.render('projects/result',{result: 'Donate successfully', projectId: donationData.project_id});
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}

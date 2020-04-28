@@ -123,57 +123,47 @@ module.exports = {
         }
        
     },
-    async addDonater(id,projectId){
-        if(!id) throw 'You must provide a user id';
+    async addDonatorToProject(donatorId, projectId) {
+        if(!donatorId) throw 'You must provide a user id';
         if(!projectId) throw 'You must provide a project Id';
-        if(typeof(id)=='string'){
-            id = ObjectId(id);
-        }
-        if(typeof(projectId)=='string'){
+
+        if(typeof(donatorId) === 'string')
+            donatorId = ObjectId(donatorId);
+        if(typeof(projectId) === 'string')
             projectId = ObjectId(projectId);
-        }
-        const targetUser = await this.getUser(id);
+
+        const targetUser = await this.getUser(donatorId);
         const usersCollection = await users();
-        let newDonated = targetUser.donated;
-        let donateExist = false;
-        for (Element of newDonated){
-            if(Element == projectId){
-                donateExist = true;
+        let donatedProjects = targetUser.donated;
+        let donationExists = false;
+        for (let project of donatedProjects) {
+            if(project === projectId) {
+                donationExists = true;
                 break;
             }
         }
-        if(!donateExist){
-            newDonated.push(projectId);
+        if(!donationExists) {
+            const updateInfo = await usersCollection.updateOne({_id: donatorId},{$push: {donated: donatedProjects}});
+            if (updateInfo.modifiedCount === 0)
+                throw 'Could not add the project to the user\'s donations';
         }
-        const updatedUser = {
-            donated:newDonated
-        }
-        const updatedInfo = await usersCollection.updateOne({_id:id},{$set:updatedUser});
-        if (updatedInfo.modifiedCount === 0) {
-            throw 'could not update user successfully';
-        }
-        return await this.getUser(id);
+
+        return await this.getUser(donatorId);
     },
-    async addProjectToUser(id,projectId){
-        if(!id) throw 'You must provide a user id';
+    async addProjectToUser(userId, projectId){
+        if(!userId) throw 'You must provide a user id';
         if(!projectId) throw 'You must provide a project Id';
-        if(typeof(id)=='string'){
-            id = ObjectId(id);
-        }
-        if(typeof(projectId)=='string'){
+
+        if(typeof(userId) === 'string')
+            userId = ObjectId(userId);
+        if(typeof(projectId) === 'string')
             projectId = ObjectId(projectId);
-        }
-        const targetUser = await this.getUser(id);
+
         const usersCollection = await users();
-        let newProjects = targetUser.projects;
-        newProjects.push(projectId);
-        const updatedUser = {
-            projects:newProjects
-        }
-        const updatedInfo = await usersCollection.updateOne({_id:id},{$set:updatedUser});
-        if (updatedInfo.modifiedCount === 0){
-            throw 'Could not update user successfully';
-        }
+        const updateInfo = await usersCollection.updateOne({_id: userId},{$push: {projects: projectId}});
+        if (updateInfo.modifiedCount === 0)
+            throw 'Could not add the project to the user';
+
         return true;
     }
 };

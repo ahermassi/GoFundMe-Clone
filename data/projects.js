@@ -32,11 +32,11 @@ module.exports = {
         const insertInfo = await projectsCollection.insertOne(newProject);
         if (insertInfo.insertedCount === 0) throw 'Could not add project';
 
-        const newId = insertInfo.insertedId;
-        const addProjectToUser = await users.addProjectToUser(projectCreator,newId);
+        const userId = insertInfo.insertedId;
+        const addProjectToUser = await users.addProjectToUser(projectCreator, userId);
         if(!addProjectToUser) throw "Can't add project to this user";
 
-        return await this.getProject(newId);
+        return await this.getProject(userId);
     },
     async getAllProjects() {
         const projectsCollection = await projects();
@@ -96,32 +96,31 @@ module.exports = {
         }
         return deletionInfo.deletedCount;
     },
-    async donateProject(id, donateAmount, donator){
-        if(!id) throw 'You must provide a project id to donate';
-        if(!donateAmount) throw 'You must provide an amount to donate';
-        if(donateAmount<0) throw 'Are you kidding me?';
-        if(!donator) throw 'You must provide a donator';
-        if(typeof(donateAmount) !== 'number') throw 'The donate amount need to be a number';
-        if(typeof(id)=='string'){
-            id = ObjectId(id);
-        }
-        if(typeof(donator) == 'string'){
-            donator = ObjectId(donator);
-        }
+    async donateToProject(projectId, amount, donatorId){
+        if(!projectId) throw 'You must provide a project id to donate';
+        if(!amount) throw 'You must provide an amount to donate';
+        if(amount < 0) throw 'Are you kidding me?';
+        if(!donatorId) throw 'You must provide a donator';
+        if(typeof(amount) !== 'number') throw 'The donation amount needs to be a number';
+
+        if(typeof(projectId) === 'string')
+            projectId = ObjectId(projectId);
+        if(typeof(donatorId) === 'string')
+            donatorId = ObjectId(donatorId);
+
         const projectsCollection = await projects();
-        const targetProject = await this.getProject(id);
-        let newCollected = parseInt(targetProject.collected)+donateAmount;
-        let newbackers = targetProject.backers;
-        newbackers.push(donator);
-        const updatedProject = {
-            collected:newCollected,
-            backers:newbackers
-        }
-        const updatedInfo = await projectsCollection.updateOne({_id:id},{$set:updatedProject});
-        const updatedDonater = await users.addDonater(donator,id);
-        if (updatedInfo.modifiedCount === 0) {
-            throw 'Could not update project successfully';
-        }
-        return await this.getProject(id);
+        const targetProject = await this.getProject(projectId);
+        let newCollected = parseInt(targetProject.collected) + amount;
+        let backers = targetProject.backers;
+        backers.push(donatorId);
+
+        const updateInfo = await projectsCollection.updateOne({_id: projectId}, {$set: {collected: newCollected, backers: backers}});
+        if (updateInfo.modifiedCount === 0)
+            throw 'Could not process the donation successfully';
+        const updateDonator = await users.addDonatorToProject(donatorId, projectId);
+        if (updateDonator.modifiedCount === 0)
+            throw 'Could not add a donator';
+
+        return await this.getProject(projectId);
     }
 };
