@@ -21,6 +21,20 @@ app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
+app.use(async(req, res, next) => {
+    console.log('Current Timestamp is', new Date().toUTCString())
+    console.log('Request Method is', req.method)
+    console.log('Request Route is', req.originalUrl)
+    if (req.session.user){
+        console.log('user is authenticated')
+    }
+    else{
+        console.log('user is not authenticated')
+    }
+    next();
+
+});
+
 configRoutes(app);
 
 app.listen(3000, () => {
