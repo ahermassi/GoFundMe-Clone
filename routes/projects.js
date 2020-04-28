@@ -88,7 +88,7 @@ router.post('/', async (req, res) => {
 	try {
 		const projectCreator = req.session.user.userId;
         const newProject = await projectData.addProject(newProjectData.title, newProjectData.category, ObjectId(projectCreator),
-			new Date(), newProjectData.goal, newProjectData.description);
+			new Date(), newProjectData.goal, newProjectData.description,0,[],true);
 		res.redirect(`/projects/${newProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
@@ -139,16 +139,15 @@ router.post('/donate',async(req,res)=>{
 		res.redirect(`/projects/${updateProjectData.id}`);
 		return;
 	}
-	const targetProject = await projectData.getProject(updateProjectData.id);
-	Number(targetProject.collected)+=updateProjectData.donate;
-	targetProject.backers.add(ObjectId(req.session.user.userId));
+	if(typeof(updateProjectData.donate)!=='number'){
+		updateProjectData.donate = parseInt(updateProjectData.donate)
+	}
 	try{
-		const updatedProject = await projectData.updateProject(targetProject.id,targetProject.title,targetProject.category,targetProject.creator,targetProject.date,targetProject.goal,
-			targetProject.description,targetProject.collected,targetProject.backers);
-			res.redirect(`/projects/${updatedProject._id}`);
+		const updatedProject = await projectData.donateProject(updateProjectData.id,updateProjectData.donate,req.session.user.userId);
+		res.redirect(`/projects/${updatedProject._id}`);
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}
-})
+});
 
 module.exports = router;

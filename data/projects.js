@@ -104,4 +104,32 @@ module.exports = {
         }
         return deletionInfo.deletedCount;
     },
+    async donateProject(id,donateAmount,donater){
+        if(!id) throw 'You must provide a project id to donate';
+        if(!donateAmount) throw 'You must provide an amount to donate';
+        if(donateAmount<0) throw 'Are you kidding me?';
+        if(!donater) throw 'You must provide a donater';
+        if(typeof(donateAmount) !== 'number') throw 'The donate amount need to be a number';
+        if(typeof(id)=='string'){
+            id = ObjectId(id);
+        }
+        if(typeof(donater) == 'string'){
+            donater = ObjectId(donater);
+        }
+        const projectsCollection = await projects();
+        const targetProject = await this.getProject(id);
+        let newCollected = parseInt(targetProject.collected)+donateAmount;
+        let newbackers = targetProject.backers;
+        newbackers.push(donater);
+        const updatedProject = {
+            collected:newCollected,
+            backers:newbackers
+        }
+        const updatedInfo = await projectsCollection.updateOne({_id:id},{$set:updatedProject});
+        const updatedDonater = await users.addDonater(donater,id);
+        if (updatedInfo.modifiedCount === 0) {
+            throw 'Could not update project successfully';
+        }
+        return await this.getProject(id);
+    }
 };

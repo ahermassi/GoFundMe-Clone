@@ -132,20 +132,18 @@ module.exports = {
         if(typeof(projectId)=='string'){
             projectId = ObjectId(projectId);
         }
-        const targetUser = this.getUser(id);
+        const targetUser = await this.getUser(id);
         const usersCollection = await users();
-        let newDonated = targetUser.donated.add(projectId);
+        let newDonated = targetUser.donated;
+        newDonated.push(projectId);
         const updatedUser = {
             donated:newDonated
         }
-        const updatedInfo = await usersCollection.updateOne({_id:id},{$set:updatedProject});
+        const updatedInfo = await usersCollection.updateOne({_id:id},{$set:updatedUser});
         if (updatedInfo.modifiedCount === 0) {
             throw 'could not update user successfully';
         }
-        return this.getUser(id);
-
-
+        return await this.getUser(id);
     }
-
 };
 
