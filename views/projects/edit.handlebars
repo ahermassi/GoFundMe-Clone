@@ -1,6 +1,6 @@
 <article class="new-project">
     <h1>Make my project</h1>
-    <form action="/projects/edit" method="POST" class="new-project-form">
+    <form action="/projects/edit" method="POST" class="new-project-form" id = "edit-project-form">
         <label for="title">Project Title:</label>
         <input type="text" name="title" id="title" value="{{project.title}}" class="full-width-input"/><br>
         <label for="category">Category:</label>
@@ -22,6 +22,7 @@
         <input type="hidden" name="date" value="{{project.date}}"/>
         <button type="submit">Save</button><br>
     </form>
+    <div id="errordiv" class="errordiv" hidden></div>
     {{#if hasErrors}}
         <ul class="error-list">
             {{#each errors}}
