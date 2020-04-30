@@ -32,13 +32,13 @@ router.get('/:id', async (req, res) => {
 		const hasComments = project.comments.length !== 0;
 		if(req.session.user) {
 			if(ObjectId(req.session.user.userId).equals(user._id))  // If the currently logged in user is the one who created the campaign
-				res.render('projects/single',{project: project, hasComments: hasComments, canComment: true, canEdit: true});
+				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments, canComment: true, canEdit: true});
 			else
 				// I can only donate to other users' campaigns
-				res.render('projects/single',{project:project, hasComments: hasComments, canComment: true, canDonate: true});
+				res.render('projects/single',{project:project, comments: project.comments, hasComments: hasComments, canComment: true, canDonate: true});
 		}
 		else
-			res.render('projects/single', {project: project, hasComments: hasComments});
+			res.render('projects/single', {project: project, comments: project.comments, hasComments: hasComments});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -152,7 +152,7 @@ router.post('/edit', async (req, res) => {
 	}
 });
 
-router.post('/donate',async(req,res)=>{
+router.post('/donate', async(req, res)=>{
 	let donationData = req.body;
 	if(!donationData.donation){
 		res.redirect(`/projects/${donationData.project_id}`);
@@ -165,6 +165,18 @@ router.post('/donate',async(req,res)=>{
 		await projectData.donateToProject(donationData.project_id, donationData.donation, req.session.user.userId);
 		res.render('projects/result',{result: 'Donate successfully', projectId: donationData.project_id});
 	}catch(e){
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
+router.post('/comment', async (req, res) => {
+	let commentInfo = req.body;
+	let projectId = commentInfo.project_id;
+
+	try {
+		await projectData.commentOnProject(projectId, req.session.user.userId, commentInfo.comment);
+		res.redirect(`/projects/${projectId}`);
+	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
 });

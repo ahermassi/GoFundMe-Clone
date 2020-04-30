@@ -96,7 +96,7 @@ module.exports = {
         }
         return deletionInfo.deletedCount;
     },
-    async donateToProject(projectId, amount, donatorId){
+    async donateToProject(projectId, amount, donatorId) {
         if(!projectId) throw 'You must provide a project id to donate';
         if(!amount) throw 'You must provide an amount to donate';
         if(amount < 0) throw 'Are you kidding me?';
@@ -122,5 +122,29 @@ module.exports = {
             throw 'Could not add a donator';
 
         return await this.getProject(projectId);
+    },
+    async commentOnProject(projectId, commentatorId, comment) {
+        if(!projectId) throw 'You must provide a project id to comment on';
+        if(!commentatorId) throw 'You must provide a commentator id';
+        if(!comment) throw 'You must provide the comment text';
+
+        if(typeof(projectId) === 'string')
+            projectId = ObjectId(projectId);
+        if(typeof(commentatorId) === 'string')
+            commentatorId = ObjectId(commentatorId);
+
+        let newComment = {
+            _id: ObjectId(),
+            poster: commentatorId,
+            comment: comment
+        };
+
+        const projectsCollection = await projects();
+        const updateInfo = await projectsCollection.updateOne({_id: projectId}, {$push: {comments: newComment}});
+        if (updateInfo.modifiedCount === 0)
+            throw 'Could not add a comment';
+
+        return await this.getProject(projectId);
     }
+
 };
