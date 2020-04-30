@@ -122,7 +122,49 @@ module.exports = {
             throw `Could not delete user with id of ${id}`;
         }
        
-    }
+    },
+    async addDonatorToProject(donatorId, projectId) {
+        if(!donatorId) throw 'You must provide a user id';
+        if(!projectId) throw 'You must provide a project Id';
 
+        if(typeof(donatorId) === 'string')
+            donatorId = ObjectId(donatorId);
+        if(typeof(projectId) === 'string')
+            projectId = ObjectId(projectId);
+
+        const targetUser = await this.getUser(donatorId);
+        const usersCollection = await users();
+        let donatedProjects = targetUser.donated;
+        let donationExists = false;
+        for (let project of donatedProjects) {
+            if(project === projectId) {
+                donationExists = true;
+                break;
+            }
+        }
+        if(!donationExists) {
+            const updateInfo = await usersCollection.updateOne({_id: donatorId},{$push: {donated: donatedProjects}});
+            if (updateInfo.modifiedCount === 0)
+                throw 'Could not add the project to the user\'s donations';
+        }
+
+        return await this.getUser(donatorId);
+    },
+    async addProjectToUser(userId, projectId){
+        if(!userId) throw 'You must provide a user id';
+        if(!projectId) throw 'You must provide a project Id';
+
+        if(typeof(userId) === 'string')
+            userId = ObjectId(userId);
+        if(typeof(projectId) === 'string')
+            projectId = ObjectId(projectId);
+
+        const usersCollection = await users();
+        const updateInfo = await usersCollection.updateOne({_id: userId},{$push: {projects: projectId}});
+        if (updateInfo.modifiedCount === 0)
+            throw 'Could not add the project to the user';
+
+        return true;
+    }
 };
 

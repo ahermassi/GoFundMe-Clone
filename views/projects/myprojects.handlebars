@@ -4,7 +4,7 @@
         {{#each projects}}
             <article class="projects">
                 <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
-                <p>Author: {{creator}}</p>
+                <p>Amount collected: {{collected}}</p>
                 <p>Date: {{date}}</p>
             </article>
             <a href="/projects/edit/{{_id}}">Edit Project</a>
@@ -13,3 +13,18 @@
 {{else}}
     <h2>You have no projects!</h2>
 {{/if}}
+{{#if hasDonated}}
+    <section>
+        <h1>My Donations</h1>
+        {{#each donated}}
+            <article class="projects">
+                <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
+                <p>Author: {{creator}}</p>
+                <p>Date: {{date}}</p>
+            </article>
+        {{/each}}
+    </section>
+{{else}}
+    <h2>You didn't make any donations!</h2>
+{{/if}}
+<a href="/projects">Back to All Projects</a>

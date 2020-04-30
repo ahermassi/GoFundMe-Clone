@@ -35,6 +35,38 @@ app.use(async(req, res, next) => {
 
 });
 
+app.use('/projects/new',(req,res,next)=>{
+	if(req.session.user){
+		next();
+	}else{
+		return res.redirect('/users/signin');
+	}
+});
+
+app.use('/projects/user/:creator',(req,res,next)=>{
+	if(req.session.user){
+		next();
+	}else{
+		return res.redirect('/users/signin');
+	}
+})
+
+app.use('/projects/edit',(req,res,next)=>{
+	if(req.session.user){
+		next();
+	}else{
+		return res.redirect('/users/signin');
+	}
+})
+
+app.use('/projects/donate',(req,res,next)=>{
+	if(req.session.user){
+		next();
+	}else{
+		return res.redirect('/users/signin');
+	}
+})
+
 configRoutes(app);
 
 app.listen(3000, () => {

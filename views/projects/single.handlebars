@@ -1,15 +1,40 @@
 <article class="project">
     <h1>{{ project.title}}</h1>
-    <p>Author:</p>
-    <p>{{project.creator }}</p><p>Created on:</p>
-    <p>{{project.date}}</p>
-    <p>Category:</p>
-    <p>{{project.category}}</p>
-    <p>Pledge Goal:</p>
-    <p>{{project.pledgeGoal}}</p>
-    <p>Collected:</p>
-    <p>{{project.collected}}</p>
+    <p>Author: {{project.creator }}</p>
+    <p>Created on: {{project.date}}</p>
+    <p>Category: {{project.category}}</p>
+    <p>Pledge Goal: {{project.pledgeGoal}}</p>
+    <p>Collected: {{project.collected}}</p>
     <p>Description:</p>
     <p>{{project.description}}</p>
+    {{#if hasComments}}
+        <p>Comments:</p>
+        {{#each comments}}
+            <p>{{poster}} wrote:</p>
+            <p>{{comment}}</p>
+        {{/each}}
+    {{/if}}
+    {{#if canDonate}}
+     <div id='donate-form'>
+         <form action = "/projects/donate" method="POST" class="donate-form">
+            <label for="donate">The amount you want donate:</label>
+            <input type="number" name="donation" id="donation" class="full-width-input"/><br>
+            <input type="hidden" name="project_id" value="{{project._id}}"/>
+            <button type="submit">Donate</button><br>
+         </form>
+     </div>
+    {{/if}}
+    {{#if canComment}}
+        <form id="comment-form" action="/projects/comment" method="post">
+            <label for="comment"></label>
+            <textarea rows="2" cols="50" placeholder="Leave a comment" name="comment" id="comment"></textarea>
+            <input type="hidden" name="project_id" value="{{project._id}}"/>
+            <button type="submit">Comment</button>
+        </form>
+        <div id="empty-comment" hidden></div>
+    {{/if}}
+    {{#if canEdit}}
+        <a href="/projects/edit/{{project._id}}">Edit Project</a><br>
+    {{/if}}
     <a href="/projects">Back to All Projects</a>
 </article>

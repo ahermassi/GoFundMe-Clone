@@ -85,7 +85,9 @@ router.post('/', async (req, res) => {
 
     if (!newUser.email)
         errors.push('No email provided');
-
+    
+    newUser.email = newUser.email.toLowerCase();
+    
     try{
         const existingEmail =  await userData.getUserByEmail(newUser.email);
         if (existingEmail)
@@ -104,7 +106,7 @@ router.post('/', async (req, res) => {
         const hashedPassword = passwordHash.generate(newUser.password);
         await userData.addUser(newUser.first_name, newUser.last_name, newUser.email, hashedPassword, newUser.city,
             newUser.state);
-        res.redirect('/users/all');
+        res.redirect('/users/signin');
     }catch(e){
         res.status(500).json({error: e.toString()})
   }
