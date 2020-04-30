@@ -1,21 +1,26 @@
 <p>Sign In</p>
 <div>
     <form action="/users/signin" method="POST" id= "signin-form">
-    <label for="email">Email:</label>
-    <input type="text" name="email" id = "email" class="full-width-input"/>
-    <label for="password">Password:</label>
-    <input type="password" name="password" id="password" class="full-width-input"/>
-    <button type="submit">Sign In</button>
+        <label for="email">Email:</label>
+        <input type="text" name="email" id = "email" class="full-width-input"/>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" class="full-width-input"/>
+        <button type="submit">Sign In</button>
     </form>
-    <div id="error" class="error" hidden></div>
-    {{#if hasErrors}}
-    <ul class="error-list">
-    {{#each errors}}
-    <li>
-    {{this}}
-    </li>
-    {{/each}}
+    <br>
+    <ul class="error">
+        <li id="no-email" hidden>Please enter your email</li>
+        <li id="no-password" hidden>Please enter your password</li>
     </ul>
+    {{#if hasErrors}}
+        <ul class="error-list">
+            {{#each errors}}
+                <li>
+                    {{this}}
+                </li>
+            {{/each}}
+        </ul>
     {{/if}}
 </div>
+<br>
 <a href="/users/register">Register</a>
