@@ -1,5 +1,5 @@
 <article class="new-project">
-    <h1>Make my project</h1>
+    <h1>Edit Project</h1>
     <form action="/projects/edit" method="POST" class="new-project-form" id = "edit-project-form">
         <label for="title">Project Title:</label>
         <input type="text" name="title" id="title" value="{{project.title}}" class="full-width-input"/><br>
@@ -22,7 +22,12 @@
         <input type="hidden" name="date" value="{{project.date}}"/>
         <button type="submit">Save</button><br>
     </form>
-    <div id="errordiv" class="errordiv" hidden></div>
+    <ul class="error-list">
+        <li id="no-title" hidden>Please enter the project title</li>
+        <li id="no-goal" hidden>Please enter the project pledge goal</li>
+        <li id="invalid-amount" hidden>Pledge goal should be greater than zero</li>
+        <li id="no-description" hidden>Please enter the project description</li>
+    </ul>
     {{#if hasErrors}}
         <ul class="error-list">
             {{#each errors}}
