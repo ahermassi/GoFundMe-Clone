@@ -5,7 +5,7 @@
         <input type="text" name="title" id="title" value="{{project.title}}" class="full-width-input"/><br>
         <label for="category">Category:</label>
         <select id="category" name="category">
-            <option value="medical">Medical</option>
+            <option value="medical" selected>Medical</option>
             <option value="education">Education</option>
             <option value="animals">Animals</option>
             <option value="business">Business</option>
@@ -21,7 +21,12 @@
         <button type="submit">Publish</button><br>
         <button type="reset">Clear Form</button>
     </form>
-    <div id="errordiv" class="errordiv" hidden></div>
+    <ul class="error-list">
+        <li id="no-title" hidden>Please enter the project title</li>
+        <li id="no-goal" hidden>Please enter the project pledge goal</li>
+        <li id="invalid-amount" hidden>Pledge goal should be greater than zero</li>
+        <li id="no-description" hidden>Please enter the project description</li>
+    </ul>
     {{#if hasErrors}}
         <ul class="error-list">
             {{#each errors}}

@@ -83,10 +83,6 @@ router.post('/', async (req, res) => {
 		errors.push('No title provided');
 	}
 
-	if (!newProjectData.category) {
-		errors.push('No category provided');
-	}
-
 	if(!newProjectData.goal){
 		errors.push('No pledge goal provided')
 	}

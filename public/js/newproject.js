@@ -1,32 +1,35 @@
 const newProjectForm = document.getElementById("new-project-form");
+
+const title = document.getElementById("title");
+const goal = document.getElementById("goal");
+const description = document.getElementById("description");
+
+const titleError = document.getElementById('no-title');
+const goalError = document.getElementById('no-goal');
+const amountError = document.getElementById('invalid-amount');
+const descriptionError = document.getElementById('no-description');
+
 if (newProjectForm){
-    projectTitle = document.getElementById("title");
-    projectGoal = document.getElementById("goal");
-    projectDescription = document.getElementById("description")
-    errorDivProject = document.getElementById('errordiv')
-    newProjectForm.addEventListener("submit", event =>{
-        if (projectTitle.value && projectGoal.value && projectDescription.value){
-            try{
-                 projectGoalValue = parseInt(projectGoal.value)
-                 if(projectGoalValue <=0){
-                     throw 'project goal cant be less than or equal to zero'
-                 }
-                 newProjectForm.submit()
-            }
-            catch(e){
+
+    newProjectForm.addEventListener("submit", (event)  => {
+        if (title.value && goal.value && description.value.length > 0) {
+            if (goal.value <= 0) {
                 event.preventDefault();
-                errorDivProject.hidden = false;
-                errorDivProject.innerHTML = e;
-
+                goalError.hidden = true;
+                amountError.hidden = false;
             }
+            else
+                newProjectForm.submit();
         }
-        else{
+        else {
             event.preventDefault();
-            errorDivProject.hidden = false;
-            errorDivProject.innerHTML = 'you must provide a valid project title, project goal and project description'
+            titleError.hidden = title.value;
+            goalError.hidden = goal.value;
+            if (goal.value) {
+                goalError.hidden = true;
+                amountError.hidden = goal.value > 0;
+            }
+            descriptionError.hidden = description.value.length > 0;
         }
-
-    })
-
-
+    });
 }
