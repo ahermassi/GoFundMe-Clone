@@ -103,7 +103,7 @@ router.post('/', async (req, res) => {
 	try {
 		const projectCreator = req.session.user.userId;
         const newProject = await projectData.addProject(newProjectData.title, newProjectData.category, ObjectId(projectCreator),
-			new Date(), newProjectData.goal, newProjectData.description,0,[],true);
+			new Date(), newProjectData.goal, newProjectData.description,0,[], [], true);
 		res.redirect(`/projects/${newProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
