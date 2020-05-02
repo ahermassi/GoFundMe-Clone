@@ -144,7 +144,8 @@ module.exports = {
         if (updateInfo.modifiedCount === 0)
             throw 'Could not add a comment';
 
-        return await this.getProject(projectId);
+       // return await this.getProject(projectId);
+        return newComment;
     }
 
 };

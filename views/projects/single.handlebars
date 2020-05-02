@@ -9,10 +9,12 @@
     <p>{{project.description}}</p>
     {{#if hasComments}}
         <p>Comments:</p>
+        <div id="new-comments">
         {{#each comments}}
             <p>{{poster}} wrote:</p>
             <p>{{comment}}</p>
         {{/each}}
+        </div>
     {{/if}}
     {{#if canDonate}}
      <div id='donate-form'>
@@ -28,7 +30,7 @@
         <form id="comment-form" action="/projects/comment" method="post">
             <label for="comment"></label>
             <textarea rows="2" cols="50" placeholder="Leave a comment" name="comment" id="comment"></textarea>
-            <input type="hidden" name="project_id" value="{{project._id}}"/>
+            <input type="hidden" name="project_id" id="project_id" value="{{project._id}}"/>
             <button type="submit">Comment</button>
         </form>
         <div id="empty-comment" hidden></div>

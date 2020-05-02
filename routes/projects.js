@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 			const commentator = await userData.getUser(comment.poster);
 			comment.poster = commentator.firstName + " " + commentator.lastName;
 		}
-		const hasComments = project.comments.length !== 0;
+		const hasComments = project.comments.length !== 0;	
 		if(req.session.user) {
 			if(ObjectId(req.session.user.userId).equals(user._id))  // If the currently logged in user is the one who created the campaign
 				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments, canComment: true, canEdit: true});
@@ -170,8 +170,9 @@ router.post('/comment', async (req, res) => {
 	let projectId = commentInfo.project_id;
 
 	try {
-		await projectData.commentOnProject(projectId, req.session.user.userId, commentInfo.comment);
+		const newComment = await projectData.commentOnProject(projectId, req.session.user.userId, commentInfo.comment);
 		res.redirect(`/projects/${projectId}`);
+//		res.render('projects/comments',{layout:null, ...newComment});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
