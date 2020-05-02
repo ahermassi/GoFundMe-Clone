@@ -50,8 +50,9 @@ router.get('/user/:creator', async (req, res) => {
 		const projects = await projectData.getProjectsByUser(req.params.creator);
 		const user = await userData.getUser(req.params.creator);
 		let donated = [];
-		for(let projectId of user.donated){
-			let donatedProject = await projectData.getProject(projectId);
+		for(let eachDonatedProject of user.donated){
+			let donatedProject = await projectData.getProject(eachDonatedProject.projectId);
+			donatedProject.theUserDonatedAmount = eachDonatedProject.amount;
 			donated.push(donatedProject);
 		}
 		let hasDonated = donated.length !== 0;
@@ -62,6 +63,8 @@ router.get('/user/:creator', async (req, res) => {
 		res.render('projects/myprojects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
 			hasDonated: hasDonated, donated: donated});
 	} catch (e) {
+		//the reason to change this is because if a user without any project, it will get the error at "const projects = await projectData.getProjectsByUser()"
+		//which throws an error without checking projects.length !== 0. What has been changed is the data/project getProjectsByUser
 		res.status(500).json({ error: e.toString() });
 	}
 });
@@ -174,6 +177,7 @@ router.post('/comment', async (req, res) => {
 	try {
 		const newComment = await projectData.commentOnProject(projectId, req.session.user.userId, commentInfo.comment);
 		res.redirect(`/projects/${projectId}`);
+//Still have a bug in Ajax which not correctly handle the callback, now it still uses the previous version.
 //		res.render('projects/comments',{layout:null, ...newComment});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });

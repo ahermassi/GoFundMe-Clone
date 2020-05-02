@@ -62,7 +62,7 @@ module.exports = {
         const objId = ObjectId(userId);
         const projectsCollection = await projects();
         const userProjects = await projectsCollection.find({ creator: objId }).toArray();
-        if (userProjects.length === 0) throw 'This user has no projects';
+//        if (userProjects.length === 0) throw 'This user has no projects';
 
         return userProjects;
     },
