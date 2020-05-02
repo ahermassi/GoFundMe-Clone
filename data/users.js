@@ -123,7 +123,7 @@ module.exports = {
         }
        
     },
-    async addDonatorToProject(donatorId, projectId) {
+    async addDonatorToProject(donatorId, projectId, amount) {
         if(!donatorId) throw 'You must provide a user id';
         if(!projectId) throw 'You must provide a project Id';
 
@@ -135,17 +135,30 @@ module.exports = {
         const targetUser = await this.getUser(donatorId);
         const usersCollection = await users();
         let donatedProjects = targetUser.donated;
+        let hashmap = {}
+        //hashmap[projectId] = amount
+        //donatedProjects.push(hashmap)
         let donationExists = false;
         for (let project of donatedProjects) {
-            if(project === projectId) {
+            if(projectId in project) {
                 donationExists = true;
+                let value = project[projectId]
+                project[projectId] = value + amount
                 break;
             }
         }
         if(!donationExists) {
-            const updateInfo = await usersCollection.updateOne({_id: donatorId},{$push: {donated: donatedProjects}});
+            //donatedProjects.push(hashmap)
+            hashmap[projectId.toString()] = amount
+            const updateInfo = await usersCollection.updateOne({_id: donatorId},{$push: {donated: hashmap}});
             if (updateInfo.modifiedCount === 0)
                 throw 'Could not add the project to the user\'s donations';
+        }
+        else{ 
+            const updateInfo = await usersCollection.updateOne({_id: donatorId},{$set: {donated: donatedProjects}});
+            if (updateInfo.modifiedCount === 0)
+                throw 'Could not add the project to the user\'s donations';
+
         }
 
         return await this.getUser(donatorId);
@@ -153,11 +166,11 @@ module.exports = {
     async addProjectToUser(userId, projectId){
         if(!userId) throw 'You must provide a user id';
         if(!projectId) throw 'You must provide a project Id';
-
+        projectId = projectId.toString();
         if(typeof(userId) === 'string')
             userId = ObjectId(userId);
-        if(typeof(projectId) === 'string')
-            projectId = ObjectId(projectId);
+        //if(typeof(projectId) === 'string')
+            //projectId = ObjectId(projectId);
 
         const usersCollection = await users();
         const updateInfo = await usersCollection.updateOne({_id: userId},{$push: {projects: projectId}});
