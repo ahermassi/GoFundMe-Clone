@@ -105,3 +105,4 @@ dist
 
 package*.json
 .DS_Store
+.Rhistory
