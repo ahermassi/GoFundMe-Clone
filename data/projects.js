@@ -66,6 +66,13 @@ module.exports = {
 
         return userProjects;
     },
+    async getProjectsByCategory(category){
+        if(!category || typeof(category)!=='string') throw 'You must provide a valid category to search for'
+        const projectsCollection = await projects();
+        const categoryRelatedProjects = await projectsCollection.find({category:category}).toArray();
+        return categoryRelatedProjects;
+
+    },
     async updateProject(projectId, projectTitle, projectCategory, projectPledgeGoal, projectDescription,) {
 
         if (!projectId) throw 'You must provide a project id to update';

@@ -20,6 +20,32 @@ router.get('/new', async (req, res) => {
 	res.render('projects/new',{title: 'New Project'});
 });
 
+router.get('/search',async(req,res)=>{
+	res.render('projects/search',{title:'Search'});
+})
+
+router.post('/searchResult',async(req,res)=>{
+	let searchProjectData = req.body;
+	if(!searchProjectData.category){
+		throw 'You must select a category to search';
+	}
+	if(searchProjectData.category){
+		try{
+			const projectList = await projectData.getProjectsByCategory(searchProjectData.category);
+			for (let project of projectList) { 
+				const user = await userData.getUser(project.creator);
+				project.creator = user.firstName + " " + user.lastName;
+			}
+			let noResult=false;
+			if(projectList.length == 0){
+				noResult = true;
+			}
+			res.render('projects/searchresult',{title:'Search Result',projects:projectList,noResult:noResult});
+		}catch(e){
+			res.status(500).json({ error: e.toString() });
+		}
+	}
+})
 router.get('/:id', async (req, res) => {
 	try {
 		const project = await projectData.getProject(req.params.id);
@@ -183,5 +209,6 @@ router.post('/comment', async (req, res) => {
 		res.status(500).json({ error: e.toString() });
 	}
 });
+
 
 module.exports = router;
