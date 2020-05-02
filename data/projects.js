@@ -15,7 +15,7 @@ module.exports = {
         if (!projectDescription) throw 'You must provide a description for your project';
 
         const projectsCollection = await projects();
-
+        projectCreator = projectCreator.toString();
         let newProject = {
             title: projectTitle,
             category: projectCategory,
@@ -33,6 +33,7 @@ module.exports = {
         if (insertInfo.insertedCount === 0) throw 'Could not add project';
 
         const userId = insertInfo.insertedId;
+        
         const addProjectToUser = await users.addProjectToUser(projectCreator, userId);
         if(!addProjectToUser) throw "Can't add project to this user";
 
@@ -103,21 +104,21 @@ module.exports = {
         if(!donatorId) throw 'You must provide a donator';
         if(typeof(amount) !== 'number') throw 'The donation amount needs to be a number';
 
-        if(typeof(projectId) === 'string')
-            projectId = ObjectId(projectId);
-        if(typeof(donatorId) === 'string')
-            donatorId = ObjectId(donatorId);
-
         const projectsCollection = await projects();
         const targetProject = await this.getProject(projectId);
         let newCollected = parseInt(targetProject.collected) + amount;
         let backers = targetProject.backers;
-        backers.push(donatorId);
-
-        const updateInfo = await projectsCollection.updateOne({_id: projectId}, {$set: {collected: newCollected, backers: backers}});
+        if (!backers.includes(donatorId))
+            backers.push(donatorId);
+        const updateInfo = await projectsCollection.updateOne({_id: ObjectId(projectId)}, {
+                $set: {
+                    collected: newCollected,
+                    backers: backers
+                }
+            });
         if (updateInfo.modifiedCount === 0)
             throw 'Could not process the donation successfully';
-        const updateDonator = await users.addDonatorToProject(donatorId, projectId);
+        const updateDonator = await users.addDonatorToProject(donatorId, projectId, amount);
         if (updateDonator.modifiedCount === 0)
             throw 'Could not add a donator';
 

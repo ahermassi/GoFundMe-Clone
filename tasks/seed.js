@@ -20,6 +20,7 @@ async function main(){
 
     await projects.addProject('ProT','Game',john._id,'Jan1',
         1000,"this is description of ProT",0,[], [], true);
+
     await projects.addProject('COL','Movie',john._id,'Jan1',
         1000,"this is description of COL",0,[], [], true);
     await projects.addProject('JAJA','Novel',jane._id,'Jan1',1000,

@@ -102,7 +102,7 @@ router.post('/', async (req, res) => {
 
 	try {
 		const projectCreator = req.session.user.userId;
-        const newProject = await projectData.addProject(newProjectData.title, newProjectData.category, ObjectId(projectCreator),
+        const newProject = await projectData.addProject(newProjectData.title, newProjectData.category, projectCreator,
 			new Date(), newProjectData.goal, newProjectData.description,0,[], [], true);
 		res.redirect(`/projects/${newProject._id}`);
 	} catch (e) {
@@ -156,6 +156,8 @@ router.post('/donate', async(req, res)=>{
 	}
 	if(typeof(donationData.donation) !== 'number')
 		donationData.donation = parseInt(donationData.donation);
+	
+	//console.log(typeof(donationData.project_id))
 
 	try {
 		await projectData.donateToProject(donationData.project_id, donationData.donation, req.session.user.userId);
