@@ -1,0 +1,35 @@
+body{
+    background-color: #74c25a;
+     
+}
+.div-box1{
+    border: solid 1px red;
+    max-width: 720px;
+    height: 350px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    padding-top: 80px;
+    padding-right: 80px;
+    padding-bottom: 80px;
+    padding-left: 200px;
+    background-color: white;
+    
+}
+
+.para{
+    max-width: 720px;
+    margin: 0 auto;
+}
+.heading{
+    font-weight: bold;
+    text-align: center;
+    font-family: 'Oleo Script', cursive;
+    
+
+}
+ul.error-list{
+    list-style-type: square;
+}
