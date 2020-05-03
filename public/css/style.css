@@ -33,3 +33,27 @@ body{
 ul.error-list{
     list-style-type: square;
 }
+
+.div-box2{
+    border: solid 1px red;
+    max-width: 720px;
+    height: 720px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    padding-top: 80px;
+    padding-right: 80px;
+    padding-bottom: 80px;
+    padding-left: 200px;
+    background-color: black;
+    margin-top: 10px;
+}
+.common-label{
+    color: white;
+}
+.common-div{
+    margin-right: 110px;
+   
+}
