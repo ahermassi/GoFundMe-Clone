@@ -4,6 +4,7 @@ const data = require('../data');
 const projectData = data.projects;
 const userData = data.users;
 const { ObjectId } = require('mongodb');
+const statistics = require('../data/statistics');
 
 
 router.get('/', async (req, res) => {
@@ -26,25 +27,51 @@ router.get('/search',async(req,res)=>{
 
 router.post('/searchResult',async(req,res)=>{
 	let searchProjectData = req.body;
+	let errors = []
 	if(!searchProjectData.category){
-		throw 'You must select a category to search';
+		errors.push('You must select a category to search');
 	}
-	if(searchProjectData.category){
-		try{
-			const projectList = await projectData.getProjectsByCategory(searchProjectData.category);
+	if(searchProjectData.category == "<blank>"&&!searchProjectData.from&&!searchProjectData.to){
+		errors.push('You need to have a range in Goal or select a category');
+	}
+	if(searchProjectData.from && searchProjectData.to && parseFloat(searchProjectData.from)>parseFloat(searchProjectData.to)){
+		errors.push('From need to be less than To');
+	}
+	if(parseFloat(searchProjectData.from)<0 ||parseFloat(searchProjectData.to)<0){
+		errors.push('Please provide postive number for search');
+	}
+	if(errors.length>0){
+		res.render('projects/search',{title:'Search',hasErrors:true,errors:errors})
+		return;
+	}
+	let projectList = []
+	//this allows user to search by 1.(select one category),2.(enter a valid number either in From or in To, or both),3.(select one category and enter number)
+	if(searchProjectData.category !=="<blank>"){
+		projectList = await projectData.getProjectsByCategory(searchProjectData.category);
+	}else{
+		projectList = await projectData.getAllProjects();
+	}
+	let noResult=false;
+	if(!noResult&&(searchProjectData.from||searchProjectData.to)){
+		let lowerBound = null;
+		if(searchProjectData.from){
+			lowerBound = parseFloat(searchProjectData.from);
+		}
+		let higherBound = null;
+		if(searchProjectData.to){
+			higherBound = parseFloat(searchProjectData.to);
+		}
+			projectList = statistics.filterProjectsByGoal(projectList,lowerBound,higherBound);
+		}
+		if(projectList.length == 0){
+			noResult = true;
+		}else{
 			for (let project of projectList) { 
 				const user = await userData.getUser(project.creator);
 				project.creator = user.firstName + " " + user.lastName;
 			}
-			let noResult=false;
-			if(projectList.length == 0){
-				noResult = true;
-			}
-			res.render('projects/searchresult',{title:'Search Result',projects:projectList,noResult:noResult});
-		}catch(e){
-			res.status(500).json({ error: e.toString() });
 		}
-	}
+		res.render('projects/searchresult',{title:'Search Result',projects:projectList,noResult:noResult});	
 })
 router.get('/:id', async (req, res) => {
 	try {
@@ -113,7 +140,11 @@ router.post('/', async (req, res) => {
 	}
 
 	if(!newProjectData.goal){
-		errors.push('No pledge goal provided')
+		errors.push('No pledge goal provided');
+	}
+
+	if(parseFloat(newProjectData.goal)<0){
+		error.push('Pledge Goal need to be positive');
 	}
 
 	if (newProjectData.description.length === 0) {
