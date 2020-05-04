@@ -59,12 +59,19 @@ module.exports = {
     async getProjectsByUser(userId) {
         if (!userId) throw 'You must provide a user id to search for';
 
-        const objId = ObjectId(userId);
+        const objId = userId;
         const projectsCollection = await projects();
         const userProjects = await projectsCollection.find({ creator: objId }).toArray();
 //        if (userProjects.length === 0) throw 'This user has no projects';
 
         return userProjects;
+    },
+    async getProjectsByCategory(category){
+        if(!category || typeof(category)!=='string') throw 'You must provide a valid category to search for'
+        const projectsCollection = await projects();
+        const categoryRelatedProjects = await projectsCollection.find({category:category}).toArray();
+        return categoryRelatedProjects;
+
     },
     async updateProject(projectId, projectTitle, projectCategory, projectPledgeGoal, projectDescription,) {
 

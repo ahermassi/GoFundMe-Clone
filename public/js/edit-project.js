@@ -17,6 +17,9 @@ if (editProjectForm){
                 event.preventDefault();
                 editProjectGoalError.hidden = true;
                 editProjectAmountError.hidden = false;
+                //see new-project comments
+                newProjectTitleError.hidden =true;
+                newProjectDescriptionError.hidden = true;
             }
             else
                 editProjectForm.submit();

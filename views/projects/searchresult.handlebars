@@ -1,0 +1,15 @@
+<section>
+    {{#if noResult}}
+        <h1>There is no related projects</h1>
+    {{else}}
+        <h1>Search Results:</h1>
+        {{#each projects}}
+        <article class="projects">
+            <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
+            <p>Author: {{creator}}</p>
+            <p>Date: {{date}}</p>
+        </article>
+        {{/each}}
+    {{/if}}
+</section>
+<a href="/projects">Back to All Projects</a>

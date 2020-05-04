@@ -49,6 +49,22 @@ app.use('/projects/edit',(req, res, next) => {
 		next();
 });
 
+app.use('/projects/search',(req,res,next)=>{
+	if(!req.session.user){
+		res.redirect('/users/signin')
+	}else{
+		next();
+	}
+});
+
+app.use('/projects/searchResult',(req,res,next)=>{
+	if(!req.session.user){
+		res.redirect('/users/signin')
+	}else{
+		next();
+	}
+})
+
 configRoutes(app);
 
 app.listen(3000, () => {
