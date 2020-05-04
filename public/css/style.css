@@ -94,4 +94,15 @@ ul.error-list{
 .register-head{
     color: white;
 }
+article p {
+    font-family: 'Oleo Script', cursive;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.link-styles{
+    font-family: 'Fredoka One', cursive;
+    color: black;
+}
+
 
