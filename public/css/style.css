@@ -58,9 +58,40 @@ ul.error-list{
    
    
 }
-.form-text{
-    color: white;
-}
+
 .form-div{
     margin-bottom: 60px;
 }
+
+.div-box3{
+    border: solid 1px red;
+    max-width: 720px;
+    height: 600px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+  /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+    padding-top: 80px;
+    padding-right: 80px;
+    padding-bottom: 80px;
+    padding-left: 200px;
+    background-color: white;
+    
+}
+.head-div{
+    width: 400px;
+    top: 0;
+    position: absolute;
+    font-family: 'Bangers', cursive;
+}
+
+.div-text{
+    color: white;
+
+}
+
+.register-head{
+    color: white;
+}
+

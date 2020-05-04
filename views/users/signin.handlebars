@@ -1,23 +1,28 @@
 <div class="row">
     <div class="col-sm-12 div-box1">
+        <div class="head-div">
+            <h3>Sign in page</h3>
+        </div>
         <form action="/users/signin" method="POST" id="signin-form">
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="text" name="email" id="email" class="full-width-input form-control"
                     placeholder="Enter email" />
+                <div id="no-email"  hidden>Please enter your email</div>
             </div>
             <div class="form-group">
                 <label for="password">Password:</label>
                 <input type="password" name="password" id="password" class="full-width-input form-control"
                     placeholder="Password" />
+                <div id="no-password"   hidden>Please enter your password</div>
             </div>
             <button type="submit" class="btn btn-success">Sign In</button>
             <a href="/users/register">Register</a>
         </form>
-        <ul class="error-list list-group list-group-flush">
-            <li id="no-email" hidden>Please enter your email</li>
-            <li id="no-password" hidden>Please enter your password</li>
-        </ul>
+        <!--<ul class="error-list list-group list-group-flush"> -->
+        <!--    <li id="no-email" hidden>Please enter your email</li> -->
+        <!--    <li id="no-password" hidden>Please enter your password</li> -->
+        <!-- </ul> -->
     </div>
 </div>
 <br>
