@@ -1,9 +1,9 @@
 <div>
     <h2>Search</h2>
-    <form action="/projects/searchResult" method="POST" class="search-form" id = "search-project-form">
-        <label for="category">By Category:</label>
+    <form action="/projects/searchResult" method="POST" class="search-form" id ="search-project-form">
+        <label for="category">By category:</label>
         <select id="category" name="category">
-        <option value="<blank>"><Blank></Blank></option>
+        <option value="none" selected></option>
         <option value="medical">Medical</option>
         <option value="education">Education</option>
         <option value="animals">Animals</option>
@@ -13,20 +13,24 @@
         <option value="travel">Travel</option>
         <option value="volunteer">Volunteer</option>
         </select><br>
-        <p>By Pledge Goal:</p>
-        <label for="from">From:</label>
-        <input type="number" name="from" id="from" class="full-width-input"/>
-        <label for="to">To:</label>
-        <input type="number" name="to" id="to" class="full-width-input"/><br>
-        <p>By Colleted Money://Is this make sense for a user who wants to have donaton?Why a user wants to know these projects which has specified colleted</p>
+        <label for="from">By pledge goal:&nbsp;&nbsp;From:</label>
+        <input type="number" name="from_pledged" id="from-pledged" value="{{searchProjectData.from_pledged}}" class="full-width-input"/>
+        <label for="to-pledged">To:</label>
+        <input type="number" name="to_pledged" id="to-pledged" value="{{searchProjectData.to_pledged}}" class="full-width-input"/><br>
+        <label for="from-collected">By collected amount:&nbsp;&nbsp;From:</label>
+        <input type="number" name="from_collected" id="from-collected" value="{{searchProjectData.from_collected}}" class="full-width-input"/>
+        <label for="to-collected">To:</label>
+        <input type="number" name="to_collected" id="to-collected" value="{{searchProjectData.to_collected}}" class="full-width-input"/><br>
         <button type="submit">Search</button><br>
     </form>
 </div>
 <ul class="error-list">
-    <li id="no-category" hidden>Please select a category or enter numbers</li>
-    <li id="from>to" hidden>The number in To should larger than From</li>
-    <li id="invalid-from" hidden>Please enter postivie number in from</li>
-    <li id="invalid-to" hidden>Please enter postive number in to</li>
+    <li id="from-pledged>to-pledged" hidden>Pledge goal lower bound can't be greater than its upper bound</li>
+    <li id="from-collected>to-collected" hidden>Collected amount lower bound can't be greater than its upper bound</li>
+    <li id="invalid-from-pledged" hidden>Please enter a positive number in pledge goal lower bound</li>
+    <li id="invalid-to-pledged" hidden>Please enter a positive number in pledge goal upper bound</li>
+    <li id="invalid-from-collected" hidden>Please enter a positive number in collected amount lower bound</li>
+    <li id="invalid-to-collected" hidden>Please enter a positive number in collected amount upper bound</li>
 </ul>
 {{#if hasErrors}}
     <ul class="error-list">

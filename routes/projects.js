@@ -7,6 +7,10 @@ const { ObjectId } = require('mongodb');
 const statistics = require('../data/statistics');
 
 
+String.prototype.capitalize = function() {
+	return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
 router.get('/', async (req, res) => {
     const projectList = await projectData.getAllProjects();
     for (let project of projectList) {  // Replace the creator ID with the creator name
@@ -21,58 +25,10 @@ router.get('/new', async (req, res) => {
 	res.render('projects/new',{title: 'New Project'});
 });
 
-router.get('/search',async(req,res)=>{
-	res.render('projects/search',{title:'Search'});
-})
+router.get('/search', async (req, res) => {
+	res.render('projects/search', {title: 'Search'});
+});
 
-router.post('/searchResult',async(req,res)=>{
-	let searchProjectData = req.body;
-	let errors = []
-	if(!searchProjectData.category){
-		errors.push('You must select a category to search');
-	}
-	if(searchProjectData.category == "<blank>"&&!searchProjectData.from&&!searchProjectData.to){
-		errors.push('You need to have a range in Goal or select a category');
-	}
-	if(searchProjectData.from && searchProjectData.to && parseFloat(searchProjectData.from)>parseFloat(searchProjectData.to)){
-		errors.push('From need to be less than To');
-	}
-	if(parseFloat(searchProjectData.from)<0 ||parseFloat(searchProjectData.to)<0){
-		errors.push('Please provide postive number for search');
-	}
-	if(errors.length>0){
-		res.render('projects/search',{title:'Search',hasErrors:true,errors:errors})
-		return;
-	}
-	let projectList = []
-	//this allows user to search by 1.(select one category),2.(enter a valid number either in From or in To, or both),3.(select one category and enter number)
-	if(searchProjectData.category !=="<blank>"){
-		projectList = await projectData.getProjectsByCategory(searchProjectData.category);
-	}else{
-		projectList = await projectData.getAllProjects();
-	}
-	let noResult=false;
-	if(!noResult&&(searchProjectData.from||searchProjectData.to)){
-		let lowerBound = null;
-		if(searchProjectData.from){
-			lowerBound = parseFloat(searchProjectData.from);
-		}
-		let higherBound = null;
-		if(searchProjectData.to){
-			higherBound = parseFloat(searchProjectData.to);
-		}
-			projectList = statistics.filterProjectsByGoal(projectList,lowerBound,higherBound);
-		}
-		if(projectList.length == 0){
-			noResult = true;
-		}else{
-			for (let project of projectList) { 
-				const user = await userData.getUser(project.creator);
-				project.creator = user.firstName + " " + user.lastName;
-			}
-		}
-		res.render('projects/searchresult',{title:'Search Result',projects:projectList,noResult:noResult});	
-})
 router.get('/:id', async (req, res) => {
 	try {
 		const project = await projectData.getProject(req.params.id);
@@ -113,7 +69,7 @@ router.get('/user/:creator', async (req, res) => {
 			let user = await userData.getUser(project.creator);
 			project.creator = user.firstName + " " + user.lastName;
 		}
-		res.render('projects/myprojects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
+		res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
 			hasDonated: hasDonated, donated: donated});
 	} catch (e) {
 		//the reason to change this is because if a user without any project, it will get the error at "const projects = await projectData.getProjectsByUser()"
@@ -162,7 +118,7 @@ router.post('/', async (req, res) => {
 
 	try {
 		const projectCreator = req.session.user.userId;
-        const newProject = await projectData.addProject(newProjectData.title, newProjectData.category, projectCreator,
+        const newProject = await projectData.addProject(newProjectData.title, newProjectData.category.capitalize(), projectCreator,
 			new Date(), newProjectData.goal, newProjectData.description,0,[], [], true);
 		res.redirect(`/projects/${newProject._id}`);
 	} catch (e) {
@@ -216,8 +172,6 @@ router.post('/donate', async(req, res)=>{
 	}
 	if(typeof(donationData.donation) !== 'number')
 		donationData.donation = parseInt(donationData.donation);
-	
-	//console.log(typeof(donationData.project_id))
 
 	try {
 		await projectData.donateToProject(donationData.project_id, donationData.donation, req.session.user.userId);
@@ -239,6 +193,102 @@ router.post('/comment', async (req, res) => {
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
+});
+
+router.post('/searchResult', async (req, res) => {
+	let searchProjectData = req.body;
+	let errors = [];
+
+	if(searchProjectData.from_pledged && searchProjectData.to_pledged &&
+		parseFloat(searchProjectData.from_pledged) > parseFloat(searchProjectData.to_pledged))
+		errors.push('Pledge goal lower bound can\'t be greater than its upper bound');
+
+	if(searchProjectData.from_collected && searchProjectData.to_collected &&
+		parseFloat(searchProjectData.from_collected) > parseFloat(searchProjectData.to_collected))
+		errors.push('Collected amount lower bound can\'t be greater than its upper bound');
+
+	if(parseFloat(searchProjectData.from_pledged) < 0)
+		errors.push('Please enter a positive number in pledge goal lower bound');
+
+	if(parseFloat(searchProjectData.to_pledged) < 0)
+		errors.push('Please enter a positive number in pledge goal upper bound');
+
+	if(parseFloat(searchProjectData.from_collected) < 0)
+		errors.push('Please enter a positive number in collected amount lower bound');
+
+	if(parseFloat(searchProjectData.to_collected) < 0)
+		errors.push('Please enter a positive number in collected amount upper bound');
+
+	if(errors.length > 0) {
+		res.render('projects/search',{title:'Search', hasErrors: true, errors: errors, searchProjectData: searchProjectData});
+		return;
+	}
+
+	let projectsByCategory, projectsByPledgeGoal = [], projectsByCollectedAmount = [];
+
+	// This allows user to search by:
+	// 1- selecting a category
+	// 2- entering a valid number in either From or To, or both
+	// 3- selecting a category and entering a range bounds
+	// 4- default which fetches all the projects
+
+	if(searchProjectData.category !== "none")
+		projectsByCategory = await projectData.getProjectsByCategory(searchProjectData.category.capitalize());
+	else
+		projectsByCategory = await projectData.getAllProjects();
+
+	if(searchProjectData.from_pledged || searchProjectData.to_pledged) {
+		let pledgeLowerBound = null, pledgeHigherBound = null;
+		if(searchProjectData.from_pledged)
+			pledgeLowerBound = parseFloat(searchProjectData.from_pledged);
+
+		if(searchProjectData.to_pledged)
+			pledgeHigherBound = parseFloat(searchProjectData.to_pledged);
+
+		projectsByPledgeGoal = statistics.filterProjectsByPledgeGoal(projectsByCategory, pledgeLowerBound, pledgeHigherBound);
+	}
+
+	if(searchProjectData.from_collected || searchProjectData.to_collected) {
+		let collectedLowerBound = null, collectedHigherBound = null;
+		if(searchProjectData.from_collected)
+			collectedLowerBound = parseFloat(searchProjectData.from_collected);
+
+		if(searchProjectData.to_collected)
+			collectedHigherBound = parseFloat(searchProjectData.to_collected);
+
+		projectsByCollectedAmount = statistics.filterProjectsByCollectedAmount(projectsByCategory, collectedLowerBound, collectedHigherBound);
+	}
+	let results = [];
+	for (let project of projectsByCategory) {
+		// Projects in projectsByCategory are the search results before filtering. A project is included in the final
+		// search results if and only if it appears in projectsByPledgeGoal and projectsByCollectedAmount.
+		// However, projectsByPledgeGoal (respectively projectsByCollectedAmount) can be empty for 2 different reasons:
+		// 1- The search didn't return any results
+		// 2- The user didn't supply any lower/upper bound values
+		// Therefore, deciding whether a project X should be included in the final results' list boils down to checking
+		// if X can be found in projectsByPledgeGoal and projectsByCollectedAmount if the user supplied search criteria.
+		let projectInPledged, projectInCollected;
+		if (projectsByPledgeGoal.length > 0)
+			projectInPledged = projectsByPledgeGoal.includes(project);
+		else
+			projectInPledged = !searchProjectData.from_pledged && !searchProjectData.to_pledged;
+		if (projectsByCollectedAmount.length > 0)
+			projectInCollected = projectsByCollectedAmount.includes(project);
+		else
+			projectInCollected = !searchProjectData.from_collected && !searchProjectData.to_collected;
+		if (projectInPledged && projectInCollected)
+			results.push(project);
+	}
+	let resultsExist = true;
+	if (results.length === 0)
+		resultsExist = false;
+	else {
+		for (let project of results) {
+			const user = await userData.getUser(project.creator);
+			project.creator = user.firstName + " " + user.lastName;
+		}
+	}
+	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist});
 });
 
 

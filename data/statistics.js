@@ -1,30 +1,62 @@
-//Create this for use of statistics part, functions added here for implement of statistics feature
-function filterProjectsByGoal(projects,lowerbound,higherbound){
-    if(!Array.isArray(projects) || projects.length == 0) throw 'no project pass into filerProjectsByGoal';
-    if(lowerbound==null && higherbound == null) throw 'At least one bound need to be provided';
-    if(lowerbound !== null && higherbound !== null && lowerbound>higherbound) throw 'From need to be less than To';
+function filterProjectsByPledgeGoal(projects, lowerBound, higherBound) {
+
+    if(!Array.isArray(projects) || projects.length === 0) throw 'No project passed to filerProjectsByGoal';
+    if(lowerBound === null && higherBound === null) throw 'At least one bound needs to be provided';
+    if(lowerBound !== null && higherBound !== null && lowerBound > higherBound) throw 'Lower bound can\'t be greater than higher bound';
+
     let result = [];
-    if(lowerbound != null && higherbound != null){
-        for(let element of projects){
-            if(element.pledgeGoal>=lowerbound && element.pledgeGoal<=higherbound){
-                result.push(element);
-            }
-        }
-    }else if(lowerbound != null){
-        for(let element of projects){
-            if(element.pledgeGoal>=lowerbound){
-                result.push(element);
-            }
-        }
-    }else {
-        for(let element of projects){
-            if(element.pledgeGoal<=higherbound){
-                result.push(element);
-            }
+    if(lowerBound != null && higherBound != null) {
+        for (let project of projects) {
+            if(project.pledgeGoal >= lowerBound && project.pledgeGoal <= higherBound)
+                result.push(project);
         }
     }
+    else if (lowerBound != null) {
+        for(let project of projects){
+            if(project.pledgeGoal >= lowerBound)
+                result.push(project);
+        }
+    }
+    else {
+        for(let project of projects) {
+            if(project.pledgeGoal <= higherBound)
+                result.push(project);
+        }
+    }
+
     return result;
 }
-module.exports={
-    filterProjectsByGoal
+
+function filterProjectsByCollectedAmount(projects, lowerBound, higherBound) {
+
+    if(!Array.isArray(projects) || projects.length === 0) throw 'No project passed to filterProjectsByCollectedAmount';
+    if(lowerBound === null && higherBound === null) throw 'At least one bound needs to be provided';
+    if(lowerBound !== null && higherBound !== null && lowerBound > higherBound) throw 'Lower bound can\'t be greater than higher bound';
+
+    let result = [];
+    if(lowerBound != null && higherBound != null) {
+        for(let project of projects) {
+            if(project.collected >= lowerBound && project.collected <= higherBound)
+                result.push(project);
+        }
+    }
+    else if(lowerBound != null) {
+        for(let project of projects){
+            if(project.collected >= lowerBound)
+                result.push(project);
+        }
+    }
+    else {
+        for(let project of projects) {
+            if(project.collected <= higherBound)
+                result.push(project);
+        }
+    }
+
+    return result;
+}
+
+module.exports = {
+    filterProjectsByPledgeGoal,
+    filterProjectsByCollectedAmount
 };
