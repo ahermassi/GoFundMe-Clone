@@ -176,9 +176,9 @@ router.post('/comment', async (req, res) => {
 
 	try {
 		const newComment = await projectData.commentOnProject(projectId, req.session.user.userId, commentInfo.comment);
-		res.redirect(`/projects/${projectId}`);
-//Still have a bug in Ajax which not correctly handle the callback, now it still uses the previous version.
-//		res.render('projects/comments',{layout:null, ...newComment});
+		const commentator = await userData.getUser(newComment.poster);
+		newComment.poster = commentator.firstName + " " + commentator.lastName;
+		res.render('partials/comments', {layout:null, ...newComment});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
