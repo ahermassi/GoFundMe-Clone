@@ -16,6 +16,7 @@ if(signInForm) {
             event.preventDefault();
             loginEmailError.hidden = loginEmail.value;
             loginPasswordError.hidden = loginPassword.value;
+            
         }
     })
 }

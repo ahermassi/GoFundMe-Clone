@@ -1,38 +1,75 @@
-<p>Register</p>
-<div>
-    <form action="/users" method="POST" id="register-form">
-        <label for="first_name">First Name:</label>
-        <input type="text" name="first_name" id="first_name" value="{{user.first_name}}" class="full-width-input"/><br/>
-        <label for="last_name">Last Name:</label>
-        <input type="text" name="last_name" id="last_name" value="{{user.last_name}}" class="full-width-input"/><br/>
-        <label for="email">Email:</label>
-        <input type="text" name="email" id="email" value="{{user.email}}" class="full-width-input"/><br/>
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" value="{{user.password}}" class="full-width-input"/><br/>
-        <label for="password_confirm">Confirm Password:</label>
-        <input type="password" name="password_confirm" id="password_confirm" value="{{user.password_confirm}}" class="full-width-input"/><br/>
-        <label for="city">City:</label>
-        <input type="text" name="city" id="city" value="{{user.city}}" class="full-width-input"/><br/>
-        <label for="state">State:</label>
-        <input type="text" name="state" id="state" value="{{user.state}}" class="full-width-input"/><br/>
-        <button type="submit">Create An Account</button>
-    </form>
+<div class="row">
+    <div class="col-sm-12 div-box2">
+        <div class="head-div">
+            <h3 class="register-head">Register page</h3>
+        </div>
+        <div class="form-div">
+            <form action="/users" method="POST" id="register-form">
+                <div class="form-group common-div">
+                    <label for=" first_name" class="common-label"> First Name</label>
+                    <input type="text" name="first_name" id="first_name" class="full-width-input form-control"
+                        placeholder="First Name" value="{{user.first_name}}">
+                    <div id="no-first-name" class="div-text" hidden>Please enter your first name</div>
+                </div>
+                <div class="form-group common-div">
+                    <label for="last_name" class="common-label">Last Name:</label>
+                    <input type="text" name="last_name" id="last_name" value="{{user.last_name}}"
+                        placeholder="Last Name" class="full-width-input form-control">
+                    <div id="no-last-name" class="div-text" hidden>Please enter your last name</div>
+                </div>
+
+                <div class="form-group common-div">
+                    <label for="email" class="common-label">Email:</label>
+                    <input type="text" name="email" id="email" value="{{user.email}}"
+                        class="full-width-input form-control" placeholder="Enter email">
+                    <div id="no-email" class="div-text"  hidden>Please enter your email</div>
+                </div>
+                <div class="form-group common-div">
+                    <label for="password" class="common-label">Password:</label>
+                    <input type="password" name="password" id="password" class="full-width-input form-control"
+                        value="{{user.password}}" placeholder="password" >
+                    <div id="no-password" class="div-text" hidden>Please enter your password </div>
+                </div>
+                <div class="form-group common-div">
+                    <label for="password_confirm" class="common-label">Confirm Password:</label>
+                    <input type="password" name="password_confirm" id="password_confirm"
+                      class="form-control full-width-input" value="{{user.password_confirm}}"
+                      placeholder="Confirm password">
+                    <div id="no-password-confirmation" class="div-text" hidden>Please enter your password
+                        confirmation</div>
+                </div>
+                <div class="form-group common-div">
+                    <label for="city" class="common-label">City:</label>
+                    <input type="text" name="city" id="city" value="{{user.city}}" class="full-width-input form-control"
+                        placeholder="City" >
+                    <div id="no-city" class="div-text" hidden>Please enter your city</div>
+                </div>
+                <div class="form-group common-div">
+                    <label for="state" class="common-label">State:</label>
+                    <input type="text" name="state" id="state" value="{{user.state}}"
+                        class="full-width-input form-control" placeholder="State" >
+                    <div id="no-state" class="div-text"  hidden>Please enter your state</div>
+                </div>
+                <button type="submit" class="btn btn-success">Create An Account</button>
+            </form>
+        </div>
+    </div>
     <ul id="error" class="error-list">
-        <li id="no-first-name" hidden>Please enter your first name</li>
-        <li id="no-last-name" hidden>Please enter your last name</li>
-        <li id="no-email" hidden>Please enter your email</li>
-        <li id="no-password" hidden>Please enter your password</li>
-        <li id="no-password-confirmation" hidden>Please enter your password confirmation</li>
+        <!-- <li id="no-first-name" hidden>Please enter your first name</li> -->
+        <!--<li id="no-last-name" hidden>Please enter your last name</li> -->
+        <!--<li id="no-email" hidden>Please enter your email</li> -->
+        <!--<li id="no-password" hidden>Please enter your password</li> -->
+        <!-- <li id="no-password-confirmation" hidden>Please enter your password confirmation</li> -->
         <li id="passwords-mismatch" hidden>Passwords don't match</li>
-        <li id="no-city" hidden>Please enter your city</li>
-        <li id="no-state" hidden>Please enter your state</li>
+        <!-- <li id="no-city" hidden>Please enter your city</li> -->
+        <!-- <li id="no-state" hidden>Please enter your state</li> -->
     </ul>
     {{#if hasErrors}}
     <ul class="error-list">
         {{#each errors}}
-    <li>
-        {{this}}
-    </li>
+        <li>
+            {{this}}
+        </li>
         {{/each}}
     </ul>
     {{/if}}

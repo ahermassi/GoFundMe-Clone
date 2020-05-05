@@ -1,40 +1,61 @@
 <article class="new-project">
-    <h1>Edit Project</h1>
-    <form action="/projects/edit" method="POST" class="new-project-form" id = "edit-project-form">
-        <label for="title">Project Title:</label>
-        <input type="text" name="title" id="title" value="{{project.title}}" class="full-width-input"/><br>
-        <label for="category">Category:</label>
-        <select id="category" name="category">
-            <option value="medical">Medical</option>
-            <option value="education">Education</option>
-            <option value="animals">Animals</option>
-            <option value="business">Business</option>
-            <option value="community">Community</option>
-            <option value="sports">Sports</option>
-            <option value="travel">Travel</option>
-            <option value="volunteer">Volunteer</option>
-        </select><br>
-        <label for="goal">Pledge Goal:</label>
-        <input type="number" name="goal" id="goal" value="{{project.pledgeGoal}}" class="full-width-input"/><br>
-        <label for="description">Description:</label>
-        <textarea name="description" id="description" rows="4" class="full-width-input">{{project.description}}</textarea><br>
-        <input type="hidden" name="id" value="{{project._id}}"/>
-        <input type="hidden" name="date" value="{{project.date}}"/>
-        <button type="submit">Save</button><br>
-    </form>
-    <ul class="error-list">
-        <li id="no-title" hidden>Please enter the project title</li>
-        <li id="no-goal" hidden>Please enter the project pledge goal</li>
-        <li id="invalid-amount" hidden>Pledge goal should be greater than zero</li>
-        <li id="no-description" hidden>Please enter the project description</li>
-    </ul>
+    <div class="row">
+        <div class="col-sm-12 div-box3">
+            <div class="head-div">
+                <h1>Edit Project</h1>
+            </div>
+            <form action="/projects/edit" method="POST" class="new-project-form" id="edit-project-form">
+                <div class="form-group">
+                    <label for="title">Project Title:</label>
+                    <input type="text" name="title" id="title" value="{{project.title}}" class="full-width-input form-control" />
+                    <div id="no-title"  hidden>Please enter the project title</div>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category">
+                        <option value="medical">Medical</option>
+                        <option value="education">Education</option>
+                        <option value="animals">Animals</option>
+                        <option value="business">Business</option>
+                        <option value="community">Community</option>
+                        <option value="sports">Sports</option>
+                        <option value="travel">Travel</option>
+                        <option value="volunteer">Volunteer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="goal">Pledge Goal:</label>
+                    <input type="number" name="goal" id="goal" value="{{project.pledgeGoal}}"
+                        class="full-width-input form-control" />
+                    <div id="no-goal"  hidden>Please enter the project pledge goal</div>
+                    <div id="invalid-amount"  hidden>Pledge goal should be greater than zero</div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea name="description" id="description" rows="4"
+                        class="full-width-input form-control">{{project.description}}</textarea>
+                    <div id="no-description"  hidden>Please enter the project description</div>
+                <div>
+                <input type="hidden" name="id" value="{{project._id}}" />
+                <input type="hidden" name="date" value="{{project.date}}" />
+                <br>
+                <button type="submit" class="btn btn-success" >Save</button><br>
+            </form>
+        </div>
+    </div>
+    <!--<ul class="error-list"> -->
+    <!-- <li id="no-title" hidden>Please enter the project title</li> -->
+    <!--    <li id="no-goal" hidden>Please enter the project pledge goal</li> -->
+    <!--    <li id="invalid-amount" hidden>Pledge goal should be greater than zero</li> -->
+    <!--    <li id="no-description" hidden>Please enter the project description</li> -->
+    <!--</ul> -->
     {{#if hasErrors}}
-        <ul class="error-list">
-            {{#each errors}}
-                <li>
-                    {{this}}
-                </li>
-            {{/each}}
-        </ul>
+    <ul class="error-list">
+        {{#each errors}}
+        <li>
+            {{this}}
+        </li>
+        {{/each}}
+    </ul>
     {{/if}}
 </article>
