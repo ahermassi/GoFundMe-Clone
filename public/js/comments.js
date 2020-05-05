@@ -9,8 +9,6 @@ form.addEventListener('submit', (event) => {
        errorDiv.innerHTML = 'Comment can\'t be empty!';
        errorDiv.focus();
    }
-   else {
+   else
        errorDiv.hidden = true;
-       form.submit();
-   }
 });

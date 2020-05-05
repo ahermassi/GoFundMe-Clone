@@ -17,6 +17,11 @@ if (newProjectForm){
                 event.preventDefault();
                 newProjectGoalError.hidden = true;
                 newProjectAmountError.hidden = false;
+                //Add below two lines
+                //(if the user first leave empty for title and description, and enter a negative number in amount, it will set newProjectTitleError.hidden and newProjectDescriptionError.hidden to true)
+                //(then the user enter title and description,but leave a negative number in amount, it still show titleError and Description error)
+                newProjectTitleError.hidden =true;
+                newProjectDescriptionError.hidden = true;
             }
             else
                 newProjectForm.submit();

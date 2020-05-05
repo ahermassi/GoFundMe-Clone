@@ -11,16 +11,9 @@ async function main(){
     
    let pass1 = passwordHash.generate('pass1');
    let pass2 = passwordHash.generate('pass2');
-   let pass3 = passwordHash.generate('pass3')
+   let pass3 = passwordHash.generate('pass3');
 
-   categories =["medical",
-   "education",
-   "animals",
-   "business",
-   "community",
-   "sports",
-   "travel",
-   "volunteer"];
+   const categories =["Medical", "Education", "Animals", "Business", "Community", "Sports", "Travel", "Volunteer"];
 
     let john = await users.addUser('John', 'Doe','john@gmail.com', pass1,
         'Hudson','NJ');
@@ -38,18 +31,18 @@ async function main(){
         1000,"this is description of COL",0,[], [], true);
     await projects.addProject('JAJA','business',jane._id,'Jan1',1000,
                                 "this is description of JAJA",0,[], [],true);
-    for(i=1;i<9;i++){
-        let testName = "Test Case"+i;
+    for(let i = 1; i < 9; i++){
+        let testName = "Test Case" + i;
         let creator;
-        let category = categories[i%8];
-        let goal = i*100+i*i
-        let desc = "This is description for testCase"+i;
-        if(i%2 == 0){
+        let category = categories[i % 8];
+        let goal = i * 100 + i * i;
+        let desc = "This is description for testCase" + i;
+        if(i % 2 === 0)
             creator = john._id;
-        }else{
-            creator = jane._id
-        }
-        await projects.addProject(testName,category,creator,new Date(),goal,desc,0,[],[],true)
+        else
+            creator = jane._id;
+
+        await projects.addProject(testName, category, creator, new Date(), goal, desc,0,[],[],true)
 
     }
     console.log('Done seeding database');

@@ -7,15 +7,13 @@
     <p>Collected: {{project.collected}}</p>
     <p>Description:</p>
     <p>{{project.description}}</p>
-    {{#if hasComments}}
-    <p>Comments:</p>
     <div id="new-comments">
-        {{#each comments}}
-        <p>{{poster}} wrote:</p>
-        <p>{{comment}}</p>
-        {{/each}}
-    </div>
-    {{/if}}
+        <p>Comments:</p>
+        {{#if hasComments}}
+            {{#each comments}}
+                <p>{{poster}} wrote: {{comment}}</p>
+            {{/each}}
+        {{/if}}
     {{#if canDonate}}
     <div id='donate-form'>
         <form action="/projects/donate" method="POST" class="donate-form">
