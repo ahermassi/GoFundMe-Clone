@@ -91,18 +91,33 @@ module.exports = {
 
         return await this.getProject(projectId);
     },
-    async removeProject(id) {
+    async deactivateProject(id) {
         if (!id) throw 'You must provide a project id to search for';
-        const objId = ObjectId(id);
+        if (typeof (id) === 'string')
+            id = ObjectId(id);
         const projectsCollection = await projects();
 
         // Deactivate the project
-        const deletionInfo = projectsCollection.updateOne({ _id: ObjectId(objId) }, {$set: {active: false}});
+        const updateInfo = await projectsCollection.updateOne({ _id: id }, {$set: {active: false}});
 
-        if (deletionInfo.deletedCount === 0) {
-            throw `Could not delete project with id of ${id}`;
+        if (updateInfo.matchedCount === 0) {
+            throw `Could not delete deactivate project with id of ${id}`;
         }
-        return deletionInfo.deletedCount;
+        return updateInfo.matchedCount;
+    },
+    async activateProject(id) {
+        if (!id) throw 'You must provide a project id to search for';
+        if (typeof (id) === 'string')
+            id = ObjectId(id);
+        const projectsCollection = await projects();
+
+        // Activate the project
+        const updateInfo = projectsCollection.updateOne({ _id: id }, {$set: {active: true}});
+
+        if (updateInfo.matchedCount === 0) {
+            throw `Could not activate project with id of ${id}`;
+        }
+        return updateInfo.matchedCount;
     },
     async donateToProject(projectId, amount, donatorId) {
         if(!projectId) throw 'You must provide a project id to donate';

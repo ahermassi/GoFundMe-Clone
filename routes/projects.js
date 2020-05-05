@@ -38,16 +38,20 @@ router.get('/:id', async (req, res) => {
 			const commentator = await userData.getUser(comment.poster);
 			comment.poster = commentator.firstName + " " + commentator.lastName;
 		}
+		const openToDonations = project.active;  // A user can only donate if the project is active
 		const hasComments = project.comments.length !== 0;	
 		if(req.session.user) {
 			if(ObjectId(req.session.user.userId).equals(user._id))  // If the currently logged in user is the one who created the campaign
-				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments, canComment: true, canEdit: true});
+				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
+					canComment: true, canEdit: true, openToDonations: openToDonations});
 			else
 				// I can only donate to other users' campaigns
-				res.render('projects/single',{project:project, comments: project.comments, hasComments: hasComments, canComment: true, canDonate: true});
+				res.render('projects/single',{project:project, comments: project.comments, hasComments: hasComments,
+					canComment: true, canDonate: true, openToDonations: openToDonations});
 		}
-		else
-			res.render('projects/single', {project: project, comments: project.comments, hasComments: hasComments});
+		else // The project is read-only for non-authenticated users
+			res.render('projects/single', {project: project, comments: project.comments, hasComments: hasComments,
+			openToDonations: openToDonations});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -289,6 +293,26 @@ router.post('/searchResult', async (req, res) => {
 		}
 	}
 	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist});
+});
+
+router.get('/deactivate/:id', async (req, res) => {
+	const projectId = req.params.id;
+	try {
+		await projectData.deactivateProject(projectId);
+		res.redirect(`/projects/${projectId}`);
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
+router.get('/activate/:id', async (req, res) => {
+	const projectId = req.params.id;
+	try {
+		await projectData.activateProject(projectId);
+		res.redirect(`/projects/${projectId}`)
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
 });
 
 

@@ -1,4 +1,7 @@
 <article class="project">
+    {{#unless openToDonations}}
+        <div id="is-project-active">This project has been deactivated and can no longer accept donations.</div>
+    {{/unless}}
     <h1>{{ project.title}}</h1>
     <p>Author: {{project.creator }}</p>
     <p>Created on: {{project.date}}</p>
@@ -7,6 +10,18 @@
     <p>Collected: {{project.collected}}</p>
     <p>Description:</p>
     <p>{{project.description}}</p>
+    {{#if canDonate}}
+        {{#if openToDonations}}
+        <div id='donate-form'>
+            <form action="/projects/donate" method="POST" class="donate-form">
+                <label for="donate">The amount you want donate:</label>
+                <input type="number" name="donation" id="donation" class="full-width-input" /><br>
+                <input type="hidden" name="project_id" value="{{project._id}}"/>
+                <button type="submit">Donate</button><br>
+            </form>
+        </div>
+        {{/if}}
+    {{/if}}
     <div id="new-comments">
         <p>Comments:</p>
         {{#if hasComments}}
@@ -14,16 +29,7 @@
                 <p>{{poster}} wrote: {{comment}}</p>
             {{/each}}
         {{/if}}
-    {{#if canDonate}}
-    <div id='donate-form'>
-        <form action="/projects/donate" method="POST" class="donate-form">
-            <label for="donate">The amount you want donate:</label>
-            <input type="number" name="donation" id="donation" class="full-width-input" /><br>
-            <input type="hidden" name="project_id" value="{{project._id}}" />
-            <button type="submit">Donate</button><br>
-        </form>
     </div>
-    {{/if}}
     {{#if canComment}}
     <form id="comment-form" action="/projects/comment" method="post">
         <label for="comment"></label>
@@ -34,7 +40,12 @@
     <div id="empty-comment" hidden></div>
     {{/if}}
     {{#if canEdit}}
-    <a href="/projects/edit/{{project._id}}">Edit Project</a><br>
+        <a href="/projects/edit/{{project._id}}">Edit Project</a><br>
+        {{#if openToDonations}}
+            <a id="deactivate-project" href="/projects/deactivate/{{project._id}}">Deactivate Project</a><br>
+        {{else}}
+            <a id="activate-project" href="/projects/activate/{{project._id}}">Activate Project</a><br>
+        {{/if}}
     {{/if}}
     <a href="/projects">Back to All Projects</a>
 </article>
