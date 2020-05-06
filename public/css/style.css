@@ -1,5 +1,5 @@
 body{
-    background-color: #74c25a;
+    background-color: #d0dffc;
      
 }
 .div-box1{
@@ -16,6 +16,7 @@ body{
     padding-bottom: 80px;
     padding-left: 200px;
     background-color: white;
+
     
 }
 
@@ -47,11 +48,12 @@ ul.error-list{
     padding-right: 80px;
     padding-bottom: 80px;
     padding-left: 200px;
-    background-color: black;
+    background-color: white;
     margin-top: 20px;
+    overflow: auto;
 }
 .common-label{
-    color: white;
+    color: black;
 }
 .common-div{
     margin-right: 110px;
@@ -77,6 +79,7 @@ ul.error-list{
     padding-bottom: 80px;
     padding-left: 200px;
     background-color: white;
+    overflow: auto;
     
 }
 .head-div{
@@ -84,16 +87,14 @@ ul.error-list{
     top: 0;
     position: absolute;
     font-family: 'Bangers', cursive;
+    color: black;
 }
 
 .div-text{
-    color: white;
+    color: black;
 
 }
 
-.register-head{
-    color: white;
-}
 article p {
     font-family: 'Oleo Script', cursive;
     font-weight: bold;
@@ -102,6 +103,9 @@ article p {
 
 .link-styles{
     font-family: 'Fredoka One', cursive;
+    color: black;
+}
+.link-style{
     color: black;
 }
 
