@@ -16,12 +16,13 @@
         {{/if}}
     {{#if canDonate}}
     <div id='donate-form'>
-        <form action="/projects/donate" method="POST" class="donate-form">
+        <form action="/projects/donate" id = "donate-project" method="POST" class="donate-form">
             <label for="donate">The amount you want donate:</label>
             <input type="number" name="donation" id="donation" class="full-width-input" /><br>
             <input type="hidden" name="project_id" value="{{project._id}}" />
             <button type="submit">Donate</button><br>
         </form>
+        <div id="empty-donation" hidden></div>
     </div>
     {{/if}}
     {{#if canComment}}

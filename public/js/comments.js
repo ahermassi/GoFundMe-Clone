@@ -6,7 +6,7 @@ form.addEventListener('submit', (event) => {
    event.preventDefault();
    if(!commentInput.value) {
        errorDiv.hidden = false;
-       errorDiv.innerHTML = 'Comment can\'t be empty!';
+       errorDiv.innerHTML = 'Comment cannot be empty!';
        errorDiv.focus();
    }
    else
