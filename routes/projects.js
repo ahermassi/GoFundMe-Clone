@@ -12,13 +12,15 @@ String.prototype.capitalize = function() {
 };
 
 router.get('/', async (req, res) => {
-    const projectList = await projectData.getAllProjects();
-    for (let project of projectList) {  // Replace the creator ID with the creator name
-		const user = await userData.getUser(project.creator);
-		project.creator = user.firstName + " " + user.lastName;
+    let projectList = await projectData.getAllProjects();
+    for (let project of projectList) {
+		const user = await userData.getUser(project.creator);  // Get the user who created the campaign
+		project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+		project.pledgeGoal = project.pledgeGoal.toLocaleString();
+		project.collected = project.collected.toLocaleString();
 	}
     const canComment = req.session.user !== null;
-	res.render('projects/index',{title: 'Projects', projects: projectList, canComment: canComment, user: req.session.user});
+	res.render('projects/index',{title: 'Home', projects: projectList, canComment: canComment, user: req.session.user});
 });
 
 router.get('/new', async (req, res) => {
