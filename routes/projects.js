@@ -57,32 +57,6 @@ router.get('/:id', async (req, res) => {
 	}
 });
 
-router.get('/user/:creator', async (req, res) => {
-	// List the campaigns created by the user whose ID is 'creator' as well as the campaigns to which this user donated
-	try {
-		const projects = await projectData.getProjectsByUser(req.params.creator);
-		const user = await userData.getUser(req.params.creator);
-		let donated = [];
-		for(let eachDonatedProject of user.donated){
-			let donatedProject = await projectData.getProject(eachDonatedProject.projectId);
-			donatedProject.theUserDonatedAmount = eachDonatedProject.amount;
-			donated.push(donatedProject);
-		}
-		let hasDonated = donated.length !== 0;
-		for(let project of donated){
-			let user = await userData.getUser(project.creator);
-			project.creator = user.firstName + " " + user.lastName;
-		}
-		res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
-			hasDonated: hasDonated, donated: donated});
-	} catch (e) {
-		// The reason to change this is because if a user has no projects, it will get the error at
-		// "const projects = await projectData.getProjectsByUser()", which throws an error without checking
-		// projects.length !== 0. What has been changed is the data/project getProjectsByUser()
-		res.status(500).json({ error: e.toString() });
-	}
-});
-
 router.get('/edit/:id', async (req, res) => {
 	try {
 		const project = await projectData.getProject(req.params.id);
