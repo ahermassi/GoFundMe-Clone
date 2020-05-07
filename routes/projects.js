@@ -38,6 +38,9 @@ router.get('/:id', async (req, res) => {
 			const commentator = await userData.getUser(comment.poster);
 			comment.poster = commentator.firstName + " " + commentator.lastName;
 		}
+		project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
+		project.pledgeGoal = project.pledgeGoal.toLocaleString();
+		project.collected = project.collected.toLocaleString();
 		const openToDonations = project.active;  // A user can only donate if the project is active
 		const hasComments = project.comments.length !== 0;	
 		if(req.session.user) {
@@ -76,8 +79,9 @@ router.get('/user/:creator', async (req, res) => {
 		res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
 			hasDonated: hasDonated, donated: donated});
 	} catch (e) {
-		//the reason to change this is because if a user without any project, it will get the error at "const projects = await projectData.getProjectsByUser()"
-		//which throws an error without checking projects.length !== 0. What has been changed is the data/project getProjectsByUser
+		// The reason to change this is because if a user has no projects, it will get the error at
+		// "const projects = await projectData.getProjectsByUser()", which throws an error without checking
+		// projects.length !== 0. What has been changed is the data/project getProjectsByUser()
 		res.status(500).json({ error: e.toString() });
 	}
 });
@@ -95,21 +99,21 @@ router.post('/', async (req, res) => {
 	let newProjectData = req.body;
 	let errors = [];
 
-	if (!newProjectData.title) {
+	if (!newProjectData.title)
 		errors.push('No title provided');
-	}
 
-	if(!newProjectData.goal){
+	if(!newProjectData.goal)
 		errors.push('No pledge goal provided');
+
+	if (newProjectData.goal) {
+		if (isNaN(newProjectData.goal))
+			errors.push('Pledge goal needs to be a number');
+		else if (parseFloat(newProjectData.goal) <= 0)
+			errors.push('Pledge goal needs to be greater than zero');
 	}
 
-	if(parseFloat(newProjectData.goal)<0){
-		error.push('Pledge Goal need to be positive');
-	}
-
-	if (newProjectData.description.length === 0) {
+	if (newProjectData.description.length === 0)
 		errors.push('No description provided');
-	}
 
 	if (errors.length > 0) {
 		res.render('projects/new', {
@@ -123,7 +127,8 @@ router.post('/', async (req, res) => {
 	try {
 		const projectCreator = req.session.user.userId;
         const newProject = await projectData.addProject(newProjectData.title, newProjectData.category.capitalize(), projectCreator,
-			new Date(), newProjectData.goal, newProjectData.description,0,[], [], true);
+			new Date(), parseFloat(newProjectData.goal), newProjectData.description,0,[],
+			[], true);
 		res.redirect(`/projects/${newProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
@@ -134,21 +139,24 @@ router.post('/edit', async (req, res) => {
 	let updateProjectData = req.body;
 	let errors = [];
 
-	if (!updateProjectData.title) {
+	if (!updateProjectData.title)
 		errors.push('No title provided');
-	}
 
-	if (!updateProjectData.category) {
+	if (!updateProjectData.category)
 		errors.push('No category provided');
+
+	if(!updateProjectData.goal)
+		errors.push('No pledge goal provided');
+
+	if (updateProjectData.goal) {
+		if (isNaN(updateProjectData.goal))
+			errors.push('Pledge goal needs to be a number');
+		else if (parseFloat(updateProjectData.goal) <= 0)
+			errors.push('Pledge goal needs to be greater than zero');
 	}
 
-	if(!updateProjectData.goal){
-		errors.push('No pledge goal provided')
-	}
-
-	if (updateProjectData.description.length === 0) {
+	if (updateProjectData.description.length === 0)
 		errors.push('No description provided');
-	}
 
 	if (errors.length > 0) {
 		res.render('projects/edit', {
@@ -161,7 +169,7 @@ router.post('/edit', async (req, res) => {
 
 	try {
 		const updatedProject = await projectData.updateProject(updateProjectData.id, updateProjectData.title,
-			updateProjectData.category, updateProjectData.goal, updateProjectData.description);
+			updateProjectData.category, parseFloat(updateProjectData.goal), updateProjectData.description);
 		res.redirect(`/projects/${updatedProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });

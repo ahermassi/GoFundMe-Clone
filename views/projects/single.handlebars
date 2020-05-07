@@ -6,8 +6,7 @@
     <p>Author: {{project.creator }}</p>
     <p>Created on: {{project.date}}</p>
     <p>Category: {{project.category}}</p>
-    <p>Pledge Goal: {{project.pledgeGoal}}</p>
-    <p>Collected: {{project.collected}}</p>
+    <p>${{project.collected}} raised of ${{project.pledgeGoal}} goal</p>
     <p>Description:</p>
     <p>{{project.description}}</p>
     {{#if canDonate}}
