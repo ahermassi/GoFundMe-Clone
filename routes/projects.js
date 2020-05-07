@@ -31,16 +31,13 @@ router.get('/search', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	try {
-		const project = await projectData.getProject(req.params.id);
-		const user = await userData.getUser(project.creator);  // Get the user who created the campaign
-		project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+		let project = await projectData.getProject(req.params.id);
+		const user = await userData.getUser(project.creator);
+		project = await formatProjectFields(req.params.id);
 		for (let comment of project.comments) {  // Replace the commentator ID with the commentator name in each comment
 			const commentator = await userData.getUser(comment.poster);
 			comment.poster = commentator.firstName + " " + commentator.lastName;
 		}
-		project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
-		project.pledgeGoal = project.pledgeGoal.toLocaleString();
-		project.collected = project.collected.toLocaleString();
 		const openToDonations = project.active;  // A user can only donate if the project is active
 		const hasComments = project.comments.length !== 0;	
 		if(req.session.user) {
@@ -176,18 +173,42 @@ router.post('/edit', async (req, res) => {
 	}
 });
 
-router.post('/donate', async(req, res)=>{
+router.post('/donate', async(req, res) => {
 	let donationData = req.body;
-	if(!donationData.donation){
-		res.redirect(`/projects/${donationData.project_id}`);
-		return;
+	let errors = [];
+
+	if(!donationData.donation)
+		errors.push('Donation needs to have a value');
+
+	if (donationData.donation) {
+		if (isNaN(donationData.donation))
+			errors.push('Donation needs to be a number');
+		if (parseFloat(donationData.donation) <= 0)
+			errors.push('Donation needs to be greater than zero');
 	}
-	if(typeof(donationData.donation) !== 'number')
-		donationData.donation = parseInt(donationData.donation);
+
+	if (errors.length > 0) {
+		try {
+			const project = await formatProjectFields(donationData.project_id);
+			const hasComments = project.comments.length !== 0;
+			res.render('projects/single', {
+				project: project, comments: project.comments, hasComments: hasComments,
+				canComment: true, canDonate: true, openToDonations: true, errors: errors, hasErrors: true
+			});
+			return;
+		} catch (e) {
+			res.status(500).json({ error: e.toString() });
+		}
+	}
 
 	try {
-		await projectData.donateToProject(donationData.project_id, donationData.donation, req.session.user.userId);
-		res.render('projects/result',{result: 'Donate successfully', projectId: donationData.project_id});
+		await projectData.donateToProject(donationData.project_id, parseFloat(donationData.donation), req.session.user.userId);
+		const project = await formatProjectFields(donationData.project_id);
+		const hasComments = project.comments.length !== 0;
+		res.render('projects/single', {
+			project: project, comments: project.comments, hasComments: hasComments,
+			canComment: true, canDonate: true, openToDonations: true, donationSuccessful: true
+		});
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}
@@ -323,5 +344,16 @@ router.get('/activate/:id', async (req, res) => {
 	}
 });
 
+async function formatProjectFields(projectId) {
+	let project = await projectData.getProject(projectId);
+	const user = await userData.getUser(project.creator);  // Get the user who created the campaign
+	project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+	project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
+	project.pledgeGoal = project.pledgeGoal.toLocaleString();
+	project.collected = project.collected.toLocaleString();
+	project.category = project.category.capitalize();
+	project.donors = project.backers.length;
+	return project;
+}
 
 module.exports = router;

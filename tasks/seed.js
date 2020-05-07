@@ -24,12 +24,12 @@ async function main(){
     let king = await users.addUser('King', 'sb','king@gmail.com', pass3,
         'Los Angles','CA');
 
-    await projects.addProject('ProT','medical',john._id,'Jan1',
+    await projects.addProject('ProT','medical',john._id, new Date(),
         1000,"this is description of ProT",0,[], [], true);
 
-    await projects.addProject('COL','medical',john._id,'Jan1',
+    await projects.addProject('COL','medical',john._id, new Date(),
         1000,"this is description of COL",0,[], [], true);
-    await projects.addProject('JAJA','business',jane._id,'Jan1',1000,
+    await projects.addProject('JAJA','business',jane._id, new Date(),1000,
                                 "this is description of JAJA",0,[], [],true);
     for(let i = 1; i < 9; i++){
         let testName = "Test Case" + i;

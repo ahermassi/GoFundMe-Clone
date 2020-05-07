@@ -2,24 +2,36 @@
     {{#unless openToDonations}}
         <div id="is-project-active">This project has been deactivated and can no longer accept donations.</div>
     {{/unless}}
+    {{#if donationSuccessful}}
+        <div id="donation-successful">Thank you for your donation!</div>
+    {{/if}}
     <h1>{{ project.title}}</h1>
-    <p>Author: {{project.creator }}</p>
-    <p>Created on: {{project.date}}</p>
+    <p>{{project.creator }} is organizing the fundraiser</p>
+    <p>Created {{project.date}}</p>
     <p>Category: {{project.category}}</p>
     <p>${{project.collected}} raised of ${{project.pledgeGoal}} goal</p>
-    <p>Description:</p>
+    <p>{{project.donors}} donors</p>
     <p>{{project.description}}</p>
     {{#if canDonate}}
         {{#if openToDonations}}
         <div id='donate-form'>
             <form action="/projects/donate" method="POST" class="donate-form">
-                <label for="donate">The amount you want donate:</label>
+                <label for="donate">Enter your donation:</label>
                 <input type="number" name="donation" id="donation" class="full-width-input" /><br>
                 <input type="hidden" name="project_id" value="{{project._id}}"/>
                 <button type="submit">Donate</button><br>
             </form>
         </div>
         {{/if}}
+    {{/if}}
+    {{#if hasErrors}}
+        <ul class="error-list">
+            {{#each errors}}
+                <li>
+                    {{this}}
+                </li>
+            {{/each}}
+        </ul>
     {{/if}}
     <div id="new-comments">
         <p>Comments:</p>
