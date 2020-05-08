@@ -179,12 +179,7 @@ router.post('/donate', async(req, res) => {
 
 	try {
 		await projectData.donateToProject(donationData.project_id, parseFloat(donationData.donation), req.session.user.userId);
-		const project = await formatProjectFields(donationData.project_id);
-		const hasComments = project.comments.length !== 0;
-		res.render('projects/single', {
-			project: project, comments: project.comments, hasComments: hasComments,
-			canComment: true, canDonate: true, openToDonations: true, donationSuccessful: true
-		});
+		res.redirect(`/projects/${donationData.project_id}`);
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}
