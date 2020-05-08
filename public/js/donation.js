@@ -1,38 +1,48 @@
-let donationForm = document.getElementById("donation-form");
-let donationInput = document.getElementById("donation");
-let donationInputError = document.getElementById("donation-error");
-let errorExists = false;
+(function($) {
+    var donationForm = $('#donation-form'), donationSuccessful = $('#donation-successful'),
+        donationInputError = $('#donation-error'), currentCollected = $('#current-collected');
 
-if(donationForm) {
-    donationForm.addEventListener("submit", (event) => {
-        if(!donationInput.value) {
-            event.preventDefault();
-            donationInputError.hidden = false;
-            donationInputError.innerHTML = 'Donation cannot be empty';
-            donationInput.focus();
-            errorExists = true;
+    donationForm.submit(function(event) {
+        event.preventDefault();
+        var donation = $('#donation').val(), projectId = $('#project_id').val();
 
+        if (!donation) {
+            donationInputError.removeAttr('hidden');
+            donationInputError.text('Donation cannot be empty');
         }
+
+        else if (!$.isNumeric(donation)) {
+            donationInputError.removeAttr('hidden');
+            donationInputError.text('Donation has to be a number');
+        }
+
+        else if (donation < 0) {
+            donationInputError.removeAttr('hidden');
+            donationInputError.text('Donation needs to be greater than zero');
+        }
+
         else {
-            if (isNaN(donationInput.value)) {
-                event.preventDefault();
-                donationInputError.hidden = false;
-                donationInputError.innerHTML = 'Donation needs to be a number';
-                errorExists = true;
+            donationInputError.attr('hidden', true);
+            var requestConfig = {
+                method: 'POST',
+                url: '/projects/donate',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    project_id: projectId,
+                    donation: donation,
+                })
+            };
 
-            }
-            if (parseFloat(donationInput.value) <= 0) {
-                event.preventDefault();
-                donationInputError.hidden = false;
-                donationInputError.innerHTML = 'Donation needs to be greater than zero';
-                errorExists = true;
-
-            }
+            $.ajax(requestConfig).then(function (responseMessage) {
+                var newElement = $(responseMessage);
+                donationSuccessful.append(newElement);
+                // Update the total money collected in the page
+                var previousAmount = parseFloat($('#current-collected').text().replace(',', ''));
+                currentCollected.text((previousAmount + parseFloat(donation)).toLocaleString());
+                $('#donation').val('');
+            });
         }
 
-        if(!errorExists) {
-            donationInputError.hidden = true;
-            donationForm.submit();
-        }
     })
-}
+
+})(window.jQuery);
