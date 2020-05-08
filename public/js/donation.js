@@ -1,7 +1,7 @@
 let donationForm = document.getElementById("donate-project");
 let donationInput = document.getElementById("donation");
 let errorDiv1 = document.getElementById("empty-donation");
-//let flag = false;
+let flag = false;
 if(donationForm){
     donationForm.addEventListener("submit", (event) =>{
         if(!donationInput.value){

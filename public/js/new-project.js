@@ -8,12 +8,21 @@ const newProjectTitleError = document.getElementById('no-title');
 const newProjectGoalError = document.getElementById('no-goal');
 const newProjectAmountError = document.getElementById('invalid-amount');
 const newProjectDescriptionError = document.getElementById('no-description');
+const newProjectTypeError = document.getElementById("invalid-type")
 
 if (newProjectForm){
 
     newProjectForm.addEventListener("submit", (event)  => {
         if (newProjectTitle.value && newProjectGoal.value && newProjectDescription.value.length > 0) {
-            if (newProjectGoal.value <= 0) {
+            if(isNaN(newProjectGoal.value)){
+                event.preventDefault();
+                newProjectTypeError.hidden = false;
+                newProjectTitleError.hidden =true;
+                newProjectDescriptionError.hidden = true;
+                newProjectGoalError.hidden = true;
+                newProjectAmountError.hidden = true;
+            }
+            else if (parseFloat(newProjectGoal.value ) <= 0) {
                 event.preventDefault();
                 newProjectGoalError.hidden = true;
                 newProjectAmountError.hidden = false;
@@ -22,9 +31,11 @@ if (newProjectForm){
                 //(then the user enter title and description,but leave a negative number in amount, it still show titleError and Description error)
                 newProjectTitleError.hidden =true;
                 newProjectDescriptionError.hidden = true;
+                newProjectTypeError.hidden = true;
             }
-            else
+            else{
                 newProjectForm.submit();
+            }
         }
         else {
             event.preventDefault();
@@ -32,7 +43,25 @@ if (newProjectForm){
             newProjectGoalError.hidden = newProjectGoal.value;
             if (newProjectGoal.value) {
                 newProjectGoalError.hidden = true;
-                newProjectAmountError.hidden = newProjectGoal.value > 0;
+                if(isNaN(newProjectGoal.value)){
+                    newProjectTypeError.hidden = false;
+                    newProjectAmountError.hidden = true;
+                }
+                else if(parseFloat(newProjectGoal.value ) <= 0){
+                    newProjectAmountError.hidden = false;
+                    newProjectTypeError.hidden = true;
+
+                }
+                else{
+                    newProjectAmountError.hidden = true;
+                    newProjectTypeError.hidden = true;
+                }
+    
+            }
+            else{
+                newProjectAmountError.hidden = true;
+                newProjectTypeError.hidden = true;
+
             }
             newProjectDescriptionError.hidden = newProjectDescription.value.length > 0;
         }
