@@ -12,13 +12,15 @@ String.prototype.capitalize = function() {
 };
 
 router.get('/', async (req, res) => {
-    const projectList = await projectData.getAllProjects();
-    for (let project of projectList) {  // Replace the creator ID with the creator name
-		const user = await userData.getUser(project.creator);
-		project.creator = user.firstName + " " + user.lastName;
+    let projectList = await projectData.getAllProjects();
+    for (let project of projectList) {
+		const user = await userData.getUser(project.creator);  // Get the user who created the campaign
+		project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+		project.pledgeGoal = project.pledgeGoal.toLocaleString();
+		project.collected = project.collected.toLocaleString();
 	}
     const canComment = req.session.user !== null;
-	res.render('projects/index',{title: 'Projects', projects: projectList, canComment: canComment, user: req.session.user});
+	res.render('projects/index',{title: 'Home', projects: projectList, canComment: canComment, user: req.session.user});
 });
 
 router.get('/new', async (req, res) => {
@@ -31,49 +33,28 @@ router.get('/search', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
 	try {
-		const project = await projectData.getProject(req.params.id);
-		const user = await userData.getUser(project.creator);  // Get the user who created the campaign
-		project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+		let project = await projectData.getProject(req.params.id);
+		const user = await userData.getUser(project.creator);
+		project = await formatProjectFields(req.params.id);
 		for (let comment of project.comments) {  // Replace the commentator ID with the commentator name in each comment
 			const commentator = await userData.getUser(comment.poster);
 			comment.poster = commentator.firstName + " " + commentator.lastName;
 		}
+		const openToDonations = project.active;  // A user can only donate if the project is active
 		const hasComments = project.comments.length !== 0;	
 		if(req.session.user) {
 			if(ObjectId(req.session.user.userId).equals(user._id))  // If the currently logged in user is the one who created the campaign
-				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments, canComment: true, canEdit: true});
+				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
+					canComment: true, canEdit: true, openToDonations: openToDonations});
 			else
 				// I can only donate to other users' campaigns
-				res.render('projects/single',{project:project, comments: project.comments, hasComments: hasComments, canComment: true, canDonate: true});
+				res.render('projects/single',{project:project, comments: project.comments, hasComments: hasComments,
+					canComment: true, canDonate: true, openToDonations: openToDonations});
 		}
-		else
-			res.render('projects/single', {project: project, comments: project.comments, hasComments: hasComments});
+		else // The project is read-only for non-authenticated users
+			res.render('projects/single', {project: project, comments: project.comments, hasComments: hasComments,
+			openToDonations: openToDonations});
 	} catch (e) {
-		res.status(500).json({ error: e.toString() });
-	}
-});
-
-router.get('/user/:creator', async (req, res) => {
-	// List the campaigns created by the user whose ID is 'creator' as well as the campaigns to which this user donated
-	try {
-		const projects = await projectData.getProjectsByUser(req.params.creator);
-		const user = await userData.getUser(req.params.creator);
-		let donated = [];
-		for(let eachDonatedProject of user.donated){
-			let donatedProject = await projectData.getProject(eachDonatedProject.projectId);
-			donatedProject.theUserDonatedAmount = eachDonatedProject.amount;
-			donated.push(donatedProject);
-		}
-		let hasDonated = donated.length !== 0;
-		for(let project of donated){
-			let user = await userData.getUser(project.creator);
-			project.creator = user.firstName + " " + user.lastName;
-		}
-		res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
-			hasDonated: hasDonated, donated: donated});
-	} catch (e) {
-		//the reason to change this is because if a user without any project, it will get the error at "const projects = await projectData.getProjectsByUser()"
-		//which throws an error without checking projects.length !== 0. What has been changed is the data/project getProjectsByUser
 		res.status(500).json({ error: e.toString() });
 	}
 });
@@ -91,21 +72,21 @@ router.post('/', async (req, res) => {
 	let newProjectData = req.body;
 	let errors = [];
 
-	if (!newProjectData.title) {
+	if (!newProjectData.title)
 		errors.push('No title provided');
-	}
 
-	if(!newProjectData.goal){
+	if(!newProjectData.goal)
 		errors.push('No pledge goal provided');
+
+	if (newProjectData.goal) {
+		if (isNaN(newProjectData.goal))
+			errors.push('Pledge goal needs to be a number');
+		else if (parseFloat(newProjectData.goal) <= 0)
+			errors.push('Pledge goal needs to be greater than zero');
 	}
 
-	if(parseFloat(newProjectData.goal)<0){
-		error.push('Pledge Goal need to be positive');
-	}
-
-	if (newProjectData.description.length === 0) {
+	if (newProjectData.description.length === 0)
 		errors.push('No description provided');
-	}
 
 	if (errors.length > 0) {
 		res.render('projects/new', {
@@ -119,7 +100,8 @@ router.post('/', async (req, res) => {
 	try {
 		const projectCreator = req.session.user.userId;
         const newProject = await projectData.addProject(newProjectData.title, newProjectData.category.capitalize(), projectCreator,
-			new Date(), newProjectData.goal, newProjectData.description,0,[], [], true);
+			new Date(), parseFloat(newProjectData.goal), newProjectData.description,0,[],
+			[], true);
 		res.redirect(`/projects/${newProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
@@ -130,21 +112,24 @@ router.post('/edit', async (req, res) => {
 	let updateProjectData = req.body;
 	let errors = [];
 
-	if (!updateProjectData.title) {
+	if (!updateProjectData.title)
 		errors.push('No title provided');
-	}
 
-	if (!updateProjectData.category) {
+	if (!updateProjectData.category)
 		errors.push('No category provided');
+
+	if(!updateProjectData.goal)
+		errors.push('No pledge goal provided');
+
+	if (updateProjectData.goal) {
+		if (isNaN(updateProjectData.goal))
+			errors.push('Pledge goal needs to be a number');
+		else if (parseFloat(updateProjectData.goal) <= 0)
+			errors.push('Pledge goal needs to be greater than zero');
 	}
 
-	if(!updateProjectData.goal){
-		errors.push('No pledge goal provided')
-	}
-
-	if (updateProjectData.description.length === 0) {
+	if (updateProjectData.description.length === 0)
 		errors.push('No description provided');
-	}
 
 	if (errors.length > 0) {
 		res.render('projects/edit', {
@@ -157,25 +142,49 @@ router.post('/edit', async (req, res) => {
 
 	try {
 		const updatedProject = await projectData.updateProject(updateProjectData.id, updateProjectData.title,
-			updateProjectData.category, updateProjectData.goal, updateProjectData.description);
+			updateProjectData.category, parseFloat(updateProjectData.goal), updateProjectData.description);
 		res.redirect(`/projects/${updatedProject._id}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
 });
 
-router.post('/donate', async(req, res)=>{
+router.post('/donate', async(req, res) => {
 	let donationData = req.body;
-	if(!donationData.donation){
-		res.redirect(`/projects/${donationData.project_id}`);
-		return;
+	let errors = [];
+
+	if(!donationData.donation)
+		errors.push('Donation needs to have a value');
+
+	if (donationData.donation) {
+		if (isNaN(donationData.donation))
+			errors.push('Donation needs to be a number');
+		if (parseFloat(donationData.donation) <= 0)
+			errors.push('Donation needs to be greater than zero');
 	}
-	if(typeof(donationData.donation) !== 'number')
-		donationData.donation = parseInt(donationData.donation);
+
+	if (errors.length > 0) {
+		try {
+			const project = await formatProjectFields(donationData.project_id);
+			const hasComments = project.comments.length !== 0;
+			res.render('projects/single', {
+				project: project, comments: project.comments, hasComments: hasComments,
+				canComment: true, canDonate: true, openToDonations: true, errors: errors, hasErrors: true
+			});
+			return;
+		} catch (e) {
+			res.status(500).json({ error: e.toString() });
+		}
+	}
 
 	try {
-		await projectData.donateToProject(donationData.project_id, donationData.donation, req.session.user.userId);
-		res.render('projects/result',{result: 'Donate successfully', projectId: donationData.project_id});
+		await projectData.donateToProject(donationData.project_id, parseFloat(donationData.donation), req.session.user.userId);
+		const project = await formatProjectFields(donationData.project_id);
+		const hasComments = project.comments.length !== 0;
+		res.render('projects/single', {
+			project: project, comments: project.comments, hasComments: hasComments,
+			canComment: true, canDonate: true, openToDonations: true, donationSuccessful: true
+		});
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}
@@ -291,5 +300,36 @@ router.post('/searchResult', async (req, res) => {
 	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist});
 });
 
+router.get('/deactivate/:id', async (req, res) => {
+	const projectId = req.params.id;
+	try {
+		await projectData.deactivateProject(projectId);
+		res.redirect(`/projects/${projectId}`);
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
+router.get('/activate/:id', async (req, res) => {
+	const projectId = req.params.id;
+	try {
+		await projectData.activateProject(projectId);
+		res.redirect(`/projects/${projectId}`)
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
+async function formatProjectFields(projectId) {
+	let project = await projectData.getProject(projectId);
+	const user = await userData.getUser(project.creator);  // Get the user who created the campaign
+	project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+	project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
+	project.pledgeGoal = project.pledgeGoal.toLocaleString();
+	project.collected = project.collected.toLocaleString();
+	project.category = project.category.capitalize();
+	project.donors = project.backers.length;
+	return project;
+}
 
 module.exports = router;

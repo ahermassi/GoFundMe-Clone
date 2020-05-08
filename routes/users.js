@@ -3,6 +3,7 @@ const passwordHash = require('password-hash');
 const router = express.Router();
 const data = require('../data');
 const userData = data.users;
+const projectData = data.projects;
 
 router.get('/all', async (req, res) => {
     try {
@@ -115,6 +116,34 @@ router.post('/', async (req, res) => {
 router.get('/logout', async (req, res) => {
     req.session.destroy();
     res.redirect('/projects');
+});
+
+router.get('/history/:userId', async (req, res) => {
+    // List the campaigns created by the user whose ID is 'userId' as well as the campaigns to which this user donated
+    try {
+        const projects = await projectData.getProjectsByUser(req.params.userId);
+        const user = await userData.getUser(req.params.userId);
+        let hasDonated = user.donated.length !== 0;
+        for(let donation of user.donated) {
+            const project = await projectData.getProject(donation.projectId);
+            let user = await userData.getUser(project.creator);
+            donation.projectTitle = project.title;
+            donation.projectCreator = user.firstName + " " + user.lastName;
+        }
+        for (let project of projects) {
+            project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
+            project.pledgeGoal = project.pledgeGoal.toLocaleString();
+            project.collected = project.collected.toLocaleString();
+            project.donors = project.backers.length;
+        }
+        res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
+            hasDonated: hasDonated, donated: user.donated});
+    } catch (e) {
+        // The reason to change this is because if a user has no projects, it will get the error at
+        // "const projects = await projectData.getProjectsByUser()", which throws an error without checking
+        // projects.length !== 0. What has been changed is the data/project getProjectsByUser()
+        res.status(500).json({ error: e.toString() });
+    }
 });
 
 module.exports = router;

@@ -109,7 +109,7 @@ module.exports = {
 
         const projectsList = userToDelete.projects;
         for (let projectId of projectsList) {  // Deactivate all the projects of the user
-            const deleteProjects = await projectsAPI.removeProject(projectId);
+            const deleteProjects = await projectsAPI.deactivateProject(projectId);
             if (deleteProjects === 0){
                 throw 'Could not remove project';
             }
