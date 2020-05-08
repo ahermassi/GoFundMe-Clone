@@ -56,7 +56,15 @@ function filterProjectsByCollectedAmount(projects, lowerBound, higherBound) {
     return result;
 }
 
+function sortProjectsByCreateDate(projects){
+    if(!Array.isArray(projects) || projects.length === 0) throw 'No project passed to sortProjectsByCreateDate';
+    const sortedProjects = projects.slice().sort((a,b)=>b.date-a.date);
+    return sortedProjects;
+
+}
+
 module.exports = {
     filterProjectsByPledgeGoal,
-    filterProjectsByCollectedAmount
+    filterProjectsByCollectedAmount,
+    sortProjectsByCreateDate
 };

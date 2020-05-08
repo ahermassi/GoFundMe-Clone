@@ -27,9 +27,9 @@ async function main(){
     await projects.addProject('ProT','medical',john._id, new Date(),
         1000,"this is description of ProT",0,[], [], true);
 
-    await projects.addProject('COL','medical',john._id, new Date(),
+    await projects.addProject('COL','medical',john._id, new Date(2020,3,22,9,22),
         1000,"this is description of COL",0,[], [], true);
-    await projects.addProject('JAJA','business',jane._id, new Date(),1000,
+    await projects.addProject('JAJA','business',jane._id, new Date(2020,3,22,14,16),1000,
                                 "this is description of JAJA",0,[], [],true);
     for(let i = 1; i < 9; i++){
         let testName = "Test Case" + i;
@@ -42,9 +42,10 @@ async function main(){
         else
             creator = jane._id;
 
-        await projects.addProject(testName, category, creator, new Date(), goal, desc,0,[],[],true)
+        await projects.addProject(testName, category, creator, new Date(2020,3,i,i+i%3,6*i), goal, desc,0,[],[],true)
 
     }
+    //Recent should be Prot, JAJA,COL,Test Case8-1
     console.log('Done seeding database');
 	await db.serverConfig.close();
 }

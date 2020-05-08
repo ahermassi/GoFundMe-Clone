@@ -19,6 +19,9 @@ router.get('/', async (req, res) => {
 		project.pledgeGoal = project.pledgeGoal.toLocaleString();
 		project.collected = project.collected.toLocaleString();
 	}
+	if(projectList.length>0){
+		projectList = statistics.sortProjectsByCreateDate(projectList);
+	}
     const canComment = req.session.user !== null;
 	res.render('projects/index',{title: 'Home', projects: projectList, canComment: canComment, user: req.session.user});
 });
