@@ -134,7 +134,7 @@ router.get('/history/:userId', async (req, res) => {
             project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
             project.pledgeGoal = project.pledgeGoal.toLocaleString();
             project.collected = project.collected.toLocaleString();
-            project.donors = project.backers.length;
+            project.donors = project.donations.length;
         }
         res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
             hasDonated: hasDonated, donated: user.donated});
