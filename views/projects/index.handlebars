@@ -1,7 +1,6 @@
  {{#if user}}
      <div>
-         <p>User: {{user.firstName}} {{user.lastName}}</p>
-         <p id = 'user-id'>{{user.userId}}</p>
+         <p>Hello, {{user.firstName}}!</p>
          <a href="/users/history/{{user.userId}}" class="link-styles">My history</a><br/>
          <a href="/projects/new" class="link-styles">Start a campaign</a><br/>
          <a href="/users/logout" class="link-styles">Log out</a>

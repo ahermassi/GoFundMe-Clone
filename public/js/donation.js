@@ -35,7 +35,10 @@
 
             $.ajax(requestConfig).then(function (responseMessage) {
                 var newElement = $(responseMessage);
-                donationSuccessful.append(newElement);
+                var t = newElement.text();
+                var totalDonors = t.split('.')[1];
+                donationSuccessful.html(t.split('.')[0]);
+                $('#number-of-donors').text(totalDonors);
                 // Update the total money collected in the page
                 var previousAmount = parseFloat($('#current-collected').text().replace(',', ''));
                 currentCollected.text((previousAmount + parseFloat(donation)).toLocaleString());

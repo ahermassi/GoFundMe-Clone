@@ -180,7 +180,8 @@ router.post('/donate', async(req, res) => {
 		let project = await projectData.getProject(donationData.project_id);
 		project = await formatProjectFields(project._id);
 		await fillCommentatorName(project);
-		res.render('partials/donation-successful', {layout:null});
+		const d = {totalDonors: project.donations.length};
+		res.render('partials/donation-successful', {layout:null, ...d});
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}
@@ -332,7 +333,7 @@ async function formatProjectFields(projectId) {
 	project.pledgeGoal = project.pledgeGoal.toLocaleString();
 	project.collected = project.collected.toLocaleString();
 	project.category = project.category.capitalize();
-	project.donors = project.backers.length;
+	project.donors = project.donations.length;
 	return project;
 }
 
