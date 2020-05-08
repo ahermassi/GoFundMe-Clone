@@ -203,25 +203,33 @@ router.post('/searchResult', async (req, res) => {
 	let searchProjectData = req.body;
 	let errors = [];
 
-	if(searchProjectData.from_pledged && searchProjectData.to_pledged &&
+	if(isNaN(searchProjectData.from_pledged))
+		errors.push('Pledge goal lower bound needs to be a number');
+	else if(parseFloat(searchProjectData.from_pledged) < 0)
+		errors.push('Pledge goal lower bound needs to be positive');
+
+	if(isNaN(searchProjectData.to_pledged))
+		errors.push('Pledge goal upper bound needs to be a number');
+	else if(parseFloat(searchProjectData.to_pledged) < 0)
+		errors.push('Pledge goal upper bound needs to be positive');
+
+	if(isNaN(searchProjectData.from_collected))
+		errors.push('Collected amount lower bound needs to be a number');
+	else if(parseFloat(searchProjectData.from_collected) < 0)
+		errors.push('Collected amount lower bound needs to be positive');
+
+	if(isNaN(searchProjectData.to_collected))
+		errors.push('Collected amount upper bound needs to be a number');
+	else if(parseFloat(searchProjectData.to_collected) < 0)
+		errors.push('Collected amount upper bound needs to be positive');
+
+	if(!isNaN(searchProjectData.from_pledged) && !isNaN(searchProjectData.to_pledged) &&
 		parseFloat(searchProjectData.from_pledged) > parseFloat(searchProjectData.to_pledged))
 		errors.push('Pledge goal lower bound can\'t be greater than its upper bound');
 
-	if(searchProjectData.from_collected && searchProjectData.to_collected &&
+	if(!isNaN(searchProjectData.from_collected) && !isNaN(searchProjectData.to_collected) &&
 		parseFloat(searchProjectData.from_collected) > parseFloat(searchProjectData.to_collected))
 		errors.push('Collected amount lower bound can\'t be greater than its upper bound');
-
-	if(parseFloat(searchProjectData.from_pledged) < 0)
-		errors.push('Please enter a positive number in pledge goal lower bound');
-
-	if(parseFloat(searchProjectData.to_pledged) < 0)
-		errors.push('Please enter a positive number in pledge goal upper bound');
-
-	if(parseFloat(searchProjectData.from_collected) < 0)
-		errors.push('Please enter a positive number in collected amount lower bound');
-
-	if(parseFloat(searchProjectData.to_collected) < 0)
-		errors.push('Please enter a positive number in collected amount upper bound');
 
 	if(errors.length > 0) {
 		res.render('projects/search',{title:'Search', hasErrors: true, errors: errors, searchProjectData: searchProjectData});
