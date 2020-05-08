@@ -40,18 +40,6 @@
                 <p>{{poster}} wrote: {{comment}}</p>
             {{/each}}
         {{/if}}
-<<<<<<< HEAD
-    {{#if canDonate}}
-    <div id='donate-form'>
-        <form action="/projects/donate" id = "donate-project" method="POST" class="donate-form">
-            <label for="donate">The amount you want donate:</label>
-            <input type="number" name="donation" id="donation" class="full-width-input" /><br>
-            <input type="hidden" name="project_id" value="{{project._id}}" />
-            <button type="submit">Donate</button><br>
-        </form>
-        <div id="empty-donation" hidden></div>
-=======
->>>>>>> 065e049a581e4d1a55334a2185db04b86fcff2dd
     </div>
     {{#if canComment}}
     <form id="comment-form" action="/projects/comment" method="post">
