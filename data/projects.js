@@ -5,7 +5,7 @@ const { ObjectId } = require('mongodb');
 
 module.exports = {
     async addProject(projectTitle, projectCategory, projectCreator, projectDate, projectPledgeGoal, projectDescription,
-                     projectCollected=0, projectBackers=[], projectComments = [], active=true) {
+                     projectCollected=0, projectDonations=[], projectComments = [], active=true) {
 
         if (!projectTitle) throw 'You must provide a title for your project';
         if (!projectCategory) throw 'You must provide a category for your project';
@@ -23,7 +23,7 @@ module.exports = {
             date: projectDate,
             pledgeGoal: projectPledgeGoal,
             collected: projectCollected,
-            backers: projectBackers,
+            donations: projectDonations,
             description: projectDescription,
             comments: projectComments,
             active: active
@@ -129,13 +129,26 @@ module.exports = {
         const projectsCollection = await projects();
         const targetProject = await this.getProject(projectId);
         let newCollected = parseInt(targetProject.collected) + amount;
-        let backers = targetProject.backers;
-        if (!backers.includes(donatorId))
-            backers.push(donatorId);
+        let donations = targetProject.donations;
+        let donatedBefore = false;
+        for (let donation of donations) {
+            if (donation.donatorId === donatorId) {
+                donation.amount += amount;
+                donatedBefore = true;
+                break;
+            }
+        }
+        if (!donatedBefore) {
+            let newDonation = {
+                donatorId: donatorId,
+                amount: amount
+            };
+            donations.push(newDonation);
+        }
         const updateInfo = await projectsCollection.updateOne({_id: ObjectId(projectId)}, {
                 $set: {
                     collected: newCollected,
-                    backers: backers
+                    donations: donations
                 }
             });
         if (updateInfo.modifiedCount === 0)

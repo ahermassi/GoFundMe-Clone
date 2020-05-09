@@ -22,25 +22,29 @@
                 <label for="from">By pledge goal:&nbsp;&nbsp;From:</label>
                 <input type="number" name="from_pledged" id="from-pledged" value="{{searchProjectData.from_pledged}}"
                     class="full-width-input form-control" />
-                <div id="invalid-from-pledged"  hidden>Please enter a positive number in pledge goal lower bound</div>
+                <div id="from-pledged-nan" hidden>Pledge goal lower bound needs to be a number</div>
+                <div id="invalid-from-pledged" hidden>Pledge goal lower bound needs to be positive</div>
             </div>
             <div class="form-group">
                 <label for="to-pledged">To:</label>
                 <input type="number" name="to_pledged" id="to-pledged" value="{{searchProjectData.to_pledged}}"
                     class="full-width-input form-control" />
-                <div id="invalid-to-pledged"  hidden>Please enter a positive number in pledge goal upper bound</div>
+                <div id="to-pledged-nan" hidden>Pledge goal upper bound needs to be a number</div>
+                <div id="invalid-to-pledged" hidden>Pledge goal upper bound needs to be positive</div>
             </div>
             <div class="form-group">
                 <label for="from-collected">By collected amount:&nbsp;&nbsp;From:</label>
                 <input type="number" name="from_collected" id="from-collected"
                     value="{{searchProjectData.from_collected}}" class="full-width-input form-control" />
-                <div id="invalid-from-collected"  hidden>Please enter a positive number in collected amount lower bound</div>
+                <div id="from-collected-nan" hidden>Collected amount lower bound needs to be a number</div>
+                <div id="invalid-from-collected" hidden>Collected amount lower bound needs to be positive</div>
             </div>
             <div class="form-group">
                 <label for="to-collected">To:</label>
                 <input type="number" name="to_collected" id="to-collected" value="{{searchProjectData.to_collected}}"
                     class="full-width-input form-control" />
-                <div id="invalid-to-collected" hidden>Please enter a positive number in collected amount upper bound</div>
+                <div id="to-collected-nan" hidden>Collected amount upper bound needs to be a number</div>
+                <div id="invalid-to-collected" hidden>Collected amount upper bound needs to be positive</div>
             </div>
             <button type="submit btn btn-success">Search</button><br>
         </form>

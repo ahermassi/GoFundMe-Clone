@@ -1,15 +1,29 @@
-<section>
-    {{#if noResult}}
-        <h1>There is no related projects</h1>
-    {{else}}
-        <h1>Search Results:</h1>
-        {{#each projects}}
-        <article class="projects">
-            <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
-            <p>Author: {{creator}}</p>
-            <p>Date: {{date}}</p>
-        </article>
-        {{/each}}
-    {{/if}}
-</section>
-<a href="/projects">Back to All Projects</a>
+{{#if resultsExist}}
+    <h1>Search Results</h1>
+    <a class="btn btn-outline-success" href="/projects/search" role="button">New Search</a><br><br>
+    <div class="card">
+        <div id="recent-projects" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+            <div class="row">
+                {{#each projects}}
+                    <div class="col-md-4">
+                        <div class="card-body">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{title}}</h5>
+                                    <p class="card-text">Started by {{creator}}<br/>Created {{date}}</p>
+                                    <a href="/projects/{{_id}}" class="btn btn-primary">Project Page</a>
+                                </div>
+                            </div>
+                            <br/>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+{{else}}
+    <div class="alert alert-warning" role="alert">
+        Your search returned no results! <br>
+    </div>
+    <a class="btn btn-outline-success" href="/projects/search" role="button">New Search</a>
+{{/if}}

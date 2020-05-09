@@ -1,24 +1,58 @@
- <!--{{#if user}}
-     <div>
-         <p>User: {{user.firstName}} {{user.lastName}}</p>
-         <p id = 'user-id'>{{user.userId}}</p>
-         <a href="/users/history/{{user.userId}}" class="link-styles">My history</a><br/>
-         <a href="/projects/new" class="link-styles">Start a campaign</a><br/>
-         <a href="/users/logout" class="link-styles">Log out</a>   
+ <div id="accordion">
+     <div class="card">
+         <div class="card-header" id="headingOne">
+             <h5 class="mb-0">
+                 <button class="btn btn-link" data-toggle="collapse" data-target="#recent-projects" aria-expanded="true" aria-controls="recent-projects">
+                     Recent Projects
+                 </button>
+             </h5>
+         </div>
+         <div id="recent-projects" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+             <div class="row">
+                 {{#each projectsByCreationDate}}
+                 <div class="col-md-4">
+                     <div class="card-body">
+                         <div class="card" style="width: 18rem;">
+                             <div class="card-body">
+                                 <h5 class="card-title">{{title}}</h5>
+                                 <p class="card-text">Started by {{creator}}<br/>${{collected}} raised of ${{pledgeGoal}} goal
+                                     <br/>Created {{date}}</p>
+                                 <a href="/projects/{{_id}}" class="btn btn-primary">View details</a>
+                             </div>
+                         </div>
+                     <br/>
+                     </div>
+                 </div>
+                 {{/each}}
+             </div>
+         </div>
      </div>
- {{else}}
-     <div id = 'login-container'>
-         <a href="/users/signin" class="link-styles">Sign In</a><br/>
-         <a href="/users/register" class="link-styles">Register</a>
+     <div class="card">
+         <div class="card-header" id="headingTwo">
+             <h5 class="mb-0">
+                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#trending-projects" aria-expanded="false" aria-controls="trending-projects">
+                     Trending Projects
+                 </button>
+             </h5>
+         </div>
+         <div id="trending-projects" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+             <div class="row">
+                 {{#each projectsByCollectedAmount}}
+                     <div class="col-md-4">
+                         <div class="card-body">
+                             <div class="card" style="width: 18rem;">
+                                 <div class="card-body">
+                                     <h5 class="card-title">{{title}}</h5>
+                                     <p class="card-text">Started by {{creator}}<br/>${{collected}} raised of ${{pledgeGoal}} goal
+                                         <br/>Created {{date}}</p>
+                                     <a href="/projects/{{_id}}" class="btn btn-primary">View details</a>
+                                 </div>
+                             </div>
+                             <br/>
+                         </div>
+                     </div>
+                 {{/each}}
+             </div>
+         </div>
      </div>
- {{/if}} -->
-<section>
-    <h1>Recent Projects</h1>
-    {{#each projects}}
-        <article class="projects">
-            <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
-            <p>Author: {{creator}}</p>
-            <p>${{collected}} raised of ${{pledgeGoal}} goal</p>
-        </article>
-    {{/each}}
-</section>
+ </div>

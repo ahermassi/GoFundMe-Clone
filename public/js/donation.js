@@ -1,41 +1,50 @@
-let donationForm = document.getElementById("donate-project");
-let donationInput = document.getElementById("donation");
-let errorDiv1 = document.getElementById("empty-donation");
-let flag = false;
-if(donationForm){
-    donationForm.addEventListener("submit", (event) =>{
-        if(!donationInput.value){
-            event.preventDefault();
-            errorDiv1.hidden = false;
-            errorDiv1.innerHTML = 'Donation cannot be empty';
-            errorDiv1.focus();
-            flag = true;
+(function($) {
+    var donationForm = $('#donation-form'), donationSuccessful = $('#donation-successful'),
+        donationInputError = $('#donation-error'), currentCollected = $('#current-collected');
 
-        }
-        else{
-            if (isNaN(donationInput.value)){
-                event.preventDefault();
-                errorDiv1.hidden = false;
-                errorDiv1.innerHTML = 'Donation needs to be a number'
-                flag = true;
+    donationForm.submit(function(event) {
+        event.preventDefault();
+        var donation = $('#donation').val(), projectId = $('#project_id').val();
 
-            }
-            if (parseFloat(donationInput.value) <= 0){
-                event.preventDefault();
-                errorDiv1.hidden = false;
-                errorDiv1.innerHTML = 'Donation needs to be greater than zero'
-                flag = true;
-
-            }
-
-            
+        if (!donation) {
+            donationInputError.removeAttr('hidden');
+            donationInputError.text('Donation cannot be empty');
         }
 
-        if(!flag){
-            errorDiv1.hidden = true;
-            donationForm.submit();
+        else if (!$.isNumeric(donation)) {
+            donationInputError.removeAttr('hidden');
+            donationInputError.text('Donation has to be a number');
         }
 
+        else if (donation < 0) {
+            donationInputError.removeAttr('hidden');
+            donationInputError.text('Donation needs to be greater than zero');
+        }
+
+        else {
+            donationInputError.attr('hidden', true);
+            var requestConfig = {
+                method: 'POST',
+                url: '/projects/donate',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    project_id: projectId,
+                    donation: donation,
+                })
+            };
+
+            $.ajax(requestConfig).then(function (responseMessage) {
+                var newElement = $(responseMessage);
+                var totalDonors = newElement.text().split('.')[1];
+                donationSuccessful.html(newElement.text().split('.')[0]);
+                $('#number-of-donors').text(totalDonors);
+                // Update the total money collected in the page
+                var previousAmount = parseFloat($('#current-collected').text().replace(',', ''));
+                currentCollected.text((previousAmount + parseFloat(donation)).toLocaleString());
+                $('#donation').val('');
+            });
+        }
 
     })
-}
+
+})(window.jQuery);
