@@ -10,19 +10,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
     <main class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1 class = "heading">Crowdfunding Web App</h1>
-                <a href="/">Home</a><br/>
-                <a href="/projects/search">Search</a><br/>
+                <h1 class="heading">Crowdfunding Web App</h1>
+                <nav class="navbar navbar-inverse">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="#">WebSiteName</a>
+                        </div>
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="/">Home</a></li>
+                            
+                            {{#if logged}}
+                            <li class="active"><a href="/projects/search">Search</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="/projects/new">Start a campaign
+                                    <span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                        <li><a href="/users/history/{{user.userId}}" >My history</a></li>
+                                        <li><a href="/users/logout">Log out</a> </li>
+                                </ul>
+                                    {{else}}
+                                        <li class = "active"><a href="/users/signin">Sign In</a></li>
+                                        <li class = "active"><a href="/users/register">Register</a></li>
+                                    {{/if}}
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
                 {{{body}}}
-            </div>
+            </div>  
         </div>
-    </main>
+    </main>  
     <script src="/public/js/signin.js"></script>
     <script src="/public/js/register.js"></script>
     <script src="/public/js/new-project.js"></script>
@@ -30,12 +54,13 @@
     <script src="/public/js/comments.js"></script>
     <script src="/public/js/search.js"></script>
     <script src="/public/js/donation.js"></script>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"
-        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-        integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-        crossorigin="anonymous"></script>
     <script src="/public/js/comments-ajax.js"></script>
-</body>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
+</body>
 </html>

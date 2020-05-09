@@ -2,73 +2,72 @@
     {{#unless openToDonations}}
         <div id="is-project-active">This project has been deactivated and can no longer accept donations.</div>
     {{/unless}}
-    {{#if donationSuccessful}}
-        <div id="donation-successful">Thank you for your donation!</div>
-    {{/if}}
-    <h1>{{ project.title}}</h1>
-    <p>{{project.creator }} is organizing the fundraiser</p>
-    <p>Created {{project.date}}</p>
-    <p>Category: {{project.category}}</p>
-    <p>${{project.collected}} raised of ${{project.pledgeGoal}} goal</p>
-    <p>{{project.donors}} donors</p>
-    <p>{{project.description}}</p>
-    {{#if canDonate}}
-        {{#if openToDonations}}
-        <div id='donate-form'>
-            <form action="/projects/donate" method="POST" class="donate-form">
-                <label for="donate">Enter your donation:</label>
-                <input type="number" name="donation" id="donation" class="full-width-input" /><br>
-                <input type="hidden" name="project_id" value="{{project._id}}"/>
-                <button type="submit">Donate</button><br>
-            </form>
-        </div>
-        {{/if}}
-    {{/if}}
-    {{#if hasErrors}}
-        <ul class="error-list">
-            {{#each errors}}
-                <li>
-                    {{this}}
-                </li>
-            {{/each}}
-        </ul>
-    {{/if}}
-    <div id="new-comments">
-        <p>Comments:</p>
-        {{#if hasComments}}
-            {{#each comments}}
-                <p>{{poster}} wrote: {{comment}}</p>
-            {{/each}}
-        {{/if}}
-<<<<<<< HEAD
-    {{#if canDonate}}
-    <div id='donate-form'>
-        <form action="/projects/donate" id = "donate-project" method="POST" class="donate-form">
-            <label for="donate">The amount you want donate:</label>
-            <input type="number" name="donation" id="donation" class="full-width-input" /><br>
-            <input type="hidden" name="project_id" value="{{project._id}}" />
-            <button type="submit">Donate</button><br>
-        </form>
-        <div id="empty-donation" hidden></div>
-=======
->>>>>>> 065e049a581e4d1a55334a2185db04b86fcff2dd
-    </div>
-    {{#if canComment}}
-    <form id="comment-form" action="/projects/comment" method="post">
-        <label for="comment"></label>
-        <textarea rows="2" cols="50" placeholder="Leave a comment" name="comment" id="comment"></textarea>
-        <input type="hidden" name="project_id" id="project_id" value="{{project._id}}" />
-        <button type="submit">Comment</button>
-    </form>
-    <div id="empty-comment" hidden></div>
-    {{/if}}
-    {{#if canEdit}}
-        <a href="/projects/edit/{{project._id}}">Edit Project</a><br>
-        {{#if openToDonations}}
-            <a id="deactivate-project" href="/projects/deactivate/{{project._id}}">Deactivate Project</a><br>
+    <div id="donation-successful"></div>
+    <div class="project-center">
+        <h1>{{ project.title}}</h1>
+        <p>{{project.creator }} is organizing the fundraiser</p>
+        <p>Created {{project.date}}</p>
+        <p>Category: {{project.category}}</p>
+        <p>{{project.description}}</p>
+        {{#if canDonate}}
+            {{#if openToDonations}}
+                <div class="right">
+                    <form action="/projects/donate" method="POST" id='donation-form' class="donate-form">
+                        <label for="donate">Enter your donation:</label>
+                        <input type="text" name="donation" id="donation" class="full-width-input" />
+                        <input type="hidden" name="project_id" value="{{project._id}}"/>
+                        <button type="submit">Donate</button><br>
+                        <div id="donation-error" hidden></div>
+                        <br>
+                        <p>$<span id="current-collected">{{project.collected}}</span> raised of ${{project.pledgeGoal}} goal</p>
+                        <p>{{project.donors}} donors</p>
+                    </form>
+                </div>
+           {{else}}
+              <p>$<span id="current-collected">{{project.collected}}</span> raised of ${{project.pledgeGoal}} goal</p>
+              <p>{{project.donors}} donors</p>
+           {{/if}}       
         {{else}}
-            <a id="activate-project" href="/projects/activate/{{project._id}}">Activate Project</a><br>
+            <p>$<span id="current-collected">{{project.collected}}</span> raised of ${{project.pledgeGoal}} goal</p>
+            <p>{{project.donors}} donors</p>
+        {{/if}}    
+
+        {{#if hasErrors}}
+            <ul class="error-list">
+                {{#each errors}}
+                    <li>
+                        {{this}}
+                    </li>
+               {{/each}}
+            </ul>
         {{/if}}
-    {{/if}}
+        <div id="new-comments">
+            <p>Comments:</p>
+            {{#if hasComments}}  
+                {{#each comments}}
+                    <p>{{poster}} wrote: {{comment}}</p>
+                {{/each}}
+            {{/if}}
+        </div>
+        {{#if canComment}}
+            <form id="comment-form" action="/projects/comment" method="post">
+                <div class="form-group">
+                    <label for="comment"></label>
+                    <textarea rows="2" cols="50" placeholder="Leave a comment" name="comment" id="comment"></textarea>
+                </div>
+                <input type="hidden" name="project_id" id="project_id" value="{{project._id}}" />
+                <button type="submit">Comment</button>
+            </form>
+            <div id="empty-comment" hidden></div>
+        {{/if}}
+        {{#if canEdit}}
+            <a href="/projects/edit/{{project._id}}">Edit Project</a><br>
+            {{#if openToDonations}}
+                <a id="deactivate-project" href="/projects/deactivate/{{project._id}}">Deactivate Project</a><br>
+            {{else}}
+                <a id="activate-project" href="/projects/activate/{{project._id}}">Activate Project</a><br>
+            {{/if}}
+        {{/if}}
     <a href="/projects">Back to All Projects</a>
+    </div>
 </article>
