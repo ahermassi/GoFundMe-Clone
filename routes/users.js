@@ -4,6 +4,7 @@ const router = express.Router();
 const data = require('../data');
 const userData = data.users;
 const projectData = data.projects;
+const statistics = require('../data/statistics');
 
 router.get('/all', async (req, res) => {
     try {
@@ -121,7 +122,7 @@ router.get('/logout', async (req, res) => {
 router.get('/history/:userId', async (req, res) => {
     // List the campaigns created by the user whose ID is 'userId' as well as the campaigns to which this user donated
     try {
-        const projects = await projectData.getProjectsByUser(req.params.userId);
+        let projects = await projectData.getProjectsByUser(req.params.userId);
         const user = await userData.getUser(req.params.userId);
         let hasDonated = user.donated.length !== 0;
         for(let donation of user.donated) {
@@ -129,6 +130,9 @@ router.get('/history/:userId', async (req, res) => {
             let user = await userData.getUser(project.creator);
             donation.projectTitle = project.title;
             donation.projectCreator = user.firstName + " " + user.lastName;
+        }
+        if(projects.length>0){
+            projects = statistics.sortProjectsByCreateDate(projects);
         }
         for (let project of projects) {
             project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
