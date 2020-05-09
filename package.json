@@ -19,12 +19,12 @@
   },
   "homepage": "https://github.com/ahermassi/CS546-Crowdfunding#readme",
   "dependencies": {
-    "bcrypt": "^3.0.6",
     "express": "^4.17.1",
     "express-handlebars": "^3.1.0",
     "express-session": "^1.17.1",
     "handlebars": "^4.1.2",
     "mongodb": "^3.3.0-beta2",
-    "password-hash": "^1.2.2"
+    "password-hash": "^1.2.2",
+    "xss": "^1.0.6"
   }
 }

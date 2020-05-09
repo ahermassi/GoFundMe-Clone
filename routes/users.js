@@ -5,6 +5,7 @@ const data = require('../data');
 const userData = data.users;
 const projectData = data.projects;
 const utilities = require('../public/js/utilities');
+const xss = require('xss');
 
 router.get('/all', async (req, res) => {
     try {
@@ -106,8 +107,8 @@ router.post('/', async (req, res) => {
     }
     try {
         const hashedPassword = passwordHash.generate(newUser.password);
-        await userData.addUser(newUser.first_name, newUser.last_name, newUser.email, hashedPassword, newUser.city,
-            newUser.state);
+        await userData.addUser(xss(newUser.first_name), xss(newUser.last_name), xss(newUser.email), hashedPassword,
+            xss(newUser.city), xss(newUser.state));
         res.redirect('/users/signin');
     }catch(e){
         res.status(500).json({error: e.toString()})
