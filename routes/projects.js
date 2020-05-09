@@ -299,10 +299,9 @@ router.post('/searchResult', async (req, res) => {
 	if (results.length === 0)
 		resultsExist = false;
 	else {
-		for (let project of results) {
-			const user = await userData.getUser(project.creator);
-			project.creator = user.firstName + " " + user.lastName;
-		}
+		for (let project of results)
+			results[results.findIndex(obj => obj._id === project._id)] = await utilities.formatProjectFields(project._id);
+
 	}
 	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist});
 });
