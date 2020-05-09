@@ -20,17 +20,18 @@ router.get('/', async (req, res) => {
 		projectsByCreationDate = utilities.sortProjectsByCreationDate(projectList);
 		projectsByCollectedAmount = utilities.sortProjectsByCollectedAmount(projectList);
 	}
-    const canComment = req.session.user !== null;
+	const isLogged = req.session.user ? true : false;
 	res.render('projects/index',{title: 'Home', projectsByCreationDate: projectsByCreationDate,
-		projectsByCollectedAmount: projectsByCollectedAmount, canComment: canComment, user: req.session.user});
+		projectsByCollectedAmount: projectsByCollectedAmount, logged: isLogged, user: req.session.user});
 });
 
 router.get('/new', async (req, res) => {
-	res.render('projects/new',{title: 'New Project'});
+	res.render('projects/new',{title: 'New Project', logged: true});
 });
 
 router.get('/search', async (req, res) => {
-	res.render('projects/search', {title: 'Search'});
+	const isLogged = req.session.user ? true : false;
+	res.render('projects/search', {title: 'Search', logged: isLogged});
 });
 
 router.get('/:id', async (req, res) => {
@@ -44,15 +45,15 @@ router.get('/:id', async (req, res) => {
 		if(req.session.user) {
 			if(ObjectId(req.session.user.userId).equals(user._id))  // If the currently logged in user is the one who created the campaign
 				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
-					canComment: true, canEdit: true, openToDonations: openToDonations});
+					canComment: true, canEdit: true, openToDonations: openToDonations, logged: true});
 			else
 				// I can only donate to other users' campaigns
 				res.render('projects/single',{project:project, comments: project.comments, hasComments: hasComments,
-					canComment: true, canDonate: true, openToDonations: openToDonations});
+					canComment: true, canDonate: true, openToDonations: openToDonations, logged: true});
 		}
 		else // The project is read-only for non-authenticated users
 			res.render('projects/single', {project: project, comments: project.comments, hasComments: hasComments,
-			openToDonations: openToDonations});
+			openToDonations: openToDonations, logged: false});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -61,7 +62,7 @@ router.get('/:id', async (req, res) => {
 router.get('/edit/:id', async (req, res) => {
 	try {
 		const project = await projectData.getProject(req.params.id);
-		res.render('projects/edit', {title: 'Edit Project', project: project});
+		res.render('projects/edit', {title: 'Edit Project', project: project, logged: true});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -135,6 +136,7 @@ router.post('/edit', async (req, res) => {
 			errors: errors,
 			hasErrors: true,
 			project: updateProjectData,
+			logged: true
 		});
 		return;
 	}
@@ -169,7 +171,7 @@ router.post('/donate', async(req, res) => {
 			const hasComments = project.comments.length !== 0;
 			res.render('projects/single', {
 				project: project, comments: project.comments, hasComments: hasComments,
-				canComment: true, canDonate: true, openToDonations: true, errors: errors, hasErrors: true
+				canComment: true, canDonate: true, openToDonations: true, errors: errors, hasErrors: true, logged: true
 			});
 			return;
 		} catch (e) {
@@ -303,7 +305,8 @@ router.post('/searchResult', async (req, res) => {
 			results[results.findIndex(obj => obj._id === project._id)] = await utilities.formatProjectFields(project._id);
 
 	}
-	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist});
+	const isLogged = req.session.user ? true : false;
+	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist, logged: isLogged});
 });
 
 router.get('/deactivate/:id', async (req, res) => {

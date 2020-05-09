@@ -1,18 +1,9 @@
- {{#if user}}
-     <div>
-         <p>Hello, {{user.firstName}}!</p>
-         <a href="/users/history/{{user.userId}}" class="link-styles">My history</a><br/>
-         <a href="/projects/new" class="link-styles">Start a campaign</a><br/>
-         <a href="/users/logout" class="link-styles">Log out</a>
-     </div>
- {{else}}
-     <div id = 'login-container'>
-         <a href="/users/signin" class="link-styles">Sign In</a><br/>
-         <a href="/users/register" class="link-styles">Register</a>
-     </div>
- {{/if}}
- <br/>
- <div id="accordion">
+{{#if user}}
+    <div>
+        <p>Hello, {{user.firstName}}!</p>
+    </div>
+{{/if}}
+<div id="accordion">
      <div class="card">
          <div class="card-header" id="headingOne">
              <h5 class="mb-0">

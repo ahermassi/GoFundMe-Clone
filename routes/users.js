@@ -17,11 +17,11 @@ router.get('/all', async (req, res) => {
   });
 
 router.get('/signin',async (req, res) => {
-    res.render('users/signin',{title: 'Sign In'});
+    res.render('users/signin',{title: 'Sign In', logged: false});
 });
 
 router.get('/register',async (req,res) => {
-    res.render('users/register', {title: 'Register'});
+    res.render('users/signin',{title: 'Sign In', logged: false});
 });
 
 router.post('/signin',async (req, res) => {
@@ -38,6 +38,7 @@ router.post('/signin',async (req, res) => {
         res.render('users/signin', {
             errors: errors,
             hasErrors: true,
+            logged: false
         });
         return;
     }
@@ -46,7 +47,7 @@ router.post('/signin',async (req, res) => {
         user = await userData.getUserByEmail(loginInfo.email);
     } catch(e) {
         errors.push(e);
-        res.render('users/signin',{hasErrors: true, errors: errors});
+        res.render('users/signin',{hasErrors: true, errors: errors, logged: false});
         return;
     }
     const compareHashedPassword =  passwordHash.verify(loginInfo.password, user.passwordHash);
@@ -55,7 +56,7 @@ router.post('/signin',async (req, res) => {
         res.redirect('/projects');
     }
     else
-        res.render('users/signin',{hasErrors: true, errors: ['Invalid email or password']});
+        res.render('users/signin',{hasErrors: true, errors: ['Invalid email or password'], logged: false});
 });
 
 router.post('/', async (req, res) => {
@@ -102,6 +103,7 @@ router.post('/', async (req, res) => {
 			errors: errors,
 			hasErrors: true,
 			user: newUser,
+            logged: false
 		});
 		return;
     }
@@ -142,7 +144,7 @@ router.get('/history/:userId', async (req, res) => {
             project.donors = project.donations.length;
         }
         res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
-            hasDonated: hasDonated, donated: user.donated});
+            hasDonated: hasDonated, donated: user.donated, logged: false});
     } catch (e) {
         // The reason to change this is because if a user has no projects, it will get the error at
         // "const projects = await projectData.getProjectsByUser()", which throws an error without checking

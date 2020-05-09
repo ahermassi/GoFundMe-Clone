@@ -1,6 +1,7 @@
 body{
-    background-color: #d0dffc;
-     
+    background-color: #e9ecef;
+    font-family: Georgia, Cambria, "Times New Roman", Times, serif;
+
 }
 .div-box1{
     border: solid 1px red;
@@ -9,7 +10,7 @@ body{
     position: fixed;
     top: 50%;
     left: 50%;
-  /* bring your own prefixes */
+    /* bring your own prefixes */
     transform: translate(-50%, -50%);
     padding-top: 80px;
     padding-right: 80px;
@@ -17,7 +18,7 @@ body{
     padding-left: 200px;
     background-color: white;
 
-    
+
 }
 
 .para{
@@ -27,8 +28,7 @@ body{
 .heading{
     font-weight: bold;
     text-align: center;
-    font-family: 'Oleo Script', cursive;
-    
+
 
 }
 ul.error-list{
@@ -42,14 +42,14 @@ ul.error-list{
     position: fixed;
     top: 50%;
     left: 50%;
-  /* bring your own prefixes */
+    /* bring your own prefixes */
     transform: translate(-50%, -50%);
     padding-top: 80px;
     padding-right: 80px;
     padding-bottom: 80px;
     padding-left: 200px;
     background-color: white;
-    margin-top: 20px;
+    margin-top: 100px;
     overflow: auto;
 }
 .common-label{
@@ -57,8 +57,8 @@ ul.error-list{
 }
 .common-div{
     margin-right: 110px;
-   
-   
+
+
 }
 
 .form-div{
@@ -72,7 +72,7 @@ ul.error-list{
     position: fixed;
     top: 50%;
     left: 50%;
-  /* bring your own prefixes */
+    /* bring your own prefixes */
     transform: translate(-50%, -50%);
     padding-top: 80px;
     padding-right: 80px;
@@ -80,7 +80,8 @@ ul.error-list{
     padding-left: 200px;
     background-color: white;
     overflow: auto;
-    
+    margin-top: 20px;
+
 }
 .head-div{
     width: 400px;
@@ -96,7 +97,7 @@ ul.error-list{
 }
 
 article p {
-    font-family: 'Oleo Script', cursive;
+
     font-weight: bold;
     font-size: 18px;
 }
@@ -108,5 +109,20 @@ article p {
 .link-style{
     color: black;
 }
+.project-center{
+    text-align: center;
+}
 
-
+.right {
+    float: right;
+    width: 300px;
+    border: 1px solid #73AD21;
+    padding: 10px;
+    margin-top: -350px;
+    height: 400px;
+    position: fixed;
+    bottom: 290px;
+    right:120px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
