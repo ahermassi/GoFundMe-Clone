@@ -4,7 +4,7 @@ const router = express.Router();
 const data = require('../data');
 const userData = data.users;
 const projectData = data.projects;
-const statistics = require('../data/statistics');
+const utilities = require('../public/js/utilities');
 
 router.get('/all', async (req, res) => {
     try {
@@ -131,9 +131,9 @@ router.get('/history/:userId', async (req, res) => {
             donation.projectTitle = project.title;
             donation.projectCreator = user.firstName + " " + user.lastName;
         }
-        if(projects.length>0){
-            projects = statistics.sortProjectsByCreateDate(projects);
-        }
+        if(projects.length > 0)
+            projects = utilities.sortProjectsByCreationDate(projects);
+
         for (let project of projects) {
             project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
             project.pledgeGoal = project.pledgeGoal.toLocaleString();

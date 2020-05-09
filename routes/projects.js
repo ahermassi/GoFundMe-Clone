@@ -4,8 +4,7 @@ const data = require('../data');
 const projectData = data.projects;
 const userData = data.users;
 const { ObjectId } = require('mongodb');
-const statistics = require('../data/statistics');
-
+const utilities = require('../public/js/utilities');
 
 String.prototype.capitalize = function() {
 	return this.charAt(0).toUpperCase() + this.slice(1);
@@ -13,17 +12,16 @@ String.prototype.capitalize = function() {
 
 router.get('/', async (req, res) => {
     let projectList = await projectData.getAllProjects();
-    for (let project of projectList) {
-		const user = await userData.getUser(project.creator);  // Get the user who created the campaign
-		project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
-		project.pledgeGoal = project.pledgeGoal.toLocaleString();
-		project.collected = project.collected.toLocaleString();
-	}
-	if(projectList.length>0){
-		projectList = statistics.sortProjectsByCreateDate(projectList);
+    for (let project of projectList)
+		projectList[projectList.findIndex(obj => obj._id === project._id)] = await utilities.formatProjectFields(project._id);
+    let projectsByCreationDate, projectsByCollectedAmount;
+	if(projectList.length > 0) {
+		projectsByCreationDate = utilities.sortProjectsByCreationDate(projectList);
+		projectsByCollectedAmount = utilities.sortProjectsByCollectedAmount(projectList);
 	}
     const canComment = req.session.user !== null;
-	res.render('projects/index',{title: 'Home', projects: projectList, canComment: canComment, user: req.session.user});
+	res.render('projects/index',{title: 'Home', projectsByCreationDate: projectsByCreationDate,
+		projectsByCollectedAmount: projectsByCollectedAmount, canComment: canComment, user: req.session.user});
 });
 
 router.get('/new', async (req, res) => {
@@ -38,8 +36,8 @@ router.get('/:id', async (req, res) => {
 	try {
 		let project = await projectData.getProject(req.params.id);
 		const user = await userData.getUser(project.creator);
-		project = await formatProjectFields(req.params.id);
-		await fillCommentatorName(project);
+		project = await utilities.formatProjectFields(req.params.id);
+		await utilities.fillCommentatorName(project);
 		const openToDonations = project.active;  // A user can only donate if the project is active
 		const hasComments = project.comments.length !== 0;	
 		if(req.session.user) {
@@ -165,8 +163,8 @@ router.post('/donate', async(req, res) => {
 
 	if (errors.length > 0) {
 		try {
-			const project = await formatProjectFields(donationData.project_id);
-			await fillCommentatorName(project);
+			const project = await utilities.formatProjectFields(donationData.project_id);
+			await utilities.fillCommentatorName(project);
 			const hasComments = project.comments.length !== 0;
 			res.render('projects/single', {
 				project: project, comments: project.comments, hasComments: hasComments,
@@ -181,8 +179,8 @@ router.post('/donate', async(req, res) => {
 	try {
 		await projectData.donateToProject(donationData.project_id, parseFloat(donationData.donation), req.session.user.userId);
 		let project = await projectData.getProject(donationData.project_id);
-		project = await formatProjectFields(project._id);
-		await fillCommentatorName(project);
+		project = await utilities.formatProjectFields(project._id);
+		await utilities.fillCommentatorName(project);
 		const d = {totalDonors: project.donations.length};
 		res.render('partials/donation-successful', {layout:null, ...d});
 	}catch(e){
@@ -262,7 +260,7 @@ router.post('/searchResult', async (req, res) => {
 		if(searchProjectData.to_pledged)
 			pledgeHigherBound = parseFloat(searchProjectData.to_pledged);
 
-		projectsByPledgeGoal = statistics.filterProjectsByPledgeGoal(projectsByCategory, pledgeLowerBound, pledgeHigherBound);
+		projectsByPledgeGoal = utilities.filterProjectsByPledgeGoal(projectsByCategory, pledgeLowerBound, pledgeHigherBound);
 	}
 
 	if(searchProjectData.from_collected || searchProjectData.to_collected) {
@@ -273,7 +271,7 @@ router.post('/searchResult', async (req, res) => {
 		if(searchProjectData.to_collected)
 			collectedHigherBound = parseFloat(searchProjectData.to_collected);
 
-		projectsByCollectedAmount = statistics.filterProjectsByCollectedAmount(projectsByCategory, collectedLowerBound, collectedHigherBound);
+		projectsByCollectedAmount = utilities.filterProjectsByCollectedAmount(projectsByCategory, collectedLowerBound, collectedHigherBound);
 	}
 	let results = [];
 	for (let project of projectsByCategory) {
@@ -327,24 +325,5 @@ router.get('/activate/:id', async (req, res) => {
 		res.status(500).json({ error: e.toString() });
 	}
 });
-
-async function formatProjectFields(projectId) {
-	let project = await projectData.getProject(projectId);
-	const user = await userData.getUser(project.creator);  // Get the user who created the campaign
-	project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
-	project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
-	project.pledgeGoal = project.pledgeGoal.toLocaleString();
-	project.collected = project.collected.toLocaleString();
-	project.category = project.category.capitalize();
-	project.donors = project.donations.length;
-	return project;
-}
-
-async function fillCommentatorName(project) {
-	for (let comment of project.comments) {  // Replace the commentator ID with the commentator name in each comment
-		const commentator = await userData.getUser(comment.poster);
-		comment.poster = commentator.firstName + " " + commentator.lastName;
-	}
-}
 
 module.exports = router;

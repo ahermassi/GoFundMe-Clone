@@ -1,3 +1,26 @@
+const data = require('../../data');
+const projectData = data.projects;
+const userData = data.users;
+
+async function formatProjectFields(projectId) {
+    let project = await projectData.getProject(projectId);
+    const user = await userData.getUser(project.creator);  // Get the user who created the campaign
+    project.creator = user.firstName + " " + user.lastName;  // Replace the creator ID with the creator name
+    project.date = project.date.toLocaleDateString("en-US", {year: 'numeric', month: 'long', day: 'numeric' });
+    project.pledgeGoal = project.pledgeGoal.toLocaleString();
+    project.collected = project.collected.toLocaleString();
+    project.category = project.category.capitalize();
+    project.donors = project.donations.length;
+    return project;
+}
+
+async function fillCommentatorName(project) {
+    for (let comment of project.comments) {  // Replace the commentator ID with the commentator name in each comment
+        const commentator = await userData.getUser(comment.poster);
+        comment.poster = commentator.firstName + " " + commentator.lastName;
+    }
+}
+
 function filterProjectsByPledgeGoal(projects, lowerBound, higherBound) {
 
     if(!Array.isArray(projects) || projects.length === 0) throw 'No project passed to filerProjectsByGoal';
@@ -56,15 +79,22 @@ function filterProjectsByCollectedAmount(projects, lowerBound, higherBound) {
     return result;
 }
 
-function sortProjectsByCreateDate(projects){
-    if(!Array.isArray(projects) || projects.length === 0) throw 'No project passed to sortProjectsByCreateDate';
-    const sortedProjects = projects.slice().sort((a,b)=>b.date-a.date);
-    return sortedProjects;
+function sortProjectsByCreationDate(projects) {
+    if(!Array.isArray(projects) || projects.length === 0) throw 'No project list to sort';
+    return projects.slice().sort((a, b) => b.date - a.date);
 
 }
 
+function sortProjectsByCollectedAmount(projects) {
+    if(!Array.isArray(projects) || projects.length === 0) throw 'No project list to sort';
+    return projects.slice().sort((a, b) => b.collected - a.collected);
+}
+
 module.exports = {
+    formatProjectFields,
+    fillCommentatorName,
     filterProjectsByPledgeGoal,
     filterProjectsByCollectedAmount,
-    sortProjectsByCreateDate
+    sortProjectsByCreationDate,
+    sortProjectsByCollectedAmount
 };

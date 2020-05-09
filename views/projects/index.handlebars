@@ -13,11 +13,21 @@
  {{/if}}
 <section>
     <h1>Recent Projects</h1>
-    {{#each projects}}
+    {{#each projectsByCreationDate}}
         <article class="projects">
             <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
             <p>Author: {{creator}}</p>
             <p>${{collected}} raised of ${{pledgeGoal}} goal</p>
+            <p>Created {{date}}</p>
+        </article>
+    {{/each}}
+    <h1>Trending Projects</h1>
+    {{#each projectsByCollectedAmount}}
+        <article class="projects">
+            <h2><a href="/projects/{{_id}}">{{title}}</a></h2>
+            <p>Author: {{creator}}</p>
+            <p>${{collected}} raised of ${{pledgeGoal}} goal</p>
+            <p>Created {{date}}</p>
         </article>
     {{/each}}
 </section>
