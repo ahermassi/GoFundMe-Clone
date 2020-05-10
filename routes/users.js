@@ -21,7 +21,7 @@ router.get('/signin',async (req, res) => {
 });
 
 router.get('/register',async (req,res) => {
-    res.render('users/register', {title: 'Register', logged: false});
+    res.render('users/register',{title: 'Register', logged: false});
 });
 
 router.post('/signin',async (req, res) => {

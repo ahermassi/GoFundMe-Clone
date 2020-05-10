@@ -17,24 +17,21 @@
         <div class="row">
             <div class="col-sm-12">
                 <h1 class="heading">Crowdfunding Web App</h1>
-                <nav class="navbar navbar-inverse">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="/">Home</a>
-                        </div>
-                        <ul class="nav navbar-nav">
-                        {{#if logged}}
-                            <li class="active"><a href="/projects/Search">Search</a></li>
-                            <li class="active"><a href="/projects/new">Start a campaign</a></li>
-                            <li class="active"><a href="/users/history/{{user.userId}}" >My profile</a></li>
-                            <li class="active"><a href="/users/logout">Log out</a> </li>
+                <ul class="unordered-main">
+                    {{#if logged}}
+                        <li class="active"><a href="/">Home</a></li>
+                        <li class="active"><a href="/projects/Search">Search</a></li>
+                        <li class="active"><a href="/projects/new">Start a campaign</a></li>
+                        <li class="active"><a href="/users/history/{{user.userId}}" >My profile</a></li>
+                        <li class="active"><a href="/users/logout">Log out</a> </li>
+                        
+
                         {{else}}
+                            <li class="active"><a href="/">Home</a></li>
                             <li class = "active"><a href="/users/signin">Sign In</a></li>
                             <li class = "active"><a href="/users/register">Register</a></li>
                         {{/if}}
-                        </ul>
-                    </div>
-                </nav>
+                </ul>
                 {{{body}}}
             </div>  
         </div>
