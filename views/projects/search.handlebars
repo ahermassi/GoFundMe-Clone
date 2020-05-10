@@ -19,7 +19,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="from">By pledge goal:&nbsp;&nbsp;From:</label>
+                <label for="from-pledged">By pledge goal<br>From:</label>
                 <input type="number" name="from_pledged" id="from-pledged" value="{{searchProjectData.from_pledged}}"
                     class="full-width-input form-control" />
                 <div id="from-pledged-nan" hidden>Pledge goal lower bound needs to be a number</div>
@@ -33,7 +33,7 @@
                 <div id="invalid-to-pledged" hidden>Pledge goal upper bound needs to be positive</div>
             </div>
             <div class="form-group">
-                <label for="from-collected">By collected amount:&nbsp;&nbsp;From:</label>
+                <label for="from-collected">By collected amount<br>From:</label>
                 <input type="number" name="from_collected" id="from-collected"
                     value="{{searchProjectData.from_collected}}" class="full-width-input form-control" />
                 <div id="from-collected-nan" hidden>Collected amount lower bound needs to be a number</div>
@@ -48,7 +48,7 @@
             </div>
             <button type="submit btn btn-success">Search</button><br>
         </form>
-        <a href="/projects">Back to All Projects</a>
+        <br><a class="back-button" href="/projects">Back to All Projects</a>
         <br>
         <ul class="error-list">
            <li id="from-pledged>to-pledged" class="link-style" hidden>Pledge goal lower bound can't be greater than its upper bound</li> 

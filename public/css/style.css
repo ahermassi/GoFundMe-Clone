@@ -60,7 +60,7 @@ ul.error-list{
 .div-box3{
     border: solid 1px red;
     max-width: 720px;
-    height: 600px;
+    height: 620px;
     position: fixed;
     top: 50%;
     left: 50%;
@@ -140,6 +140,17 @@ ul.unordered-main li a:hover {
 #is-project-active {
       color: red;
 }
- #donation-successful {
+
+#donation-successful {
      color: #73AD21;
- }
+}
+
+#register-button {
+    background-color: #ffffff;
+    color: #0072ee;
+}
+
+.back-button {
+    background-color: #ffffff;
+    color: #0072ee;
+}
