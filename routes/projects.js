@@ -26,12 +26,11 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/new', async (req, res) => {
-	res.render('projects/new',{title: 'New Project', logged: true});
+	res.render('projects/new',{title: 'New Project', logged: true, user: req.session.user});
 });
 
 router.get('/search', async (req, res) => {
-	const isLogged = req.session.user != null;
-	res.render('projects/search', {title: 'Search', logged: isLogged});
+	res.render('projects/search', {title: 'Search', logged: true, user: req.session.user});
 });
 
 router.get('/:id', async (req, res) => {
@@ -56,7 +55,8 @@ router.get('/:id', async (req, res) => {
 			}
 		}
 		res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
-			canComment: canComment, canEdit: canEdit, canDonate:canDonate,openToDonations: openToDonations, logged: logged});
+			canComment: canComment, canEdit: canEdit, canDonate:canDonate,openToDonations: openToDonations,
+			logged: logged, user: req.session.user});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -65,7 +65,7 @@ router.get('/:id', async (req, res) => {
 router.get('/edit/:id', async (req, res) => {
 	try {
 		const project = await projectData.getProject(req.params.id);
-		res.render('projects/edit', {title: 'Edit Project', project: project, logged: true});
+		res.render('projects/edit', {title: 'Edit Project', project: project, logged: true, user: req.session.user});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -96,6 +96,8 @@ router.post('/', async (req, res) => {
 			errors: errors,
 			hasErrors: true,
 			project: newProjectData,
+			logged: true,
+			user: req.session.user
 		});
 		return;
 	}
@@ -139,7 +141,8 @@ router.post('/edit', async (req, res) => {
 			errors: errors,
 			hasErrors: true,
 			project: updateProjectData,
-			logged: true
+			logged: true,
+			user: req.session.user
 		});
 		return;
 	}
@@ -174,7 +177,8 @@ router.post('/donate', async(req, res) => {
 			const hasComments = project.comments.length !== 0;
 			res.render('projects/single', {
 				project: project, comments: project.comments, hasComments: hasComments,
-				canComment: true, canDonate: true, openToDonations: true, errors: errors, hasErrors: true, logged: true
+				canComment: true, canDonate: true, openToDonations: true, errors: errors, hasErrors: true,
+				logged: true, user: req.session.user
 			});
 			return;
 		} catch (e) {
@@ -188,7 +192,7 @@ router.post('/donate', async(req, res) => {
 		project = await utilities.formatProjectFields(project._id);
 		await utilities.fillCommentatorName(project);
 		const d = {totalDonors: project.donations.length};
-		res.render('partials/donation-successful', {layout:null, ...d});
+		res.render('partials/donation-successful', {layout:null, user: req.session.user, ...d});
 	}catch(e){
 		res.status(500).json({ error: e.toString() });
 	}
@@ -202,7 +206,7 @@ router.post('/comment', async (req, res) => {
 		const newComment = await projectData.commentOnProject(projectId, req.session.user.userId, xss(commentInfo.comment));
 		const commentator = await userData.getUser(newComment.poster);
 		newComment.poster = commentator.firstName + " " + commentator.lastName;
-		res.render('partials/comments', {layout:null, ...newComment, logged: true});
+		res.render('partials/comments', {layout:null, ...newComment, logged: true, user: req.session.user});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -242,7 +246,8 @@ router.post('/searchResult', async (req, res) => {
 		errors.push('Collected amount lower bound can\'t be greater than its upper bound');
 
 	if(errors.length > 0) {
-		res.render('projects/search',{title:'Search', hasErrors: true, errors: errors, searchProjectData: searchProjectData, logged: isLogged});
+		res.render('projects/search',{title:'Search', hasErrors: true, errors: errors,
+			searchProjectData: searchProjectData, logged: isLogged, user: req.session.user});
 		return;
 	}
 
@@ -309,7 +314,8 @@ router.post('/searchResult', async (req, res) => {
 			results[results.findIndex(obj => obj._id === project._id)] = await utilities.formatProjectFields(project._id);
 
 	}
-	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist, logged: isLogged});
+	res.render('projects/search-result',{title:'Search Result', projects: results, resultsExist: resultsExist,
+		logged: isLogged, user: req.session.user});
 });
 
 router.get('/deactivate/:id', async (req, res) => {
