@@ -42,18 +42,18 @@ router.get('/:id', async (req, res) => {
 		await utilities.fillCommentatorName(project);
 		const openToDonations = project.active;  // A user can only donate if the project is active
 		const hasComments = project.comments.length !== 0;	
-		if(req.session.user) {
-			if(ObjectId(req.session.user.userId).equals(user._id))  // If the currently logged in user is the one who created the campaign
-				res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
-					canComment: true, canEdit: true, openToDonations: openToDonations, logged: true});
-			else
-				// I can only donate to other users' campaigns
-				res.render('projects/single',{project:project, comments: project.comments, hasComments: hasComments,
-					canComment: true, canDonate: true, openToDonations: openToDonations, logged: true});
+		let canComment = false;
+		let canEdit = false;
+		let logged = false;
+		if(req.session.user){
+			canComment = true;
+			logged = true;
+			if(ObjectId(req.session.user.userId).equals(user._id)){
+				canEdit = true;
+			}
 		}
-		else // The project is read-only for non-authenticated users
-			res.render('projects/single', {project: project, comments: project.comments, hasComments: hasComments,
-			openToDonations: openToDonations, logged: false});
+		res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
+			canComment: canComment, canEdit: canEdit, openToDonations: openToDonations, logged: logged});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
