@@ -45,8 +45,7 @@ router.post('/signin',async (req, res) => {
     try{
         user = await userData.getUserByEmail(loginInfo.email);
     } catch(e) {
-        errors.push(e);
-        res.render('users/signin',{hasErrors: true, errors: errors, logged: false});
+        res.render('users/signin',{hasErrors: true, errors: ['Invalid email and/or password'], logged: false});
         return;
     }
     const compareHashedPassword =  passwordHash.verify(loginInfo.password, user.passwordHash);
@@ -55,7 +54,7 @@ router.post('/signin',async (req, res) => {
         res.redirect('/projects');
     }
     else
-        res.render('users/signin',{hasErrors: true, errors: ['Invalid email or password'], logged: false});
+        res.render('users/signin',{hasErrors: true, errors: ['Invalid email and/or password'], logged: false});
 });
 
 router.post('/', async (req, res) => {
