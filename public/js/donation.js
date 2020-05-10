@@ -5,7 +5,7 @@
     donationForm.submit(function(event) {
         event.preventDefault();
         var donation = $('#donation').val(), projectId = $('#project_id').val();
-
+        var regex = /^\d\d*(((,\d{3}){1})?(\.\d{0,2})?)$/;
         if (!donation) {
             donationInputError.removeAttr('hidden');
             donationInputError.text('Donation cannot be empty');
@@ -16,7 +16,11 @@
             donationInputError.text('Donation has to be a number');
         }
 
-        else if (donation < 0) {
+        else if(!regex.test(donation)){
+            donationInputError.removeAttr('hidden');
+            donationInputError.text('Donation has to a currency with at mots 2 decimal digits');
+        }
+        else if (donation <= 0) {
             donationInputError.removeAttr('hidden');
             donationInputError.text('Donation needs to be greater than zero');
         }
