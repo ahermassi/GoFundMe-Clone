@@ -21,8 +21,8 @@ router.get('/', async (req, res) => {
 		projectsByCollectedAmount = utilities.sortProjectsByCollectedAmount(projectList);
 	}
 	const isLogged = req.session.user ? true : false;
-	res.render('projects/index',{title: 'Home', logged: isLogged, projectsByCreationDate: projectsByCreationDate,
-		projectsByCollectedAmount: projectsByCollectedAmount, user: req.session.user});
+	res.render('projects/index',{title: 'Home', projectsByCreationDate: projectsByCreationDate,
+		projectsByCollectedAmount: projectsByCollectedAmount, logged: isLogged, user: req.session.user});
 });
 
 router.get('/new', async (req, res) => {
@@ -136,6 +136,7 @@ router.post('/edit', async (req, res) => {
 			errors: errors,
 			hasErrors: true,
 			project: updateProjectData,
+			logged: true
 		});
 		return;
 	}
@@ -312,7 +313,7 @@ router.get('/deactivate/:id', async (req, res) => {
 	const projectId = req.params.id;
 	try {
 		await projectData.deactivateProject(projectId);
-		res.redirect(`/projects/${projectId}`, {logged: true});
+		res.redirect(`/projects/${projectId}`);
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
@@ -322,7 +323,7 @@ router.get('/activate/:id', async (req, res) => {
 	const projectId = req.params.id;
 	try {
 		await projectData.activateProject(projectId);
-		res.redirect(`/projects/${projectId}`, {logged: true})
+		res.redirect(`/projects/${projectId}`)
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}

@@ -102,7 +102,7 @@ router.post('/', async (req, res) => {
 		res.render('users/register', {
 			errors: errors,
 			hasErrors: true,
-            user: newUser,
+			user: newUser,
             logged: false
 		});
 		return;
@@ -143,8 +143,7 @@ router.get('/history/:userId', async (req, res) => {
             project.collected = project.collected.toLocaleString();
             project.donors = project.donations.length;
         }
-        res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects,
-            hasDonated: hasDonated, donated: user.donated, logged: true});
+        res.render('projects/my-projects', {title: 'My Projects', hasProjects: projects.length !== 0, projects: projects, hasDonated: hasDonated, donated: user.donated, logged: true});
     } catch (e) {
         // The reason to change this is because if a user has no projects, it will get the error at
         // "const projects = await projectData.getProjectsByUser()", which throws an error without checking

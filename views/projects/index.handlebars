@@ -1,4 +1,10 @@
  <div id="accordion">
+{{#if user}}
+    <div>
+        <p>Hello, {{user.firstName}}!</p>
+    </div>
+{{/if}}
+<div id="accordion">
      <div class="card">
          <div class="card-header" id="headingOne">
              <h5 class="mb-0">
