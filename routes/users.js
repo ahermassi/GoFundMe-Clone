@@ -133,7 +133,7 @@ router.get('/logout', async (req, res) => {
 
 router.get('/history/:userId', async (req, res) => {
     // List the campaigns created by the user whose ID is 'userId' as well as the campaigns to which this user donated
-    if (req.params.userId !== req.session.userId) {
+    if (req.params.userId !== req.session.user.userId) {
         res.redirect('/projects');
         return;
     }

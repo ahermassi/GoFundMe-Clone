@@ -11,10 +11,7 @@ body{
     left: 50%;
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
-    padding-top: 80px;
-    padding-right: 80px;
-    padding-bottom: 80px;
-    padding-left: 200px;
+    padding: 80px 80px 80px 200px;
     background-color: white;
 
 
@@ -42,10 +39,7 @@ ul.error-list{
     left: 50%;
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
-    padding-top: 80px;
-    padding-right: 80px;
-    padding-bottom: 80px;
-    padding-left: 200px;
+    padding: 80px 80px 80px 200px;
     background-color: white;
     margin-top: 100px;
     overflow: auto;
@@ -72,10 +66,7 @@ ul.error-list{
     left: 50%;
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
-    padding-top: 80px;
-    padding-right: 80px;
-    padding-bottom: 80px;
-    padding-left: 200px;
+    padding: 80px 80px 80px 200px;
     background-color: white;
     overflow: auto;
     margin-top: 20px;
@@ -95,7 +86,7 @@ ul.error-list{
 
 article p {
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .link-styles{
@@ -115,15 +106,15 @@ article p {
     border: 1px solid #73AD21;
     padding: 10px;
     margin-top: -350px;
-    height: 400px;
+    height: 210px;
     position: fixed;
-    bottom: 290px;
-    right:120px;
+    bottom: 90px;
+    right:80px;
     background-color: white;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
+}
 
-  ul.unordered-main {
+ul.unordered-main {
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -131,17 +122,24 @@ article p {
     background-color: #333;
   }
 
-  ul.unordered-main li{
+ul.unordered-main li{
     float: left;
-  }
+}
 
-  ul.unordered-main li a{
+ul.unordered-main li a{
     display: block;
     color: white;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-  }
-  ul.unordered-main li a:hover {
+}
+ul.unordered-main li a:hover {
     background-color: #111;
-  }
+}
+
+#is-project-active {
+      color: red;
+}
+ #donation-successful {
+     color: #73AD21;
+ }

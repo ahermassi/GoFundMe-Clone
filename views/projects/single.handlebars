@@ -2,7 +2,6 @@
     {{#unless openToDonations}}
         <div id="is-project-active">This project has been deactivated and can no longer accept donations.</div>
     {{/unless}}
-    <div id="donation-successful"></div>
     <div class="project-center">
         <h1>{{ project.title}}</h1>
         <p>{{project.creator }} is organizing the fundraiser</p>
@@ -20,6 +19,7 @@
                         <div id="donation-error" hidden></div><br>
                         <p>$<span id="current-collected">{{project.collected}}</span> raised of ${{project.pledgeGoal}} goal</p>
                         <p>Donors: <span id="number-of-donors">{{project.donors}}</span> </p>
+                        <div id="donation-successful"></div>
                     </form>
                 </div>
             {{else}}
