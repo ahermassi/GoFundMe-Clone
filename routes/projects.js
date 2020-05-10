@@ -63,6 +63,12 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/edit/:id', async (req, res) => {
+	const project = await projectData.getProject(req.params.id);
+	// I can't edit a campaign I don't own
+	if (project.creator !== req.session.user.userId) {
+		res.redirect('/projects');
+		return;
+	}
 	try {
 		const project = await projectData.getProject(req.params.id);
 		res.render('projects/edit', {title: 'Edit Project', project: project, logged: true, user: req.session.user});
@@ -320,6 +326,13 @@ router.post('/searchResult', async (req, res) => {
 
 router.get('/deactivate/:id', async (req, res) => {
 	const projectId = req.params.id;
+	const project = await projectData.getProject(projectId);
+	// No other user can deactivate my own campaign
+	if (project.creator !== req.session.user.userId) {
+		res.redirect('/projects');
+		return;
+	}
+
 	try {
 		await projectData.deactivateProject(projectId);
 		res.redirect(`/projects/${projectId}`);
@@ -330,6 +343,12 @@ router.get('/deactivate/:id', async (req, res) => {
 
 router.get('/activate/:id', async (req, res) => {
 	const projectId = req.params.id;
+	const project = await projectData.getProject(projectId);
+	// No other user can activate my own campaign
+	if (project.creator !== req.session.user.userId) {
+		res.redirect('/projects');
+		return;
+	}
 	try {
 		await projectData.activateProject(projectId);
 		res.redirect(`/projects/${projectId}`)

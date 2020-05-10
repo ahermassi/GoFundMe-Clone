@@ -7,20 +7,19 @@ const projectData = data.projects;
 const utilities = require('../public/js/utilities');
 const xss = require('xss');
 
-router.get('/all', async (req, res) => {
-    try {
-      let userList = await userData.getAllUsers();
-      res.json(userList);
-    } catch (e) {
-      res.sendStatus(500);
-    }
-  });
-
 router.get('/signin',async (req, res) => {
+    if (req.session.user) {
+        res.redirect('/projects');
+        return;
+    }
     res.render('users/signin',{title: 'Sign In', logged: false});
 });
 
 router.get('/register',async (req,res) => {
+    if (req.session.user) {
+        res.redirect('/projects');
+        return;
+    }
     res.render('users/register',{title: 'Register', logged: false});
 });
 
@@ -118,12 +117,20 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
+    if (!req.session.user) {
+        res.redirect('/projects');
+        return;
+    }
     req.session.destroy();
     res.redirect('/projects');
 });
 
 router.get('/history/:userId', async (req, res) => {
     // List the campaigns created by the user whose ID is 'userId' as well as the campaigns to which this user donated
+    if (req.params.userId !== req.session.userId) {
+        res.redirect('/projects');
+        return;
+    }
     try {
         let projects = await projectData.getProjectsByUser(req.params.userId);
         const user = await userData.getUser(req.params.userId);
