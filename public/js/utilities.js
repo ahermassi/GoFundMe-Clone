@@ -87,7 +87,7 @@ function sortProjectsByCreationDate(projects) {
 
 function sortProjectsByCollectedAmount(projects) {
     if(!Array.isArray(projects) || projects.length === 0) throw 'No project list to sort';
-    return projects.slice().sort((a, b) => b.collected - a.collected);
+    return projects.slice().sort((a, b) => parseFloat(b.collected.replace(/,/g,'')) - parseFloat(a.collected.replace(/,/g,'')));
 }
 
 module.exports = {

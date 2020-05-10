@@ -128,7 +128,7 @@ module.exports = {
 
         const projectsCollection = await projects();
         const targetProject = await this.getProject(projectId);
-        let newCollected = parseInt(targetProject.collected) + amount;
+        let newCollected = parseFloat(targetProject.collected) + parseFloat(amount);
         let donations = targetProject.donations;
         let donatedBefore = false;
         for (let donation of donations) {
