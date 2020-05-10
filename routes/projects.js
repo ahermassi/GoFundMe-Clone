@@ -54,7 +54,7 @@ router.get('/:id', async (req, res) => {
 				canDonate = true;
 			}
 		}
-		res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
+		res.render('projects/single',{project: project, title: project.title, comments: project.comments, hasComments: hasComments,
 			canComment: canComment, canEdit: canEdit, canDonate:canDonate,openToDonations: openToDonations,
 			logged: logged, user: req.session.user});
 	} catch (e) {
@@ -144,6 +144,7 @@ router.post('/edit', async (req, res) => {
 
 	if (errors.length > 0) {
 		res.render('projects/edit', {
+			title: 'Edit Project',
 			errors: errors,
 			hasErrors: true,
 			project: updateProjectData,
@@ -182,7 +183,7 @@ router.post('/donate', async(req, res) => {
 			await utilities.fillCommentatorName(project);
 			const hasComments = project.comments.length !== 0;
 			res.render('projects/single', {
-				project: project, comments: project.comments, hasComments: hasComments,
+				title: project.title, project: project, comments: project.comments, hasComments: hasComments,
 				canComment: true, canDonate: true, openToDonations: true, errors: errors, hasErrors: true,
 				logged: true, user: req.session.user
 			});

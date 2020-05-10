@@ -34,38 +34,37 @@
                 </div>
             {{/if}}
         </div>
-        <div class="card">
-            <div class="card-header" id="headingTwo">
-                <h2 class="mb-0">
-                    <button class="btn btn-link" data-toggle="collapse" data-target="#my-donations" aria-expanded="true"
+    </div>
+    <div class="card">
+        <div class="card-header" id="headingTwo">
+            <h2 class="mb-0">
+                <button class="btn btn-link" data-toggle="collapse" data-target="#my-donations" aria-expanded="true"
                             aria-controls="my-donations">
                         My Donations
-                    </button>
-                </h2>
-            </div>
-            <div id="my-donations" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
-                {{#if hasDonated}}<div class="row">
-                    {{#each donated}}
-                        <div class="col-md-4">
-                            <div class="card-body">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h2 class="card-title">{{title}}</h2>
-                                        <p class="card-text">{{projectTitle}}<br><br>{{projectCreator}} started this fundraiser<br>My donation: ${{amount}}</p>
-                                        <a href="/projects/{{projectId}}" class="btn btn-primary">View details</a>
-                                    </div>
+                </button>
+            </h2>
+        </div>
+        <div id="my-donations" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordion">
+            {{#if hasDonated}}<div class="row">
+                {{#each donated}}
+                    <div class="col-md-4">
+                        <div class="card-body">
+                            <div class="card">
+                                <div class="card-body"><h2 class="card-title">{{projectTitle}}</h2>
+                                    <p class="card-text">{{projectCreator}} started this fundraiser<br>My donation: ${{amount}}</p>
+                                    <a href="/projects/{{projectId}}" class="btn btn-primary">View details</a>
                                 </div>
-                                <br>
                             </div>
+                            <br>
                         </div>
-                    {{/each}}
-                </div>
-                {{else}}
-                    <div class="alert alert-warning" role="alert">
-                        You didn't make any donations!
                     </div>
-                {{/if}}
+                {{/each}}
             </div>
+            {{else}}
+                <div class="alert alert-warning" role="alert">
+                    You didn't make any donations!
+                </div>
+            {{/if}}
         </div>
     </div>
 </div>
