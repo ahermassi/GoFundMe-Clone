@@ -18,7 +18,7 @@
 
         else if(!regex.test(donation)){
             donationInputError.removeAttr('hidden');
-            donationInputError.text('Donation has to a currency with at mots 2 decimal digits');
+            donationInputError.text('Donation has to an amount with at most 2 decimal digits');
         }
         else if (donation <= 0) {
             donationInputError.removeAttr('hidden');

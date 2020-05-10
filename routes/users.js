@@ -61,6 +61,7 @@ router.post('/signin',async (req, res) => {
 router.post('/', async (req, res) => {
     let newUser = req.body;
     let errors = [];
+    const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     if (!newUser.first_name)
 		errors.push('No first name provided');
@@ -70,6 +71,9 @@ router.post('/', async (req, res) => {
 
     if(!newUser.email)
         errors.push('No email provided');
+
+    if(newUser.email && !emailRegex.test(newUser.email))
+        errors.push('Invalid email');
 
 	if (!newUser.password)
 		errors.push('No password provided');

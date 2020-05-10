@@ -20,9 +20,10 @@
 
                 <div class="form-group common-div">
                     <label for="email" class="common-label">Email:</label>
-                    <input type="text" name="email" id="email" value="{{user.email}}"
+                    <input type="email" name="email" id="email" value="{{user.email}}"
                         class="full-width-input form-control" placeholder="Enter email">
                     <div id="no-email" class="div-text"  hidden>Please enter your email</div>
+                    <div id="invalid-email" class="div-text"  hidden>Invalid email</div>
                 </div>
                 <div class="form-group common-div">
                     <label for="password" class="common-label">Password:</label>

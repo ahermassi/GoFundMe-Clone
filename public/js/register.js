@@ -11,6 +11,7 @@ const registerState = document.getElementById("state");
 const registerFirstNameError = document.getElementById("no-first-name");
 const registerLastNameError = document.getElementById("no-last-name");
 const registerEmailError = document.getElementById("no-email");
+const registerInvalidEmailError = document.getElementById("invalid-email");
 const registerPasswordError = document.getElementById("no-password");
 const registerConfirmPasswordError = document.getElementById("no-password-confirmation");
 const registerPasswordShort = document.getElementById("password-short");
@@ -18,11 +19,13 @@ const registerPasswordsMismatch = document.getElementById('passwords-mismatch');
 const registerCityError = document.getElementById("no-city");
 const registerStateError = document.getElementById("no-state");
 
+const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
 if (registerForm) {
 
     registerForm.addEventListener("submit", (event) => {
         if(registerFirstName.value && registerLastName.value && registerEmail.value && registerPassword.value &&
-            registerConfirmPassword.value && registerCity.value && registerState.value) {
+            registerConfirmPassword.value && registerCity.value && registerState.value && emailRegex.test(registerEmail.value)) {
             if (registerPassword.value.length < 8) {
                 event.preventDefault();
                 registerPasswordShort.hidden = false;
@@ -42,6 +45,10 @@ if (registerForm) {
             event.preventDefault();
             registerFirstNameError.hidden = registerFirstName.value;
             registerLastNameError.hidden = registerLastName.value;
+            if (registerEmail.value)
+                registerInvalidEmailError.hidden = emailRegex.test(registerEmail.value);
+            else
+                registerInvalidEmailError.hidden = true;
             registerEmailError.hidden = registerEmail.value;
             registerPasswordError.hidden = registerPassword.value;
             if(registerPassword.value)
