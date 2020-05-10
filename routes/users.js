@@ -74,6 +74,9 @@ router.post('/', async (req, res) => {
 	if (!newUser.password)
 		errors.push('No password provided');
 
+	if(newUser.password && newUser.password.length < 8)
+	    errors.push('Password should contain at least 8 characters');
+
     if (!newUser.password_confirm)
         errors.push('No password confirmation provided');
 
