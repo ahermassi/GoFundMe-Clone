@@ -23,7 +23,6 @@
                             <a class="navbar-brand" href="/">Home</a>
                         </div>
                         <ul class="nav navbar-nav">
-<<<<<<< HEAD
                         {{#if logged}}
                             <li class="active"><a href="/projects/Search">Search</a></li>
                             <li class="active"><a href="/projects/new">Start a campaign</a></li>
@@ -33,24 +32,6 @@
                             <li class = "active"><a href="/users/signin">Sign In</a></li>
                             <li class = "active"><a href="/users/register">Register</a></li>
                         {{/if}}
-=======
-                            <li class="active"><a href="/">Home</a></li>
-                            {{#if logged}}
-                                <li class="active"><a href="/projects/search">Search</a></li>
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="/projects/new">Start a campaign
-                                    <span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                        <li><a href="/users/history/{{user.userId}}" >My history</a></li>
-                                        <li><a href="/users/logout">Log out</a> </li>
-                                </ul>
-                                    {{else}}
-                                        <li class = "active"><a href="/users/signin">Sign In</a></li>
-                                        <li class = "active"><a href="/users/register">Register</a></li>
-                                    {{/if}}
-
-                            </li>
->>>>>>> 774b0dc588452ebffd263bd409567d4cb6e0d56a
                         </ul>
                     </div>
                 </nav>

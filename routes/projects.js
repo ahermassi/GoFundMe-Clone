@@ -45,15 +45,18 @@ router.get('/:id', async (req, res) => {
 		let canComment = false;
 		let canEdit = false;
 		let logged = false;
+		let canDonate = false;
 		if(req.session.user){
 			canComment = true;
 			logged = true;
 			if(ObjectId(req.session.user.userId).equals(user._id)){
 				canEdit = true;
+			}else{
+				canDonate = true;
 			}
 		}
 		res.render('projects/single',{project: project, comments: project.comments, hasComments: hasComments,
-			canComment: canComment, canEdit: canEdit, openToDonations: openToDonations, logged: logged});
+			canComment: canComment, canEdit: canEdit, canDonate:canDonate,openToDonations: openToDonations, logged: logged});
 	} catch (e) {
 		res.status(500).json({ error: e.toString() });
 	}
