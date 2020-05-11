@@ -19,6 +19,7 @@ async function formatProjectFields(projectId) {
     project.pledgeGoal = project.pledgeGoal.toLocaleString();
     project.collected = project.collected.toLocaleString();
     project.category = project.category.capitalize();
+    project.location = user.city + ', ' + user.state;
     project.donors = project.donations.length;
     return project;
 }
@@ -100,7 +101,7 @@ function sortProjectsByCreationDate(projects) {
 
 function sortProjectsByCollectedAmount(projects) {
     if(!Array.isArray(projects) || projects.length === 0) throw 'No project list to sort';
-    return projects.slice().sort((a, b) => parseFloat(b.collected.replace(/,/g,'')) - parseFloat(a.collected.replace(/,/g,'')));
+    return projects.slice().sort((a, b) => parseFloat(b.collected) - parseFloat(a.collected));
 }
 
 module.exports = {

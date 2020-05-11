@@ -154,3 +154,7 @@ ul.unordered-main li a:hover {
     background-color: #ffffff;
     color: #0072ee;
 }
+
+#project-location {
+    color: green;
+}

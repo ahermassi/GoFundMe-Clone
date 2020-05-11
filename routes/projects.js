@@ -13,13 +13,15 @@ String.prototype.capitalize = function() {
 
 router.get('/', async (req, res) => {
     let projectList = await projectData.getAllProjects();
-    for (let project of projectList)
-		projectList[projectList.findIndex(obj => obj._id === project._id)] = await utilities.formatProjectFields(project._id);
-    let projectsByCreationDate, projectsByCollectedAmount;
+	let projectsByCreationDate, projectsByCollectedAmount;
 	if(projectList.length > 0) {
 		projectsByCreationDate = utilities.sortProjectsByCreationDate(projectList);
 		projectsByCollectedAmount = utilities.sortProjectsByCollectedAmount(projectList);
 	}
+    for (let project of projectsByCreationDate)
+		projectsByCreationDate[projectsByCreationDate.findIndex(obj => obj._id === project._id)] = await utilities.formatProjectFields(project._id);
+	for (let project of projectsByCollectedAmount)
+		projectsByCollectedAmount[projectsByCollectedAmount.findIndex(obj => obj._id === project._id)] = await utilities.formatProjectFields(project._id);
 	const isLogged = req.session.user ? true : false;
 	res.render('projects/index',{title: 'Home', projectsByCreationDate: projectsByCreationDate,
 		projectsByCollectedAmount: projectsByCollectedAmount, logged: isLogged, user: req.session.user});

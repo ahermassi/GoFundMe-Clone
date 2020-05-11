@@ -20,8 +20,8 @@
                          <div class="card" style="width: 18rem;">
                              <div class="card-body">
                                  <h3 class="card-title">{{title}}</h3>
-                                 <p class="card-text">Started by {{creator}}<br/>${{collected}} raised of ${{pledgeGoal}} goal
-                                     <br/>Created {{date}}</p>
+                                 <p class="card-text"><span id="project-location">{{location}}</span>
+                                     <br>Started by {{creator}}<br/>Created {{date}}<br></p>
                                  <a href="/projects/{{_id}}" class="btn btn-primary">View details</a>
                              </div>
                          </div>
@@ -48,8 +48,9 @@
                              <div class="card" style="width: 18rem;">
                                  <div class="card-body">
                                      <h3 class="card-title">{{title}}</h3>
-                                     <p class="card-text">Started by {{creator}}<br/>${{collected}} raised of ${{pledgeGoal}} goal
-                                         <br/>Created {{date}}</p>
+                                     <p class="card-text"><span id="project-location">{{location}}</span><br>
+                                         Started by {{creator}}<br/>${{collected}} raised of ${{pledgeGoal}} goal
+                                     </p>
                                      <a href="/projects/{{_id}}" class="btn btn-primary">View details</a>
                                  </div>
                              </div>
