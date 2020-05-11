@@ -237,13 +237,74 @@ async function main(){
         console.log(e.toString());
     }
 
+    try {
+        await projects.addProject('Jameson\'s "Make-A-Wish"','travel', chris._id,
+            new Date(2019,10,22,15,15), 15000,
+            "As many of you know, Jameson has been in a raging battle with the flu and pneumonia. What " +
+            "we know at this moment is that Jameson is fighting complications from the flu type B, pneumonia, and a " +
+            "staph infection. It has attacked his lungs and significantly impacted his ability to breathe. He is in " +
+            "somewhat stable, but critical condition on a ventilator in the ICU at UMASS in Worcester. He has been " +
+            "hospitalized for eight days now. The ventilator is not doing 100% of the work; it is supplementing what " +
+            "Jameson is able to do on his own. He is fighting with everything he has! Early attempts to wean him " +
+            "slightly from the ventilator have shown that he is not quite ready yet. He is comfortably sedated and " +
+            "listening to his favorite tunes in the background. Jameson takes little steps forward and little steps " +
+            "back with each passing hour. The main focus now is to keep Jameson comfortable and stable, not working " +
+            "too hard to breathe, monitoring his lungs with periodic x-rays, identifying any and all infections & " +
+            "treating them accordingly. ",0,[], [],
+            true);
+    } catch (e) {
+        console.log(e.toString());
+    }
+
+    try {
+        await projects.addProject('Helping employees at Alpine Worldwide','travel', akeem._id,
+            new Date(2020,3,7,7,7), 50000,
+            "The last few weeks have been a crazy, difficult, and scary time for all of us. Alpine " +
+            "Worldwide has been very busy trying to adjust to the \"new normal.\"\nAs always, we are excited and happy " +
+            "to meet the continued needs of our customers but at this time where travel is limited, we need your " +
+            "support and help. As you know, Alpine Worldwide is a family business and we would like to continue to " +
+            "support our family. The funds that we may acquire from this platform will go towards supporting our staff " +
+            "during this difficult time. We would like to continue to support our staff so that when this is all over " +
+            "and travel resumes, we will be there for you, our customers.",0,[],
+            [], true);
+    } catch (e) {
+        console.log(e.toString());
+    }
+
+    try {
+        await projects.addProject('Burnell Cotlon\'s Lower 9th Market','business', joanna._id,
+            new Date(2020,3,6,17,27), 400000,
+            "This store serves the very under served 9th Ward. It is even more important now as the " +
+            "Virus is decimating the area.  Any contribution will be well utilized.",0,[],
+            [], true);
+    } catch (e) {
+        console.log(e.toString());
+    }
+
+    try {
+        await projects.addProject('Country House Community Outreach','volunteer', stephanie._id,
+            new Date(2020,2,18,18,18), 20000,
+            "We are raising money to continue to serve our community at the highest level!  Due to the " +
+            "overwhelming support as of Apri 1st we are currently serving over 2,300 meals per day at 4 separate " +
+            "locations. Still with a focus on delivering to seniors during this crisis we are now also committed to " +
+            "Veterans, First responders, frontline health workers and children as well as families.  We want to keep " +
+            "our employees active, and help them feed their families.  The positive demand has been incredible! Our " +
+            "initial plan to 100% self fund is not doable if we want to reach more families (thousands more per day)--" +
+            "but we will continue to absorb any costs we can.  None of these funds will be used in any type of profit " +
+            "mode or monies to ownership.  It will all be used for feeding those in need! As we plan on expanding these " +
+            "services through our network of schools we will need additional resources.  We want to continue getting as " +
+            "many meals to as many families in need but we need your help.  Please consider donating anything to this " +
+            "wonderful cause.  $1, $5, anything will help.  Our lone goal during this extremely difficult time is to " +
+            "provide the community with a hot, healthy meal.  Thank you and fight on!",0,[],
+            [], true);
+    } catch (e) {
+        console.log(e.toString());
+    }
+
     console.log('Done seeding database');
 	await db.serverConfig.close();
 }
 
 main().catch((error) => {
 	console.error(error);
-//	return dbConnection().then((db) => {
-//		return db.serverConfig.close();
-//	});
 });
