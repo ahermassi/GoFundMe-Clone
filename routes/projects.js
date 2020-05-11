@@ -267,7 +267,7 @@ router.post('/searchResult', async (req, res) => {
 	// 4- default which fetches all the projects
 
 	if(searchProjectData.category !== "none")
-		projectsByCategory = await projectData.getProjectsByCategory(xss(searchProjectData.category.capitalize()));
+		projectsByCategory = await projectData.getProjectsByCategory(xss(searchProjectData.category));
 	else
 		projectsByCategory = await projectData.getAllProjects();
 
@@ -279,7 +279,11 @@ router.post('/searchResult', async (req, res) => {
 		if(searchProjectData.to_pledged)
 			pledgeHigherBound = parseFloat(searchProjectData.to_pledged);
 
-		projectsByPledgeGoal = utilities.filterProjectsByPledgeGoal(projectsByCategory, pledgeLowerBound, pledgeHigherBound);
+		try {
+			projectsByPledgeGoal = utilities.filterProjectsByPledgeGoal(projectsByCategory, pledgeLowerBound, pledgeHigherBound);
+		} catch (e) {
+			res.status(500).json({ error: e.toString() });
+		}
 	}
 
 	if(searchProjectData.from_collected || searchProjectData.to_collected) {
@@ -290,7 +294,11 @@ router.post('/searchResult', async (req, res) => {
 		if(searchProjectData.to_collected)
 			collectedHigherBound = parseFloat(xss(searchProjectData.to_collected));
 
-		projectsByCollectedAmount = utilities.filterProjectsByCollectedAmount(projectsByCategory, collectedLowerBound, collectedHigherBound);
+		try {
+			projectsByCollectedAmount = utilities.filterProjectsByCollectedAmount(projectsByCategory, collectedLowerBound, collectedHigherBound);
+		} catch (e) {
+			res.status(500).json({ error: e.toString() });
+		}
 	}
 	let results = [];
 	for (let project of projectsByCategory) {
