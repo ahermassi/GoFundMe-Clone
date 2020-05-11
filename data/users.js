@@ -105,11 +105,21 @@ module.exports = {
         const objId = ObjectId(id);
         const usersCollection = await users();
         const projectsAPI = require("./projects");
-        let userToDelete = await this.getUser(id);
+        let userToDelete;
+        try {
+            userToDelete = await this.getUser(id);
+        } catch (e) {
+            console.log(e.toString());
+        }
 
         const projectsList = userToDelete.projects;
         for (let projectId of projectsList) {  // Deactivate all the projects of the user
-            const deleteProjects = await projectsAPI.deactivateProject(projectId);
+            let deleteProjects;
+            try {
+                deleteProjects = await projectsAPI.deactivateProject(projectId);
+            } catch (e) {
+                console.log(e.toString());
+            }
             if (deleteProjects === 0){
                 throw 'Could not remove project';
             }
@@ -131,7 +141,12 @@ module.exports = {
         if (typeof (donatorId) === 'string')
             donatorId = ObjectId(donatorId);
 
-        const targetUser = await this.getUser(donatorId);
+        let targetUser;
+        try {
+            targetUser = await this.getUser(donatorId);
+        } catch (e) {
+            console.log(e.toString());
+        }
         const usersCollection = await users();
         let donations = targetUser.donated;
         let donationExists = false;

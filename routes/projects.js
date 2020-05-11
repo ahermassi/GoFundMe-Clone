@@ -63,7 +63,12 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/edit/:id', async (req, res) => {
-	const project = await projectData.getProject(req.params.id);
+	let project;
+	try {
+		project = await projectData.getProject(req.params.id);
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
 	// I can't edit a campaign I don't own
 	if (project.creator !== req.session.user.userId) {
 		res.redirect('/projects');
@@ -266,10 +271,20 @@ router.post('/searchResult', async (req, res) => {
 	// 3- selecting a category and entering a range bounds
 	// 4- default which fetches all the projects
 
-	if(searchProjectData.category !== "none")
-		projectsByCategory = await projectData.getProjectsByCategory(xss(searchProjectData.category));
-	else
-		projectsByCategory = await projectData.getAllProjects();
+	if(searchProjectData.category !== "none") {
+		try {
+			projectsByCategory = await projectData.getProjectsByCategory(xss(searchProjectData.category));
+		} catch (e) {
+			res.status(500).json({ error: e.toString() });
+		}
+	}
+	else {
+		try {
+			projectsByCategory = await projectData.getAllProjects();
+		} catch (e) {
+			res.status(500).json({ error: e.toString() });
+		}
+	}
 
 	if(searchProjectData.from_pledged || searchProjectData.to_pledged) {
 		let pledgeLowerBound = null, pledgeHigherBound = null;
@@ -335,7 +350,12 @@ router.post('/searchResult', async (req, res) => {
 
 router.get('/deactivate/:id', async (req, res) => {
 	const projectId = req.params.id;
-	const project = await projectData.getProject(projectId);
+	let project;
+	try {
+		project = await projectData.getProject(projectId);
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
 	// No other user can deactivate my own campaign
 	if (project.creator !== req.session.user.userId) {
 		res.redirect('/projects');
@@ -352,7 +372,12 @@ router.get('/deactivate/:id', async (req, res) => {
 
 router.get('/activate/:id', async (req, res) => {
 	const projectId = req.params.id;
-	const project = await projectData.getProject(projectId);
+	let project;
+	try {
+		project = await projectData.getProject(projectId);
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
 	// No other user can activate my own campaign
 	if (project.creator !== req.session.user.userId) {
 		res.redirect('/projects');

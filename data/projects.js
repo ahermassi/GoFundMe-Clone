@@ -34,7 +34,12 @@ module.exports = {
 
         const userId = insertInfo.insertedId;
         
-        const addProjectToUser = await users.addProjectToUser(projectCreator, userId);
+        let addProjectToUser;
+        try {
+            addProjectToUser = await users.addProjectToUser(projectCreator, userId);
+        } catch (e) {
+            console.log(e.toString());
+        }
         if(!addProjectToUser) throw "Can't add project to this user";
 
         return await this.getProject(userId);
@@ -62,8 +67,6 @@ module.exports = {
         const objId = userId;
         const projectsCollection = await projects();
         const userProjects = await projectsCollection.find({ creator: objId }).toArray();
-//        if (userProjects.length === 0) throw 'This user has no projects';
-
         return userProjects;
     },
     async getProjectsByCategory(category){
@@ -127,7 +130,12 @@ module.exports = {
         if(typeof(amount) !== 'number') throw 'The donation amount needs to be a number';
 
         const projectsCollection = await projects();
-        const targetProject = await this.getProject(projectId);
+        let targetProject;
+        try {
+            targetProject = await this.getProject(projectId);
+        } catch (e) {
+            console.log(e.toString());
+        }
         let newCollected = parseFloat(targetProject.collected) + parseFloat(amount);
         let donations = targetProject.donations;
         let donatedBefore = false;
@@ -153,7 +161,12 @@ module.exports = {
             });
         if (updateInfo.modifiedCount === 0)
             throw 'Could not process the donation successfully';
-        const updateDonator = await users.addDonatorToProject(donatorId, projectId, amount);
+        let updateDonator;
+        try {
+            updateDonator = await users.addDonatorToProject(donatorId, projectId, amount);
+        } catch (e) {
+            console.log(e.toString());
+        }
         if (updateDonator.modifiedCount === 0)
             throw 'Could not add a donator';
 
