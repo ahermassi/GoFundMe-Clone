@@ -43,7 +43,7 @@ router.post('/signin',async (req, res) => {
     }
     let user;
     try{
-        user = await userData.getUserByEmail(loginInfo.email);
+        user = await userData.getUserByEmail(loginInfo.email.toLowerCase());
     } catch(e) {
         res.render('users/signin',{hasErrors: true, title: 'Sign In', errors: ['Invalid email and/or password'], logged: false});
         return;
@@ -98,13 +98,14 @@ router.post('/', async (req, res) => {
     newUser.email = newUser.email.toLowerCase();
     
     try{
-        const existingEmail =  await userData.getUserByEmail(newUser.email);
+        const existingEmail =  await userData.getUserByEmail(newUser.email.toLowerCase());
         if (existingEmail)
             errors.push('An account with this email already exists.');
     } catch(e) {}
     
     if (errors.length > 0) {
 		res.render('users/register', {
+		    title: 'Register',
 			errors: errors,
 			hasErrors: true,
 			user: newUser,
@@ -114,8 +115,8 @@ router.post('/', async (req, res) => {
     }
     try {
         const hashedPassword = passwordHash.generate(newUser.password);
-        await userData.addUser(xss(newUser.first_name), xss(newUser.last_name), xss(newUser.email), hashedPassword,
-            xss(newUser.city), xss(newUser.state));
+        await userData.addUser(xss(newUser.first_name), xss(newUser.last_name), xss(newUser.email.toLowerCase()),
+            hashedPassword, xss(newUser.city), xss(newUser.state));
         res.redirect('/users/signin');
     }catch(e){
         res.status(500).json({error: e.toString()})
