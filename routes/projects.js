@@ -393,4 +393,14 @@ router.get('/activate/:id', async (req, res) => {
 	}
 });
 
+router.post('/fetch', async (req, res) => {
+	try {
+		let project = await projectData.getProject(xss(req.body.project_id));
+		const d = {totalDonors: project.donations.length, collected: project.collected};
+		res.render('partials/fetch', {layout:null, ...d});
+	} catch (e) {
+		res.status(500).json({ error: e.toString() });
+	}
+});
+
 module.exports = router;
