@@ -28,7 +28,7 @@
             {{/if}}
         {{else}}
             <p>$<span id="current-collected">{{project.collected}}</span> raised of ${{project.pledgeGoal}} goal</p>
-            <p>Donors: {{project.donors}}</p>
+            <p>Donors: <span id="number-of-donors">{{project.donors}}</span></p>
         {{/if}}
         {{#if hasErrors}}
             <ul class="error-list">
@@ -47,13 +47,13 @@
                 {{/each}}
             {{/if}}
         </div>
+        <input type="hidden" name="project_id" id="project_id" value="{{project._id}}" />
         {{#if canComment}}
             <form id="comment-form" action="/projects/comment" method="post">
                 <div class="form-group">
                     <label for="comment"></label>
                     <textarea rows="2" cols="50" placeholder="Leave a comment" name="comment" id="comment"></textarea>
                 </div>
-                <input type="hidden" name="project_id" id="project_id" value="{{project._id}}" />
                 <button type="submit">Comment</button>
             </form>
         <div id="empty-comment" hidden></div>
@@ -69,3 +69,4 @@
         <br><a class="back-button" href="/projects">Back to All Projects</a>
     </div>
 </article>
+<script src="public/js/fetch.js"></script>
